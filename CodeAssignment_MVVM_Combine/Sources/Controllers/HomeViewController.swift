@@ -6,20 +6,85 @@
 //
 
 import UIKit
+import SnapKit
 
 /// Life Cycle & Variables
 class HomeViewController: UIViewController {
+    
+    /// Get リクエストのための簡易Button
+    /// Lazy var を使う理由: メモリを多くとっちゃう場合減らすためや他の属性に依存しなきゃいけないとき（constraintsとか）
+    lazy var getAPIButton: UIButton = {
+        let button = UIButton()
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
+        button.setTitle("GET", for: .normal)
+        button.setTitleColor(UIColor.systemBlue, for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.clipsToBounds = true
+        button.layer.cornerRadius = 8
+        button.layer.borderWidth = 1
+        button.layer.borderColor = UIColor.systemGray.cgColor
+        button.addTarget(self, action: #selector(didTapGetAPIButton), for: .touchUpInside)
+        
+        return button
+    }()
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        print("success to present HomeViewController without Storyboard")
+        setAddSubViews()
+        setupController()
+        setupConstraints()
+        setupUI()
+        checkTest()
     }
-
-
 }
 
 /// Functions & Logics
 extension HomeViewController {
+    func checkTest() {
+        print("success to present HomeViewController without Storyboard")
+    }
     
+    /// Controllerをセットアップする
+    func setupController() {
+        view.backgroundColor = .systemBackground
+        
+        
+    }
+    
+    /// カスタムで作ったViewを全部追加する
+    func setAddSubViews() {
+        view.addSubview(getAPIButton)
+    }
+    
+    /// UIをセットアップする
+    func setupUI() {
+        setupGetAPIButton()
+    }
+    
+    /// Getリクエストを送るボタンをセットアップ
+    func setupGetAPIButton() {
+        
+    }
+    
+    /// Layoutの制約を調整する
+    func setupConstraints() {
+        setupGetAPIButtonConstraints()
+    }
+    
+    /// GetAPI ButtonのConstraints
+    /// SnapKitを用いて、実装する
+    func setupGetAPIButtonConstraints() {
+        getAPIButton.snp.makeConstraints { make in
+            make.height.equalTo(80)
+            make.width.equalTo(80)
+            make.centerX.equalToSuperview()
+            make.centerY.equalToSuperview()
+        }
+    }
+    
+    @objc func didTapGetAPIButton() {
+        print("Tapped GetAPIButton")
+    }
 }
