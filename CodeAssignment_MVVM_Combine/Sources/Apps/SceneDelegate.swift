@@ -13,10 +13,19 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
-        // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
-        // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
-        guard let _ = (scene as? UIWindowScene) else { return }
+        /// UIWindowsのアンラップ
+        guard let windowScene = (scene as? UIWindowScene) else { return }
+        /// Window生成
+        /// Storyboardを使わないときは、Windowのインスタンスを直接生成して設定する必要がある
+        let window = UIWindow(windowScene: windowScene)
+        /// Root View生成
+        window.rootViewController = HomeViewController()
+        self.window = window
+        /// Key Window生成
+        /// makeKeyAndVisible: 指定したWindowを他の同一レベルもしくは以下のレベルのすべてのWindowより最前面に表示する
+        /// 表示中のWindowの上から新たな画面を表示させることができる
+        /// これを利用して、表示中の画面に関わらずモーダル表示ができる（全てのユーザにお知らせを表示したい場合などに有用らしい）
+        window.makeKeyAndVisible()
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
