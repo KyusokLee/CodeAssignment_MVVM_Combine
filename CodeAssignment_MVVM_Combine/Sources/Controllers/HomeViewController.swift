@@ -12,7 +12,6 @@ import SnapKit
 class HomeViewController: UIViewController {
     
     /// Get リクエストのための簡易Button
-    /// Lazy var を使う理由: メモリを多くとっちゃう場合減らすためや他の属性に依存しなきゃいけないとき（constraintsとか）
     lazy var getAPIButton: UIButton = {
         let button = UIButton()
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
