@@ -18,6 +18,11 @@
 		5D0770242BE32F19007F0724 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 5D0770232BE32F19007F0724 /* .gitignore */; };
 		5D0770272BE33EFD007F0724 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 5D0770262BE33EFD007F0724 /* SnapKit */; };
 		5D0770292BE33EFD007F0724 /* SnapKit-Dynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 5D0770282BE33EFD007F0724 /* SnapKit-Dynamic */; };
+		5D07702D2BE38CA1007F0724 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D07702C2BE38CA1007F0724 /* APIClient.swift */; };
+		5D0770302BE38D38007F0724 /* ErrorType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D07702F2BE38D38007F0724 /* ErrorType.swift */; };
+		5D0770322BE38D41007F0724 /* APIType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0770312BE38D41007F0724 /* APIType.swift */; };
+		5D0770352BE38D8C007F0724 /* ErrorType+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0770342BE38D8C007F0724 /* ErrorType+Utils.swift */; };
+		5D0770372BE38E20007F0724 /* UIColor+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0770362BE38E20007F0724 /* UIColor+Utils.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +56,11 @@
 		5D07700D2BE32B9E007F0724 /* CodeAssignment_MVVM_CombineUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeAssignment_MVVM_CombineUITests.swift; sourceTree = "<group>"; };
 		5D07700F2BE32B9E007F0724 /* CodeAssignment_MVVM_CombineUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeAssignment_MVVM_CombineUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		5D0770232BE32F19007F0724 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		5D07702C2BE38CA1007F0724 /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
+		5D07702F2BE38D38007F0724 /* ErrorType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorType.swift; sourceTree = "<group>"; };
+		5D0770312BE38D41007F0724 /* APIType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIType.swift; sourceTree = "<group>"; };
+		5D0770342BE38D8C007F0724 /* ErrorType+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ErrorType+Utils.swift"; sourceTree = "<group>"; };
+		5D0770362BE38E20007F0724 /* UIColor+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Utils.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -147,6 +157,8 @@
 		5D07701E2BE32BF6007F0724 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				5D07702E2BE38CFB007F0724 /* Enums */,
+				5D07702C2BE38CA1007F0724 /* APIClient.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -191,6 +203,7 @@
 		5D07702A2BE3410A007F0724 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				5D0770332BE38D6A007F0724 /* Error */,
 				5D07702B2BE3410F007F0724 /* UIColor */,
 			);
 			path = Extensions;
@@ -199,8 +212,26 @@
 		5D07702B2BE3410F007F0724 /* UIColor */ = {
 			isa = PBXGroup;
 			children = (
+				5D0770362BE38E20007F0724 /* UIColor+Utils.swift */,
 			);
 			path = UIColor;
+			sourceTree = "<group>";
+		};
+		5D07702E2BE38CFB007F0724 /* Enums */ = {
+			isa = PBXGroup;
+			children = (
+				5D07702F2BE38D38007F0724 /* ErrorType.swift */,
+				5D0770312BE38D41007F0724 /* APIType.swift */,
+			);
+			path = Enums;
+			sourceTree = "<group>";
+		};
+		5D0770332BE38D6A007F0724 /* Error */ = {
+			isa = PBXGroup;
+			children = (
+				5D0770342BE38D8C007F0724 /* ErrorType+Utils.swift */,
+			);
+			path = Error;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -342,8 +373,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				5D076FF12BE32B9C007F0724 /* HomeViewController.swift in Sources */,
+				5D0770302BE38D38007F0724 /* ErrorType.swift in Sources */,
+				5D0770352BE38D8C007F0724 /* ErrorType+Utils.swift in Sources */,
 				5D076FED2BE32B9C007F0724 /* AppDelegate.swift in Sources */,
 				5D076FEF2BE32B9C007F0724 /* SceneDelegate.swift in Sources */,
+				5D0770322BE38D41007F0724 /* APIType.swift in Sources */,
+				5D07702D2BE38CA1007F0724 /* APIClient.swift in Sources */,
+				5D0770372BE38E20007F0724 /* UIColor+Utils.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
