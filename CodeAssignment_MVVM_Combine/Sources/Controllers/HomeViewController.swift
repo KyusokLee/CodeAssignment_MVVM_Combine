@@ -7,8 +7,9 @@
 
 import UIKit
 import SnapKit
+import Combine
 
-/// Life Cycle & Variables
+// MARK: - Life Cycle & Variables
 class HomeViewController: UIViewController {
     
     /// Get リクエストのための簡易Button
@@ -24,56 +25,56 @@ class HomeViewController: UIViewController {
         button.layer.borderColor = UIColor.systemGray.cgColor
         /// addActionを使うことで、objc funcを使わなくても済む
         /// UIActionのclosureを用いて関数を呼び出す
-        button.addAction(UIAction { [weak self] _ in
+        button.addAction(UIAction.init { [weak self] _ in
             self?.didTapGetAPIButton()
         }, for: .touchUpInside)
         
         return button
     }()
     
-
+    /// ViewModel
+    private let viewModel = HomeViewModel()
+    /// Cancellables
+    /// storeを利用するため : AnyCancellableを保存しておいて、当該の変数がdeinitされるとき、subscribeをキャンセルする方法
+    private var cancellables = Set<AnyCancellable>()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setAddSubViews()
         setupController()
         setupConstraints()
-        setupUI()
     }
 }
 
-/// Functions & Logics
+// MARK: - Functions & Logics
 extension HomeViewController {
     /// Controllerをセットアップする
-    func setupController() {
+    private func setupController() {
         view.backgroundColor = .systemBackground
-        
-        
+        setupObservers()
+    }
+    
+    private func setupObservers() {
+        viewModel.getAPIButtonColorSubject.sink { [weak self] buttonColor in
+            self?.getAPIButton.backgroundColor = buttonColor
+        }
+        .store(in: &cancellables)
     }
     
     /// カスタムで作ったViewを全部追加する
-    func setAddSubViews() {
+    private func setAddSubViews() {
         view.addSubview(getAPIButton)
     }
     
-    /// UIをセットアップする
-    func setupUI() {
-        setupGetAPIButton()
-    }
-    
-    /// Getリクエストを送るボタンをセットアップ
-    func setupGetAPIButton() {
-        
-    }
-    
     /// Layoutの制約を調整する
-    func setupConstraints() {
+    private func setupConstraints() {
         setupGetAPIButtonConstraints()
     }
     
     /// GetAPI ButtonのConstraints
     /// SnapKitを用いて、実装する
-    func setupGetAPIButtonConstraints() {
+    private func setupGetAPIButtonConstraints() {
         getAPIButton.snp.makeConstraints { constraint in
             constraint.height.equalTo(80)
             constraint.width.equalTo(80)
@@ -82,8 +83,8 @@ extension HomeViewController {
         }
     }
     
-    /// GetメソッドのAPI Request を送信するボタンをタップ
-    func didTapGetAPIButton() {
-        print("Tapped GetAPIButton")
+    /// GETメソッドのAPI Request を送信するボタンをタップ
+    private func didTapGetAPIButton() {
+        viewModel.didTapGetAPIButton()
     }
 }
