@@ -39,16 +39,11 @@ class HomeViewController: UIViewController {
         setupController()
         setupConstraints()
         setupUI()
-        checkTest()
     }
 }
 
 /// Functions & Logics
 extension HomeViewController {
-    func checkTest() {
-        print("success to present HomeViewController without Storyboard")
-    }
-    
     /// Controllerをセットアップする
     func setupController() {
         view.backgroundColor = .systemBackground
