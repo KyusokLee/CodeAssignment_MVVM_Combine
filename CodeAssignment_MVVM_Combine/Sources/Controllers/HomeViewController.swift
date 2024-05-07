@@ -79,11 +79,11 @@ extension HomeViewController {
     /// GetAPI ButtonのConstraints
     /// SnapKitを用いて、実装する
     func setupGetAPIButtonConstraints() {
-        getAPIButton.snp.makeConstraints { make in
-            make.height.equalTo(80)
-            make.width.equalTo(80)
-            make.centerX.equalToSuperview()
-            make.centerY.equalToSuperview()
+        getAPIButton.snp.makeConstraints { constraint in
+            constraint.height.equalTo(80)
+            constraint.width.equalTo(80)
+            constraint.centerX.equalToSuperview()
+            constraint.centerY.equalToSuperview()
         }
     }
     
