@@ -55,6 +55,8 @@ extension HomeViewController {
         setupObservers()
     }
     
+    /// ViewModelなどViewController側で常に監視しておくべき対象を、セットアップ
+    /// イベント発生時に正常にデータバインドをするために、Observerを設定する感じ
     private func setupObservers() {
         viewModel.getAPIButtonColorSubject.sink { [weak self] buttonColor in
             self?.getAPIButton.backgroundColor = buttonColor
