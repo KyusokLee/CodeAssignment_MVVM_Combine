@@ -16,6 +16,8 @@
 		5D07700E2BE32B9E007F0724 /* CodeAssignment_MVVM_CombineUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D07700D2BE32B9E007F0724 /* CodeAssignment_MVVM_CombineUITests.swift */; };
 		5D0770102BE32B9E007F0724 /* CodeAssignment_MVVM_CombineUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D07700F2BE32B9E007F0724 /* CodeAssignment_MVVM_CombineUITestsLaunchTests.swift */; };
 		5D0770242BE32F19007F0724 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 5D0770232BE32F19007F0724 /* .gitignore */; };
+		5D0770272BE33EFD007F0724 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 5D0770262BE33EFD007F0724 /* SnapKit */; };
+		5D0770292BE33EFD007F0724 /* SnapKit-Dynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 5D0770282BE33EFD007F0724 /* SnapKit-Dynamic */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,6 +58,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5D0770272BE33EFD007F0724 /* SnapKit in Frameworks */,
+				5D0770292BE33EFD007F0724 /* SnapKit-Dynamic in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -166,6 +170,7 @@
 		5D0770212BE32C43007F0724 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				5D07702A2BE3410A007F0724 /* Extensions */,
 				5D0770222BE32D06007F0724 /* Storyboards */,
 				5D07701C2BE32BEA007F0724 /* Apps */,
 				5D07701D2BE32BF0007F0724 /* Controllers */,
@@ -181,6 +186,21 @@
 				5D076FF72BE32B9E007F0724 /* LaunchScreen.storyboard */,
 			);
 			path = Storyboards;
+			sourceTree = "<group>";
+		};
+		5D07702A2BE3410A007F0724 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				5D07702B2BE3410F007F0724 /* UIColor */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		5D07702B2BE3410F007F0724 /* UIColor */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = UIColor;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -199,6 +219,10 @@
 			dependencies = (
 			);
 			name = CodeAssignment_MVVM_Combine;
+			packageProductDependencies = (
+				5D0770262BE33EFD007F0724 /* SnapKit */,
+				5D0770282BE33EFD007F0724 /* SnapKit-Dynamic */,
+			);
 			productName = CodeAssignment_MVVM_Combine;
 			productReference = 5D076FE92BE32B9C007F0724 /* CodeAssignment_MVVM_Combine.app */;
 			productType = "com.apple.product-type.application";
@@ -271,6 +295,9 @@
 				Base,
 			);
 			mainGroup = 5D076FE02BE32B9C007F0724;
+			packageReferences = (
+				5D0770252BE33D0D007F0724 /* XCRemoteSwiftPackageReference "SnapKit" */,
+			);
 			productRefGroup = 5D076FEA2BE32B9C007F0724 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -495,8 +522,8 @@
 				INFOPLIST_FILE = CodeAssignment_MVVM_Combine/Resources/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -522,8 +549,8 @@
 				INFOPLIST_FILE = CodeAssignment_MVVM_Combine/Resources/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -653,6 +680,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		5D0770252BE33D0D007F0724 /* XCRemoteSwiftPackageReference "SnapKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SnapKit/SnapKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.7.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		5D0770262BE33EFD007F0724 /* SnapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5D0770252BE33D0D007F0724 /* XCRemoteSwiftPackageReference "SnapKit" */;
+			productName = SnapKit;
+		};
+		5D0770282BE33EFD007F0724 /* SnapKit-Dynamic */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5D0770252BE33D0D007F0724 /* XCRemoteSwiftPackageReference "SnapKit" */;
+			productName = "SnapKit-Dynamic";
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 5D076FE12BE32B9C007F0724 /* Project object */;
 }
