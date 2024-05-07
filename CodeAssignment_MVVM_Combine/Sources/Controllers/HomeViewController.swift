@@ -12,12 +12,12 @@ import SnapKit
 class HomeViewController: UIViewController {
     
     /// Get リクエストのための簡易Button
-    lazy var getAPIButton: UIButton = {
+    private lazy var getAPIButton: UIButton = {
         let button = UIButton()
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
         button.setTitle("GET", for: .normal)
         button.setTitleColor(UIColor.systemBlue, for: .normal)
-        button.translatesAutoresizingMaskIntoConstraints = false
+        /// Snapkitライブラリで既にtranslatesAutoresizingMaskIntoConstraintsをfalseにしているので、記載不要
         button.clipsToBounds = true
         button.layer.cornerRadius = 8
         button.layer.borderWidth = 1
