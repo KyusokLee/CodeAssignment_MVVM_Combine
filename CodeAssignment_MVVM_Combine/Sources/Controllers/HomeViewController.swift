@@ -22,7 +22,11 @@ class HomeViewController: UIViewController {
         button.layer.cornerRadius = 8
         button.layer.borderWidth = 1
         button.layer.borderColor = UIColor.systemGray.cgColor
-        button.addTarget(self, action: #selector(didTapGetAPIButton), for: .touchUpInside)
+        /// addActionを使うことで、objc funcを使わなくても済む
+        /// UIActionのclosureを用いて関数を呼び出す
+        button.addAction(UIAction { [weak self] _ in
+            self?.didTapGetAPIButton()
+        }, for: .touchUpInside)
         
         return button
     }()
@@ -83,7 +87,8 @@ extension HomeViewController {
         }
     }
     
-    @objc func didTapGetAPIButton() {
+    /// GetメソッドのAPI Request を送信するボタンをタップ
+    func didTapGetAPIButton() {
         print("Tapped GetAPIButton")
     }
 }
