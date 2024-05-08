@@ -25,7 +25,7 @@ class HomeViewController: UIViewController {
         button.layer.borderColor = UIColor.systemGray.cgColor
         /// addActionを使うことで、objc funcを使わなくても済む
         /// UIActionのclosureを用いて関数を呼び出す
-        button.addAction(UIAction.init { [weak self] _ in
+        button.addAction(.init { [weak self] _ in
             self?.didTapGetAPIButton()
         }, for: .touchUpInside)
         
@@ -36,32 +36,39 @@ class HomeViewController: UIViewController {
     private let viewModel = HomeViewModel()
     /// Cancellables
     /// storeを利用するため : AnyCancellableを保存しておいて、当該の変数がdeinitされるとき、subscribeをキャンセルする方法
+    /// Setで複数のSubscription（購読）を１つにまとめることができ、Subscriptionの値を保持する
     private var cancellables = Set<AnyCancellable>()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setAddSubViews()
-        setupController()
-        setupConstraints()
+        setupUI()
+        bind()
     }
 }
 
 // MARK: - Functions & Logics
 extension HomeViewController {
-    /// Controllerをセットアップする
-    private func setupController() {
+    /// ViewControllerのUIをセットアップする
+    private func setupUI() {
         view.backgroundColor = .systemBackground
-        setupObservers()
+        setAddSubViews()
+        setupConstraints()
     }
     
     /// ViewModelなどViewController側で常に監視しておくべき対象を、セットアップ
     /// イベント発生時に正常にデータバインドをするために、Observerを設定する感じ
-    private func setupObservers() {
-        viewModel.getAPIButtonColorSubject.sink { [weak self] buttonColor in
-            self?.getAPIButton.backgroundColor = buttonColor
-        }
-        .store(in: &cancellables)
+    /// Combineで流れたきたデータのアウトプットsinkする
+    /// sink : Publisherからのイベントを購読する.  つまり、イベントを受信したときの処理を指定できる。
+    /// receive(on:)：イベントを受け取るスレッドを指定する
+    /// store:
+    private func bind() {
+        viewModel.getAPIButtonColor
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] buttonColor in
+                self?.getAPIButton.backgroundColor = buttonColor
+            }
+            .store(in: &cancellables)
     }
     
     /// カスタムで作ったViewを全部追加する
