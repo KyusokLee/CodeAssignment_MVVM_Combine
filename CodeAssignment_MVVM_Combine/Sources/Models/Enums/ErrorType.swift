@@ -8,11 +8,9 @@
 import Foundation
 
 /// HTTPStatusCodeに合わせてErrorの把握ができるように
-enum ErrorType {
-    case apiClientError
+enum ErrorType: Error {
     case apiServerError
-    case networkError
-    case parseError
-    case loadDataError
-    case unspecifiedError(status: Int, data: Data)
+    case noResponseError
+    case decodeError
+    case unknownError(error: Error)
 }

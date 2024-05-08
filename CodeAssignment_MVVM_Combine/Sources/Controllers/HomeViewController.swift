@@ -38,6 +38,7 @@ class HomeViewController: UIViewController {
     /// storeを利用するため : AnyCancellableを保存しておいて、当該の変数がdeinitされるとき、subscribeをキャンセルする方法
     /// Setで複数のSubscription（購読）を１つにまとめることができ、Subscriptionの値を保持する
     private var cancellables = Set<AnyCancellable>()
+    private var repositories: Repositories?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -63,10 +64,10 @@ extension HomeViewController {
     /// receive(on:)：イベントを受け取るスレッドを指定する
     /// store:
     private func bind() {
-        viewModel.getAPIButtonColor
+        viewModel.repositoriesSubject
             .receive(on: DispatchQueue.main)
             .sink { [weak self] buttonColor in
-                self?.getAPIButton.backgroundColor = buttonColor
+//                self?.getAPIButton.backgroundColor = buttonColor
             }
             .store(in: &cancellables)
     }
@@ -93,7 +94,7 @@ extension HomeViewController {
     }
     
     /// GETメソッドのAPI Request を送信するボタンをタップ
-    private func didTapGetAPIButton() {
+    func didTapGetAPIButton() {
         viewModel.didTapGetAPIButton()
     }
 }
