@@ -18,8 +18,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         /// Window生成
         // Storyboardを使わないときは、Windowのインスタンスを直接生成して設定する必要がある
         let window = UIWindow(windowScene: windowScene)
-        /// Root View生成
-        window.rootViewController = HomeViewController()
+        /// UINavigationControllerでembeddedしたViewをRoot Viewとして設定
+        window.rootViewController = UINavigationController(rootViewController: HomeViewController())
         self.window = window
         /** Key Window生成
         - makeKeyAndVisible: 指定したWindowを他の同一レベルもしくは以下のレベルのすべてのWindowより最前面に表示する

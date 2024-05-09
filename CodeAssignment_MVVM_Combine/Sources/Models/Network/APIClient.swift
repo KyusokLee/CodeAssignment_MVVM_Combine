@@ -47,7 +47,10 @@ struct GitHubSearchRepositoriesRequest: GitHubAPIClientProtocol {
             let urlString = "https://api.github.com/search/repositories?q=\(searchQueryWord)"
             guard let url = URL(string: urlString) else { return nil }
             var request = URLRequest(url: url)
-            let headers: [String: String] = [:]
+            let headers: [String: String] = [
+                "Accept" : "application/vnd.github+json",
+                "X-GitHub-Api-Version" : "2022-11-28"
+            ]
             request.httpMethod = "GET"
             headers.forEach { key, value in
                 request.addValue(value, forHTTPHeaderField: key)
@@ -68,7 +71,7 @@ class APIClient {
     func request<T: GitHubAPIClientProtocol>(_ requestProtocol: T, type: GitHubAPIType, completion: @escaping(Result<Repositories?, ErrorType>) -> Void) {
         guard let request = requestProtocol.buildUpRequest(type: type) else { return }
         let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
-            if let error {
+            if let _ = error {
                 completion(.failure(ErrorType.unknownError))
                 return
             }

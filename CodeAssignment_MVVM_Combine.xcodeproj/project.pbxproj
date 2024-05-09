@@ -15,7 +15,6 @@
 		5D0770042BE32B9E007F0724 /* CodeAssignment_MVVM_CombineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0770032BE32B9E007F0724 /* CodeAssignment_MVVM_CombineTests.swift */; };
 		5D07700E2BE32B9E007F0724 /* CodeAssignment_MVVM_CombineUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D07700D2BE32B9E007F0724 /* CodeAssignment_MVVM_CombineUITests.swift */; };
 		5D0770102BE32B9E007F0724 /* CodeAssignment_MVVM_CombineUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D07700F2BE32B9E007F0724 /* CodeAssignment_MVVM_CombineUITestsLaunchTests.swift */; };
-		5D0770242BE32F19007F0724 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 5D0770232BE32F19007F0724 /* .gitignore */; };
 		5D0770272BE33EFD007F0724 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 5D0770262BE33EFD007F0724 /* SnapKit */; };
 		5D0770292BE33EFD007F0724 /* SnapKit-Dynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 5D0770282BE33EFD007F0724 /* SnapKit-Dynamic */; };
 		5D07702D2BE38CA1007F0724 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D07702C2BE38CA1007F0724 /* APIClient.swift */; };
@@ -58,7 +57,6 @@
 		5D0770092BE32B9E007F0724 /* CodeAssignment_MVVM_CombineUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CodeAssignment_MVVM_CombineUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5D07700D2BE32B9E007F0724 /* CodeAssignment_MVVM_CombineUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeAssignment_MVVM_CombineUITests.swift; sourceTree = "<group>"; };
 		5D07700F2BE32B9E007F0724 /* CodeAssignment_MVVM_CombineUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeAssignment_MVVM_CombineUITestsLaunchTests.swift; sourceTree = "<group>"; };
-		5D0770232BE32F19007F0724 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		5D07702C2BE38CA1007F0724 /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
 		5D07702F2BE38D38007F0724 /* ErrorType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorType.swift; sourceTree = "<group>"; };
 		5D0770342BE38D8C007F0724 /* ErrorType+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ErrorType+Utils.swift"; sourceTree = "<group>"; };
@@ -119,7 +117,6 @@
 		5D076FEB2BE32B9C007F0724 /* CodeAssignment_MVVM_Combine */ = {
 			isa = PBXGroup;
 			children = (
-				5D0770232BE32F19007F0724 /* .gitignore */,
 				5D0770202BE32C3C007F0724 /* Resources */,
 				5D0770212BE32C43007F0724 /* Sources */,
 			);
@@ -394,7 +391,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5D0770242BE32F19007F0724 /* .gitignore in Resources */,
 				5D076FF92BE32B9E007F0724 /* LaunchScreen.storyboard in Resources */,
 				5D076FF62BE32B9D007F0724 /* Assets.xcassets in Resources */,
 			);

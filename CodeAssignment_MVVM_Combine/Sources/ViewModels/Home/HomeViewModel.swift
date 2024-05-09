@@ -19,8 +19,8 @@ final class HomeViewModel {
     }
     
     /// GET リクエストを送信し、repositoryを持ってくるメソッド
-    func didTapGetAPIButton() {
-        let requestProtocol = GitHubSearchRepositoriesRequest(searchQueryWord: "Swift")
+    func search(queryString searchWord: String) {
+        let requestProtocol = GitHubSearchRepositoriesRequest(searchQueryWord: searchWord)
         apiClient.request(requestProtocol, type: GitHubAPIType.searchRepositories) { result in
             switch result {
             case let .success(model):

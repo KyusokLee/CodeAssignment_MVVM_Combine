@@ -13,7 +13,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        
+        // iOS15からNavigationBarの境界線がデフォルトで透過されて見えるため、以下のように設定する
+        if #available(iOS 15.0, *) {
+            // ナビゲーションバーの外観設定を宣言
+            let navigationBarAppearance = UINavigationBarAppearance()
+            // デフォルトの背景色を設定
+            navigationBarAppearance.configureWithDefaultBackground()
+            // 各モードに代入
+            UINavigationBar.appearance().standardAppearance = navigationBarAppearance
+            UINavigationBar.appearance().compactAppearance = navigationBarAppearance
+            UINavigationBar.appearance().scrollEdgeAppearance = navigationBarAppearance
+            // ナビゲーションバーのタイトル文字の色変更
+            navigationBarAppearance.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
+            // ナビゲーションバーの色変更
+            navigationBarAppearance.backgroundColor = .systemBackground
+        }
+        
         return true
     }
 

@@ -11,27 +11,6 @@ import Combine
 
 // MARK: - Life Cycle & Variables
 class HomeViewController: UIViewController {
-    
-    /// Get リクエストのための簡易Button
-    private lazy var getAPIButton: UIButton = {
-        let button = UIButton()
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
-        button.setTitle("GET", for: .normal)
-        button.setTitleColor(UIColor.systemBlue, for: .normal)
-        // Snapkitライブラリで既にtranslatesAutoresizingMaskIntoConstraintsをfalseにしているので、記載不要
-        button.clipsToBounds = true
-        button.layer.cornerRadius = 8
-        button.layer.borderWidth = 1
-        button.layer.borderColor = UIColor.systemGray.cgColor
-        // addActionを使うことで、objc funcを使わなくても済む
-        // UIActionのclosureを用いて関数を呼び出す
-        button.addAction(.init { [weak self] _ in
-            self?.didTapGetAPIButton()
-        }, for: .touchUpInside)
-        
-        return button
-    }()
-    
     /// ViewModel
     private let viewModel = HomeViewModel()
     /** storeでAnyCancellableを保存しておいて、当該の変数がdeinitされるとき、subscribeをキャンセルする方法
@@ -39,12 +18,18 @@ class HomeViewController: UIViewController {
      */
     private var cancellables = Set<AnyCancellable>()
     private var repositories = [Repository]()
+    private var searchWord: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupUI()
         bind()
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        // 画面をTapしてもkeyboardをdismissするようにする
+        self.navigationItem.searchController?.searchBar.endEditing(true)
     }
 }
 
@@ -53,8 +38,31 @@ extension HomeViewController {
     /// ViewControllerのUIをセットアップする
     private func setupUI() {
         view.backgroundColor = .systemBackground
+        
+        setupNavigationController()
         setAddSubViews()
         setupConstraints()
+    }
+    
+    /// NavigationControllerのセットアップ
+    private func setupNavigationController() {
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        // NavigationBarの下部線を隠す
+        appearance.shadowColor = .clear
+        navigationController?.navigationBar.scrollEdgeAppearance = appearance
+        setupSearchController()
+    }
+    
+    /** SearchControllerのセットアップ
+     - NavigationControllerの中で表示するアニメーション付きのsearchBarはSearchControllerで実現できる
+     */
+    private func setupSearchController() {
+        let searchController = UISearchController(searchResultsController: nil)
+        searchController.delegate = self
+        searchController.searchBar.placeholder = "リポジトリを検索"
+        searchController.searchBar.delegate = self
+        self.navigationItem.searchController = searchController
     }
     
     /** ViewModelなどViewController側で常に監視しておくべき対象を、セットアップ
@@ -78,26 +86,36 @@ extension HomeViewController {
     
     /// カスタムで作ったViewを全部追加する
     private func setAddSubViews() {
-        view.addSubview(getAPIButton)
+        
     }
     
     /// Layoutの制約を調整する
     private func setupConstraints() {
-        setupGetAPIButtonConstraints()
+        
+    }
+}
+
+// MARK: - UISearchController Deleage
+// 今後、検索候補とか表示したい
+extension HomeViewController: UISearchControllerDelegate {
+    
+}
+
+// MARK: - UISearchBarDelegate
+extension HomeViewController: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        print("SearchBar text didChange")
+        searchWord = searchText
     }
     
-    /// GetAPI ButtonのConstraints (SnapKit利用)
-    private func setupGetAPIButtonConstraints() {
-        getAPIButton.snp.makeConstraints { constraint in
-            constraint.height.equalTo(80)
-            constraint.width.equalTo(80)
-            constraint.centerX.equalToSuperview()
-            constraint.centerY.equalToSuperview()
-        }
+    /// Return(検索)キーをタップしたときの処理
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        viewModel.search(queryString: searchWord ?? "")
+        print("Search")
     }
     
-    /// GETメソッドのAPI Request を送信するボタンをタップ
-    func didTapGetAPIButton() {
-        viewModel.didTapGetAPIButton()
+    /// Cancelキーをタップしたときの処理
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        print("Cancel")
     }
 }
