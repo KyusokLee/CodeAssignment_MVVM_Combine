@@ -18,13 +18,13 @@ class HomeViewController: UIViewController {
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
         button.setTitle("GET", for: .normal)
         button.setTitleColor(UIColor.systemBlue, for: .normal)
-        /// Snapkitライブラリで既にtranslatesAutoresizingMaskIntoConstraintsをfalseにしているので、記載不要
+        // Snapkitライブラリで既にtranslatesAutoresizingMaskIntoConstraintsをfalseにしているので、記載不要
         button.clipsToBounds = true
         button.layer.cornerRadius = 8
         button.layer.borderWidth = 1
         button.layer.borderColor = UIColor.systemGray.cgColor
-        /// addActionを使うことで、objc funcを使わなくても済む
-        /// UIActionのclosureを用いて関数を呼び出す
+        // addActionを使うことで、objc funcを使わなくても済む
+        // UIActionのclosureを用いて関数を呼び出す
         button.addAction(.init { [weak self] _ in
             self?.didTapGetAPIButton()
         }, for: .touchUpInside)
@@ -34,11 +34,11 @@ class HomeViewController: UIViewController {
     
     /// ViewModel
     private let viewModel = HomeViewModel()
-    /// Cancellables
-    /// storeを利用するため : AnyCancellableを保存しておいて、当該の変数がdeinitされるとき、subscribeをキャンセルする方法
-    /// Setで複数のSubscription（購読）を１つにまとめることができ、Subscriptionの値を保持する
+    /** storeでAnyCancellableを保存しておいて、当該の変数がdeinitされるとき、subscribeをキャンセルする方法
+    - Setで複数のSubscription（購読）を１つにまとめることができ、Subscriptionの値を保持する
+     */
     private var cancellables = Set<AnyCancellable>()
-    private var repositories: Repositories?
+    private var repositories = [Repository]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -57,17 +57,21 @@ extension HomeViewController {
         setupConstraints()
     }
     
-    /// ViewModelなどViewController側で常に監視しておくべき対象を、セットアップ
-    /// イベント発生時に正常にデータバインドをするために、Observerを設定する感じ
-    /// Combineで流れたきたデータのアウトプットsinkする
-    /// sink : Publisherからのイベントを購読する.  つまり、イベントを受信したときの処理を指定できる。
-    /// receive(on:)：イベントを受け取るスレッドを指定する
-    /// store:
+    /** ViewModelなどViewController側で常に監視しておくべき対象を、セットアップ
+     イベント発生時に正常にデータバインドをするために、Observerを設定する感じ
+     
+    - Combineで流れたきたデータのアウトプットsinkする
+    - sink : Publisherからのイベントを購読する.  つまり、イベントを受信したときの処理を指定できる。
+    - receive(on:)：イベントを受け取るスレッドを指定する
+    - store: cancellabeなどを保
+     */
     private func bind() {
         viewModel.repositoriesSubject
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] buttonColor in
-//                self?.getAPIButton.backgroundColor = buttonColor
+            .sink { [weak self] repositories in
+                guard let self = self else { return }
+                self.repositories = repositories
+                print(self.repositories)
             }
             .store(in: &cancellables)
     }
@@ -82,8 +86,7 @@ extension HomeViewController {
         setupGetAPIButtonConstraints()
     }
     
-    /// GetAPI ButtonのConstraints
-    /// SnapKitを用いて、実装する
+    /// GetAPI ButtonのConstraints (SnapKit利用)
     private func setupGetAPIButtonConstraints() {
         getAPIButton.snp.makeConstraints { constraint in
             constraint.height.equalTo(80)

@@ -7,8 +7,9 @@
 
 import Foundation
 
+/// ErrorTypeごとにどういったErrorかを表示するためのExtension
 extension ErrorType {
-    var alertTitle: String {
+    var errorTitle: String {
         switch self {
         case .apiServerError:
             return "APIサーバーエラー"
@@ -16,12 +17,12 @@ extension ErrorType {
             return "レスポンスエラー"
         case .decodeError:
             return "デコーディングエラー"
-        case .unknownError(status: let status, data: let data, error: let error):
-            return "エラー \(error) statusCode: \(status), data: \(data)"
+        case .unknownError:
+            return "知られていないエラー "
         }
     }
     
-    var alertMessage: String {
+    var errorDescription: String {
         switch self {
         case .apiServerError:
             return "サーバーにエラーが起きました。\nもう一度、お試しください。"
@@ -29,8 +30,8 @@ extension ErrorType {
             return "レスポンスがないです。\nもう一度、確認してください。"
         case .decodeError:
             return "データを正しく表示できませんでした。\nもう一度、お試しください。"
-        case .unknownError(status: let status, data: let data, error: let error):
-            return "エラー \(error): 不特定のStatus Code \(status)と データ \(data)が返ってきました。\nもう一度、確認ください。"
+        case .unknownError:
+            return "不特定エラーが返ってきました。\nもう一度、確認ください。"
         }
     }
 }

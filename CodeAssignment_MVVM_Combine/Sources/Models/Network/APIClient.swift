@@ -12,11 +12,21 @@ protocol GitHubAPIClientProtocol {
     func buildUpRequest(type: GitHubAPIType) -> URLRequest?
 }
 
-/// Structにデコードする (指定)
+// Structにデコードする (指定)
 struct GitHubSearchRepositoriesRequest: GitHubAPIClientProtocol {
-    /// throwing functionを用いて、Errorを投げる関数であることを明確にする
-    /// try catchのコードブロックの記載不要
-    /// 呼び出し先にthrowing関数で発生しうるエラーを返すため、上位レベルでエラー処理することが容易である
+    let searchQueryWord: String
+    
+    init(searchQueryWord: String) {
+        self.searchQueryWord = searchQueryWord
+    }
+    
+    /**
+     定義したRepositoriesモデルにデコーディングする
+     - throwing functionを用いて、Errorを投げる関数であることを明確にする
+     - try catchのコードブロックの記載不要
+     - 呼び出し先にthrowing関数で発生しうるエラーを返すため、上位レベルでエラー処理することが容易である
+     
+     */
     func decode(from data: Data) throws -> Repositories {
         let decoder = JSONDecoder()
         // codingKeysを別途に設けずに、decoder.keyDecodingStrategy = .convertFromSnakeCaseを用いてJSONのconvertがしやすい
@@ -25,17 +35,19 @@ struct GitHubSearchRepositoriesRequest: GitHubAPIClientProtocol {
         return try decoder.decode(Repositories.self, from: data)
     }
     
-    /// Requestは、リクエストを立てる と リクエストを実際送る　の２つの流れで行われる
-    /// リクエストを立てる処理は分離することで、requestだけの処理ができるのではないかと考える
+    /**
+     URLRequestを返す関数. この関数はただリクエストを立てるだけの関数であり、実際にリクエストを送信する作業はしない
+     - Requestは、リクエストを立てる と リクエストを実際送る　の２つの流れで行われる
+     - リクエストを立てる処理は分離することで、requestだけの処理ができるのではないかと考える
+     */
     func buildUpRequest(type: GitHubAPIType) -> URLRequest? {
         switch type {
-        case .searchRepositories(queryString: let queryString):
-//            let urlString = "https://api.github.com/search/repositories?q=\(queryString)"
-            /// まずは、swiftをクエリに入れて検索する
-            let urlString = "https://api.github.com/search/repositories?q=swift"
+        case .searchRepositories:
+            // まずは、swiftをクエリに入れて検索する
+            let urlString = "https://api.github.com/search/repositories?q=\(searchQueryWord)"
             guard let url = URL(string: urlString) else { return nil }
             var request = URLRequest(url: url)
-            var headers: [String: String] = [:]
+            let headers: [String: String] = [:]
             request.httpMethod = "GET"
             headers.forEach { key, value in
                 request.addValue(value, forHTTPHeaderField: key)
@@ -46,37 +58,38 @@ struct GitHubSearchRepositoriesRequest: GitHubAPIClientProtocol {
     }
 }
 
-/// API Requestを管理するクラスの定義
-/// Classでは、Structで定義したfunctionとかインスタンスを受け付けできないので、genericタイプを設ける
-/// Result型のエラー処理の特徴
-/// 戻り値として、「成功」か「失敗」かのどちらかであることが保証される
-/// 非同期的にネットワークのリクエストを送り、そのレスポンスを処理するため
+/** API Requestを管理するクラスの定義
+- Classでは、Structで定義したfunctionとかインスタンスを受け付けできないので、genericタイプを設ける
+- Result型のエラー処理の特徴
+- 戻り値として、「成功」か「失敗」かのどちらかであることが保証される
+- 非同期的にネットワークのリクエストを送り、そのレスポンスを処理するため
+ */
 class APIClient {
-    func request<T: GitHubAPIClientProtocol>(_ requestProtocol: T, type: GitHubAPIType, completion: @escaping(Result<Repositories, ErrorType>) -> Void) {
+    func request<T: GitHubAPIClientProtocol>(_ requestProtocol: T, type: GitHubAPIType, completion: @escaping(Result<Repositories?, ErrorType>) -> Void) {
         guard let request = requestProtocol.buildUpRequest(type: type) else { return }
         let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
             if let error {
-                completion(.failure(ErrorType.unknownError(error: error)))
+                completion(.failure(ErrorType.unknownError))
                 return
             }
-            /// guard let 文は、ブロックの中ではunwrappingしたインスタンスを使うことができない
-            /// guart letの外に出てから、やっとそのインスタンスが使える
+            // guard let 文は、ブロックの中ではunwrappingしたインスタンスを使うことができない
+            // guart letの外に出てから、やっとそのインスタンスが使える
             guard let data,
                   let response = response as? HTTPURLResponse else {
                 completion(.failure(ErrorType.noResponseError))
                 return
             }
             
-            /// レスポンスが有効なレスポンス（200 ~ 299）であるなら、decodeを実行
+            // レスポンスが有効なレスポンス（200 ~ 299）であるなら、decodeを実行
             if response.isResponseAvailable() {
                 do {
                     let results = try requestProtocol.decode(from: data)
                     completion(.success(results))
-                } catch let error {
+                } catch {
                     completion(.failure(ErrorType.decodeError))
                 }
             } else {
-                /// レスポンスが無効なレスポンスなら、APIサーバー側にエラーがある
+                // レスポンスが無効なレスポンスなら、APIサーバー側にエラーがある
                 completion(.failure(ErrorType.apiServerError))
             }
         }

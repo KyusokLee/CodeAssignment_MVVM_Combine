@@ -7,7 +7,7 @@
 
 import Foundation
 
-/// Status Codeを一目でもわかるようにわかておく
+/// Status Codeの値ごとに有効であるか無効であるかを定義しておくためのExtension
 extension HTTPURLResponse {
     func isResponseAvailable() -> Bool {
         return (200...299).contains(self.statusCode)

@@ -7,10 +7,10 @@
 
 import Foundation
 
-/// HTTPStatusCodeに合わせてErrorの把握ができるように
+/// HTTPStatusCodeに合わせてErrorのタイプが把握ができるようにTypeを再設定
 enum ErrorType: Error {
     case apiServerError
     case noResponseError
     case decodeError
-    case unknownError(error: Error)
+    case unknownError
 }
