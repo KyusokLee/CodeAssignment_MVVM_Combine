@@ -18,7 +18,7 @@ extension ErrorType {
         case .decodeError:
             return "デコードエラー"
         case .unknownError:
-            return "不明なエラー "
+            return "不明なエラー"
         }
     }
     
