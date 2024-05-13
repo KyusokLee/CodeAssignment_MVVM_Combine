@@ -21,12 +21,6 @@ struct Repositories: Codable {
     let totalCount: Int?
     /// リポジトリの詳細データが入っている配列形
     let items: [Repository]
-    
-    /// APIで指定されたkeyの名前を変更して使うため
-    enum CodingKeys: String, CodingKey {
-        case totalCount = "total_count"
-        case items
-    }
 }
 
 struct Repository: Codable {
