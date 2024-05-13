@@ -30,10 +30,10 @@ struct RepositoriesForView {
         }
     }
     
-    init(totalCount: Int?, repositories: [Repository]) {
+    init(totalCount: Int?, repositories: Repositories) {
         self.totalCount = totalCount
         /// mapメソッドを用いて配列型で渡す
-        self.items = repositories.map { item in
+        self.items = repositories.items.map { item in
                 .init(owner: .init(login: item.owner.login, avatarUrl: item.owner.avatarUrl),
                       name: item.name,
                       description: item.description,
