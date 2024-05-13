@@ -16,9 +16,9 @@ extension ErrorType {
         case .noResponseError:
             return "レスポンスエラー"
         case .decodeError:
-            return "デコーディングエラー"
+            return "デコードエラー"
         case .unknownError:
-            return "知られていないエラー "
+            return "不明なエラー "
         }
     }
     
@@ -29,9 +29,9 @@ extension ErrorType {
         case .noResponseError:
             return "レスポンスがないです。\nもう一度、確認してください。"
         case .decodeError:
-            return "データを正しく表示できませんでした。\nもう一度、お試しください。"
+            return "デコードエラーが発生しました。\nもう一度、お試しください。"
         case .unknownError:
-            return "不特定エラーが返ってきました。\nもう一度、確認ください。"
+            return "不明なエラーが返ってきました。\nもう一度、確認ください。"
         }
     }
 }

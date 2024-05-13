@@ -11,10 +11,11 @@ import Combine
 
 final class HomeViewModel {
     private let apiClient = APIClient()
-    /// HomeViewController側で監視しているSubject
-    var repositoriesSubject = PassthroughSubject<[Repository], Never>()
+    /// HomeViewController側に渡すSubject（通路ってイメージ）
+    // RepositoriesForViewはただ、HomeViewControllerに渡す用のModelである
+    var repositoriesSubject = PassthroughSubject<RepositoriesForView, Never>()
     /// AnyPublisher：他のTypeでwrapしたものをなくして、AnyPublisherで返す
-    var repositoriesPublisher: AnyPublisher<[Repository], Never> {
+    var repositoriesPublisher: AnyPublisher<RepositoriesForView, Never> {
         return repositoriesSubject.eraseToAnyPublisher()
     }
     
@@ -24,8 +25,11 @@ final class HomeViewModel {
         apiClient.request(requestProtocol, type: GitHubAPIType.searchRepositories) { result in
             switch result {
             case let .success(model):
-                guard let repositories = model?.items else { return }
-                // Subjectを通して、データを送る
+                // model: API側から持ってくるRepositories
+                guard let model else { return }
+                // VCに渡す用のinstance
+                let repositories = RepositoriesForView(totalCount: model.totalCount, repositories: model.items)
+                // subjectを通してModelを送る
                 self.repositoriesSubject.send(repositories)
             case let .failure(error):
                 switch error {

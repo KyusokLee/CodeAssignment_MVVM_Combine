@@ -29,6 +29,7 @@ struct GitHubSearchRepositoriesRequest: GitHubAPIClientProtocol {
      */
     func decode(from data: Data) throws -> Repositories {
         let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
         // codingKeysを別途に設けずに、decoder.keyDecodingStrategy = .convertFromSnakeCaseを用いてJSONのconvertがしやすい
         // ただし、 _以外の名前はマッチしないといけない
         // 例) JSON上のキーがuserなのに、コード上ではownerという変数として使いたい場合
