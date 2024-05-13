@@ -13,8 +13,7 @@ import Foundation
 - itemsの中にRepositoryのデータが入っている構造
 - itemsの中のownerの中に特定したuserのデータが格納されている
 - 言語は、今後色もつけて画面に表示したい
-- JSONDecoderのkeyDecodingStrategyの設定で、snake caseをcamelCaseにすることも可能だったが、今回はもっとわかりやすい変数名にしたいため、以下のようにCoding keysを使った。.customは少しコードの書き方が一目でぱっと入らなかったので、今回をスキップ
- -  APIで定義したKeyの名前を変えたのは、ViewControllerとかでそのkeyのデータを用いるとき、わかりやすくするためである。そんため、decodingのStrategyは自動で変換されるメソッドを使うのが良さそう
+- APIで定義したKeyの名前を変えたのは、ViewControllerとかでそのkeyのデータを用いるとき、わかりやすくするためである。そのため、decodingのStrategyは自動で変換されるメソッドを使うのが良さそう
 */
 struct Repositories: Codable {
     /// queryに当てはまる結果の数
@@ -30,7 +29,7 @@ struct Repository: Codable {
     var language: String?
     var stargazersCount: Int?
     
-    /// decodeのkeyDecodingStrategyメソッドを用いて、converFromSnakeCaseで自動的も変換されるStructの中身にしておく
+    /// decodeのkeyDecodingStrategyメソッドを用いて、convertFromSnakeCaseで自動的に変換されるstructの中身にしておく
     struct RepositoryUser: Codable {
         var login: String?
         var avatarUrl: String?
