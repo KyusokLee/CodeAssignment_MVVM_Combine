@@ -8,7 +8,12 @@
 import Foundation
 
 protocol GitHubAPIClientProtocol {
-    func decode(from data: Data) throws -> Repositories
+    // Associated Typeを用いてどんな形でも受け付けられるようにしておく
+    // Associated Typeは、定義したProtocolが採択される前までは、実際のTypeが明示されない
+    // すなわち、Protocolで使用される何かしらのTypeのための、Placeholderのような役割
+    associatedtype Model
+    
+    func decode(from data: Data) throws -> Model
     func buildUpRequest(type: GitHubAPIType) -> URLRequest?
 }
 
@@ -66,7 +71,7 @@ struct GitHubSearchRepositoriesRequest: GitHubAPIClientProtocol {
 - 非同期的にネットワークのリクエストを送り、そのレスポンスを処理するため
  */
 class APIClient {
-    func request<T: GitHubAPIClientProtocol>(_ requestProtocol: T, type: GitHubAPIType, completion: @escaping(Result<Repositories?, ErrorType>) -> Void) {
+    func request<T: GitHubAPIClientProtocol>(_ requestProtocol: T, type: GitHubAPIType, completion: @escaping(Result<T.Model?, ErrorType>) -> Void) {
         guard let request = requestProtocol.buildUpRequest(type: type) else { return }
         let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
             if let error {
