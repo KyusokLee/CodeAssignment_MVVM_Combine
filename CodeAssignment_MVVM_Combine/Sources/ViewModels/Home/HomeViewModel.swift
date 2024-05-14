@@ -24,13 +24,13 @@ final class HomeViewModel {
         let requestProtocol = GitHubSearchRepositoriesRequest(searchQueryWord: "Swift")
         apiClient.request(requestProtocol, type: GitHubAPIType.searchRepositories) { result in
             switch result {
-            case let .success(model):
+            case let .success(repositories):
                 // model: API側から持ってくるRepositories
-                guard let model else { return }
+                guard let repositories else { return }
                 // VCに渡す用のinstance
-                let repositories = RepositoriesForView(totalCount: model.totalCount, repositories: model.self)
+                let repositoriesView = RepositoriesForView(totalCount: repositories.totalCount, repositories: repositories)
                 // subjectを通してModelを送る
-                self.repositoriesSubject.send(repositories)
+                self.repositoriesSubject.send(repositoriesView)
             case let .failure(error):
                 switch error {
                 case .apiServerError:
