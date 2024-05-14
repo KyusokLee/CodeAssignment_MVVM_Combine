@@ -23,8 +23,8 @@ class HomeViewController: UIViewController {
     /// FlowLayout
     private let flowLayout: UICollectionViewFlowLayout = {
         let layout = UICollectionViewFlowLayout()
-        // Cell size設定
-        layout.itemSize = .init(width: 350, height: 150)
+        // Cell sizeを動的に設定したい
+        layout.itemSize = .init(width: 350, height: 220)
         layout.scrollDirection = .vertical
         return layout
     }()
@@ -35,6 +35,7 @@ class HomeViewController: UIViewController {
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.backgroundColor = .white
+        collectionView.contentInsetAdjustmentBehavior = .always
         
         return collectionView
     }()
