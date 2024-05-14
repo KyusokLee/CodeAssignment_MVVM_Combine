@@ -19,12 +19,33 @@ class HomeViewController: UIViewController {
     private var cancellables = Set<AnyCancellable>()
     private var repositories = [Repository]()
     private var searchWord: String?
+    
+    /// FlowLayout
+    private let flowLayout: UICollectionViewFlowLayout = {
+        let layout = UICollectionViewFlowLayout()
+        // Cell size設定
+        layout.itemSize = .init(width: 350, height: 150)
+        layout.scrollDirection = .vertical
+        return layout
+    }()
+    
     private lazy var repositoryCollectionView: UICollectionView = {
-        let flowLayout = UICollectionViewFlowLayout()
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: self.flowLayout)
+        collectionView.layer.cornerRadius = 8
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        collectionView.backgroundColor = .white
         
         return collectionView
     }()
+    
+    /** RepositoryCollectionViewCellをCellRegistrationで設定
+     - <CellのType(クラス名とか), Itemで表示するもの>
+     */
+    private let repositoryCell = UICollectionView.CellRegistration<RepositoryCollectionViewCell, Repository>() { cell, indexPath, repository in
+        cell.backgroundColor = .white
+        cell.configure(with: repository)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,7 +64,7 @@ class HomeViewController: UIViewController {
 extension HomeViewController {
     /// ViewControllerのUIをセットアップする
     private func setupUI() {
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = .secondarySystemBackground
         
         setupNavigationController()
         setAddSubViews()
@@ -85,6 +106,7 @@ extension HomeViewController {
             .sink { [weak self] repositories in
                 guard let self = self else { return }
                 self.repositories = repositories
+                self.repositoryCollectionView.reloadData()
                 print(self.repositories)
             }
             .store(in: &cancellables)
@@ -92,12 +114,21 @@ extension HomeViewController {
     
     /// カスタムで作ったViewを全部追加する
     private func setAddSubViews() {
-        
+        view.addSubview(repositoryCollectionView)
     }
     
     /// Layoutの制約を調整する
     private func setupConstraints() {
-        
+        setupRepositoryCollectionViewConstraints()
+    }
+    
+    private func setupRepositoryCollectionViewConstraints() {
+        repositoryCollectionView.snp.makeConstraints { constraint in
+            constraint.top.equalTo(view.safeAreaLayoutGuide).offset(8)
+            constraint.leading.equalTo(view.snp.leading).offset(22)
+            constraint.trailing.equalTo(view.snp.trailing).offset(-22)
+            constraint.bottom.equalTo(view.safeAreaLayoutGuide)
+        }
     }
 }
 
@@ -125,4 +156,27 @@ extension HomeViewController: UISearchBarDelegate {
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         print("Cancel")
     }
+}
+
+// MARK: - UICollectionViewDelegate
+extension HomeViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        print("index: \(indexPath.row)")
+    }
+}
+
+// MARK: - UICollectionViewDataSource
+extension HomeViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return repositories.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        collectionView.dequeueConfiguredReusableCell(using: repositoryCell, for: indexPath, item: repositories[indexPath.row])
+    }
+}
+
+// MARK: - UICollectionView FlowLayout
+extension HomeViewController: UICollectionViewDelegateFlowLayout {
+    
 }

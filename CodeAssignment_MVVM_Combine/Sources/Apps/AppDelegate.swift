@@ -27,7 +27,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             // ナビゲーションバーのタイトル文字の色変更
             navigationBarAppearance.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
             // ナビゲーションバーの色変更
-            navigationBarAppearance.backgroundColor = .systemBackground
+            navigationBarAppearance.backgroundColor = .secondarySystemBackground
         }
         
         return true

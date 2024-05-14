@@ -82,10 +82,12 @@ final class RepositoryCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    /// RepositoriesForViewのModelのデータに基づいて、Cellのデータを確立させる
-//    func configure(with model: Reposit) {
-//        
-//    }
+    /** Cellのデータの設定を行う
+     - 今後、RepositoriesForViewのModelのデータに基づいて、Cellのデータを確立させる
+    */
+    func configure(with model: Repository) {
+        nameLabel.text = model.repositoryName ?? ""
+    }
     
     private func setupUI() {
         setAddSubViews()
@@ -102,7 +104,6 @@ final class RepositoryCollectionViewCell: UICollectionViewCell {
         contentView.addSubview(starCountsLabel)
         contentView.addSubview(languageColorView)
         contentView.addSubview(languageNameLabel)
-        
     }
     
     /// Layoutの制約を設定
@@ -121,8 +122,8 @@ final class RepositoryCollectionViewCell: UICollectionViewCell {
     private func setupNameLabelConstraints() {
         nameLabel.snp.makeConstraints { constraint in
             constraint.height.equalTo(30)
-            constraint.left.equalTo(contentView.snp.leading).offset(15)
-            constraint.right.greaterThanOrEqualTo(contentView.snp.trailing).offset(-15)
+            constraint.leading.equalTo(contentView.snp.leading).offset(15)
+            constraint.trailing.greaterThanOrEqualTo(contentView.snp.trailing).offset(-15)
             constraint.top.equalTo(contentView.snp.top).offset(15)
         }
     }
