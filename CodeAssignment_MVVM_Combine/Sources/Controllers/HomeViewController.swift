@@ -38,7 +38,7 @@ class HomeViewController: UIViewController {
     - Setで複数のSubscription（購読）を１つにまとめることができ、Subscriptionの値を保持する
      */
     private var cancellables = Set<AnyCancellable>()
-    private var repositoriesForView: Repositories?
+    private var repositories: Repositories?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -70,8 +70,8 @@ extension HomeViewController {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] repositories in
                 guard let self else { return }
-                self.repositoriesForView = repositories
-                print(self.repositoriesForView ?? nil)
+                self.repositories = repositories
+                print(self.repositories ?? nil)
             }
             .store(in: &cancellables)
     }

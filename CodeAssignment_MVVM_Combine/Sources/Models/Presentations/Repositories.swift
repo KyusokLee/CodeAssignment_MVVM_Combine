@@ -30,8 +30,8 @@ struct Repositories {
         }
     }
     
-    init(totalCount: Int?, repositories: RepositoriesResponse) {
-        self.totalCount = totalCount
+    init(repositories: RepositoriesResponse) {
+        self.totalCount = repositories.totalCount
         /// mapメソッドを用いて配列型で渡す
         self.items = repositories.items.map { item in
                 .init(owner: .init(login: item.owner.login, avatarUrl: item.owner.avatarUrl),

@@ -28,7 +28,7 @@ final class HomeViewModel {
                 // model: API側から持ってくるRepositories
                 guard let repositories else { return }
                 // VCに渡す用のinstance
-                let repositoriesView = Repositories(totalCount: repositories.totalCount, repositories: repositories)
+                let repositoriesView = Repositories(repositories: repositories)
                 // subjectを通してModelを送る
                 self.repositoriesSubject.send(repositoriesView)
             case let .failure(error):
