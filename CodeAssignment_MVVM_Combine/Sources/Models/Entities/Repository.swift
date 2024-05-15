@@ -20,18 +20,18 @@ struct Repositories: Codable {
     let totalCount: Int?
     /// リポジトリの詳細データが入っている配列形
     let items: [Repository]
-}
-
-struct Repository: Codable {
-    var owner: RepositoryUser
-    var name: String?
-    var description: String?
-    var language: String?
-    var stargazersCount: Int?
     
-    /// decodeのkeyDecodingStrategyメソッドを用いて、convertFromSnakeCaseで自動的に変換されるstructの中身にしておく
-    struct RepositoryUser: Codable {
-        var login: String?
-        var avatarUrl: String?
+    struct Repository: Codable {
+        var owner: RepositoryUser
+        var name: String?
+        var description: String?
+        var language: String?
+        var stargazersCount: Int?
+        
+        /// decodeのkeyDecodingStrategyメソッドを用いて、convertFromSnakeCaseで自動的に変換されるstructの中身にしておく
+        struct RepositoryUser: Codable {
+            var login: String?
+            var avatarUrl: String?
+        }
     }
 }
