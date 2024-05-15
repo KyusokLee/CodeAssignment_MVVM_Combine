@@ -26,7 +26,9 @@ final class RepositoryCollectionViewCell: UICollectionViewCell {
         return label
     }()
     
-    /// Userのプロフィール画像と名前を括って表示するためのaccessoryView
+    /** Userのプロフィール画像と名前を括って表示するためのaccessoryView
+     - userAccessoryViewは、userImageViewとuserNameLabelのサイズに合わせて動的に決める予定
+     */
     private lazy var userAccessoryView: UIView = {
         let view = UIView()
         view.clipsToBounds = true
