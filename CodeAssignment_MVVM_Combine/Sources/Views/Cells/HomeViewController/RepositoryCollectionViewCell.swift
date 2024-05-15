@@ -122,12 +122,12 @@ extension RepositoryCollectionViewCell {
     /** Cellのデータの設定を行う
      - 今後、RepositoriesForViewのModelのデータに基づいて、Cellのデータを確立させる
     */
-    func configure(with model: Repository) {
-        nameLabel.text = model.repositoryName ?? ""
-        descriptionLabel.text = model.description ?? ""
-        userNameLabel.text = model.owner.userName ?? ""
+    func configure(with model: Repositories.Repository) {
+        nameLabel.text = model.name
+        descriptionLabel.text = model.description
+        userNameLabel.text = model.owner.userName
         starCountsLabel.text = formatNumberToString(model.stargazersCount ?? 0)
-        languageNameLabel.text = model.language ?? ""
+        languageNameLabel.text = model.language
     }
     
     /// 数字が１万を超えたら、1.~万みたいにString型としてformatする

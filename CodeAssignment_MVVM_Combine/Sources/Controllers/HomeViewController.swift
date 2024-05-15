@@ -41,7 +41,7 @@ class HomeViewController: UIViewController {
     /** RepositoryCollectionViewCellをCellRegistrationで設定
      - <CellのType(クラス名とか), Itemで表示するもの>
      */
-    private let repositoryCell = UICollectionView.CellRegistration<RepositoryCollectionViewCell, Repository>() { cell, indexPath, repository in
+    private let repositoryCell = UICollectionView.CellRegistration<RepositoryCollectionViewCell, Repositories.Repository>() { cell, indexPath, repository in
         cell.backgroundColor = .white
         cell.configure(with: repository)
     }
@@ -167,11 +167,11 @@ extension HomeViewController: UICollectionViewDelegate {
 // MARK: - UICollectionViewDataSource
 extension HomeViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return repositories.count
+        return repositories?.totalCount ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        collectionView.dequeueConfiguredReusableCell(using: repositoryCell, for: indexPath, item: repositories[indexPath.row])
+        collectionView.dequeueConfiguredReusableCell(using: repositoryCell, for: indexPath, item: repositories?.items[indexPath.row])
     }
 }
 
@@ -180,7 +180,7 @@ extension HomeViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = collectionView.bounds.width
         // Cell sizeを動的に設定したい
-        let cell = collectionView.dequeueConfiguredReusableCell(using: repositoryCell, for: indexPath, item: repositories[indexPath.row]) as RepositoryCollectionViewCell
+        let cell = collectionView.dequeueConfiguredReusableCell(using: repositoryCell, for: indexPath, item: repositories?.items[indexPath.row]) as RepositoryCollectionViewCell
         
         let targetSize = CGSize(width: width, height: UIView.layoutFittingCompressedSize.height)
         let size = cell.contentView.systemLayoutSizeFitting(targetSize, withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel)
