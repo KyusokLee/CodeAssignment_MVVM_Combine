@@ -8,7 +8,6 @@
 import Foundation
 
 protocol GitHubAPIClientProtocol {
-    
     // Associated Typeを用いてどんな形でも受け付けられるようにしておく
     // Associated Typeは、定義したProtocolが採択される前までは、実際のTypeが明示されない
     // すなわち、Protocolで使用される何かしらのTypeのための、Placeholderのような役割
@@ -33,12 +32,13 @@ struct GitHubSearchRepositoriesRequest: GitHubAPIClientProtocol {
      - 呼び出し先にthrowing関数で発生しうるエラーを返すため、上位レベルでエラー処理することが容易である
      
      */
-    func decode(from data: Data) throws -> Repositories {
+    func decode(from data: Data) throws -> RepositoriesResponse {
         let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
         // codingKeysを別途に設けずに、decoder.keyDecodingStrategy = .convertFromSnakeCaseを用いてJSONのconvertがしやすい
         // ただし、 _以外の名前はマッチしないといけない
         // 例) JSON上のキーがuserなのに、コード上ではownerという変数として使いたい場合
-        return try decoder.decode(Repositories.self, from: data)
+        return try decoder.decode(RepositoriesResponse.self, from: data)
     }
     
     /**
