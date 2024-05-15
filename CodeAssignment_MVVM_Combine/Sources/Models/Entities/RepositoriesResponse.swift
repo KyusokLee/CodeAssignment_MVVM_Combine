@@ -15,21 +15,21 @@ import Foundation
 - 言語は、今後色もつけて画面に表示したい
 - APIで定義したKeyの名前を変えたのは、ViewControllerとかでそのkeyのデータを用いるとき、わかりやすくするためである。そのため、decodingのStrategyは自動で変換されるメソッドを使うのが良さそう
 */
-struct Repositories: Codable {
+struct RepositoriesResponse: Codable {
     /// queryに当てはまる結果の数
     let totalCount: Int?
     /// リポジトリの詳細データが入っている配列形
-    let items: [Repository]
+    let items: [RepositoryResponse]
     
-    struct Repository: Codable {
-        var owner: RepositoryUser
+    struct RepositoryResponse: Codable {
+        var owner: RepositoryUserResponse
         var name: String?
         var description: String?
         var language: String?
         var stargazersCount: Int?
         
         /// decodeのkeyDecodingStrategyメソッドを用いて、convertFromSnakeCaseで自動的に変換されるstructの中身にしておく
-        struct RepositoryUser: Codable {
+        struct RepositoryUserResponse: Codable {
             var login: String?
             var avatarUrl: String?
         }

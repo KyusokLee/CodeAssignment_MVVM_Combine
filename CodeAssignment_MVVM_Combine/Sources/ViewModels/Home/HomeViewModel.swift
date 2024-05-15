@@ -13,9 +13,9 @@ final class HomeViewModel {
     private let apiClient = APIClient()
     /// HomeViewController側に渡すSubject（通路ってイメージ）
     // RepositoriesForViewはただ、HomeViewControllerに渡す用のModelである
-    var repositoriesSubject = PassthroughSubject<RepositoriesForView, Never>()
+    var repositoriesSubject = PassthroughSubject<Repositories, Never>()
     /// AnyPublisher：他のTypeでwrapしたものをなくして、AnyPublisherで返す
-    var repositoriesPublisher: AnyPublisher<RepositoriesForView, Never> {
+    var repositoriesPublisher: AnyPublisher<Repositories, Never> {
         return repositoriesSubject.eraseToAnyPublisher()
     }
     
@@ -28,7 +28,7 @@ final class HomeViewModel {
                 // model: API側から持ってくるRepositories
                 guard let repositories else { return }
                 // VCに渡す用のinstance
-                let repositoriesView = RepositoriesForView(totalCount: repositories.totalCount, repositories: repositories)
+                let repositoriesView = Repositories(totalCount: repositories.totalCount, repositories: repositories)
                 // subjectを通してModelを送る
                 self.repositoriesSubject.send(repositoriesView)
             case let .failure(error):

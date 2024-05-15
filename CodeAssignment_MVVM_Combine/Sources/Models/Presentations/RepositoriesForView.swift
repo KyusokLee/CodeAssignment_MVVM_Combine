@@ -10,27 +10,27 @@ import Foundation
 /** ViewControllerに渡す用のstruct Model。VCで表示させるViewに適用させるために、新しくModelを作成
  - Viewに表示するだけのModelを作ることで、APIを叩くときに余計にCoding Keysを使わなくてもいいし、テストもしやすくなるというメリットがある。
 */
-struct RepositoriesForView {
+struct Repositories {
     /// 検索でマッチされたリポジトリの数
     let totalCount: Int?
     /// リポジトリの詳細データが入っている配列形
     // 個々のリポジトリの情報が入っている配列
-    let items: [RepositoryForView]
+    let items: [Repository]
     
-    struct RepositoryForView {
-        var owner: RepositoryUserForView
+    struct Repository {
+        var owner: RepositoryUser
         var name: String?
         var description: String?
         var language: String?
         var stargazersCount: Int?
 
-        struct RepositoryUserForView {
+        struct RepositoryUser {
             var login: String?
             var avatarUrl: String?
         }
     }
     
-    init(totalCount: Int?, repositories: Repositories) {
+    init(totalCount: Int?, repositories: RepositoriesResponse) {
         self.totalCount = totalCount
         /// mapメソッドを用いて配列型で渡す
         self.items = repositories.items.map { item in
