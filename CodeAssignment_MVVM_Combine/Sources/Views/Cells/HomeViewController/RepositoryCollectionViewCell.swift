@@ -8,6 +8,7 @@
 import UIKit
 import Combine
 import SnapKit
+import SDWebImage
 
 final class RepositoryCollectionViewCell: UICollectionViewCell {
     /// リポジトリ名を表示するlabel
@@ -40,7 +41,7 @@ final class RepositoryCollectionViewCell: UICollectionViewCell {
     private lazy var userImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
-        imageView.image = UIImage(systemName: "person.circle")?.withTintColor(.systemMint, renderingMode: .alwaysOriginal)
+//        imageView.image = UIImage(systemName: "person.circle")?.withTintColor(.systemMint, renderingMode: .alwaysOriginal)
         return imageView
     }()
     
@@ -123,11 +124,29 @@ extension RepositoryCollectionViewCell {
      - 今後、RepositoriesForViewのModelのデータに基づいて、Cellのデータを確立させる
     */
     func configure(with model: Repositories.Repository) {
+        let defaultImage = UIImage(systemName: "person.circle")?.withTintColor(.systemMint, renderingMode: .alwaysOriginal)
+        
         nameLabel.text = model.name
         descriptionLabel.text = model.description
         userNameLabel.text = model.owner.userName
         starCountsLabel.text = formatNumberToString(model.stargazersCount ?? 0)
         languageNameLabel.text = model.language
+        
+        if let urlString = model.owner.profileImageString,
+           let url = URL(string: urlString) {
+            // completedに入れないと、常にplaceHolderImageしか表示されない仕組み
+            // completion handlerを用いて、画像のロード中にエラーが発生した場合や、URLが無効な場合にデフォルトの画像を表示する仕組みである
+            userImageView.sd_setImage(with: url, placeholderImage: defaultImage) { [weak self] (image, error, cacheType, url) in
+                guard let self else { return }
+                if let error = error {
+                    // ロード中にエラーが発生する場合や、URLが無効な場合はdefaultの画像を表示
+                    self.userImageView.image = defaultImage
+                }
+                self.userImageView.image = image
+            }
+        } else {
+            userImageView.image = defaultImage
+        }
     }
     
     /// 数字が１万を超えたら、1.~万みたいにString型としてformatする

@@ -167,7 +167,11 @@ extension HomeViewController: UICollectionViewDelegate {
 // MARK: - UICollectionViewDataSource
 extension HomeViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return repositories?.totalCount ?? 0
+        guard let repositories else { return 0 }
+        // return repositories.totalCount
+        print("totalCount: \(repositories.totalCount ?? 0)")
+        print("items count: \(repositories.items.count)")
+        return repositories.items.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {

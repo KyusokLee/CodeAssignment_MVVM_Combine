@@ -23,8 +23,9 @@
 		5D0770372BE38E20007F0724 /* UIColor+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0770362BE38E20007F0724 /* UIColor+Utils.swift */; };
 		5D2880942BEA02F9005DC50A /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2880932BEA02F9005DC50A /* HomeViewModel.swift */; };
 		5DB771652BF1B951001570ED /* Repositories.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB771642BF1B951001570ED /* Repositories.swift */; };
-		5DF65F522BEB41670070651B /* RepositoriesResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF65F512BEB41670070651B /* RepositoriesResponse.swift */; };
 		5DB771692BF1F682001570ED /* RepositoryCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB771682BF1F682001570ED /* RepositoryCollectionViewCell.swift */; };
+		5DB7C31E2BF4D75B0074AFC1 /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = 5DB7C31D2BF4D75B0074AFC1 /* SDWebImage */; };
+		5DF65F522BEB41670070651B /* RepositoriesResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF65F512BEB41670070651B /* RepositoriesResponse.swift */; };
 		5DF65F552BEB4C410070651B /* HTMLURLResponse+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF65F542BEB4C410070651B /* HTMLURLResponse+Utils.swift */; };
 		5DF65F5C2BEB907A0070651B /* GitHubAPIType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF65F5B2BEB907A0070651B /* GitHubAPIType.swift */; };
 /* End PBXBuildFile section */
@@ -65,8 +66,8 @@
 		5D0770362BE38E20007F0724 /* UIColor+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Utils.swift"; sourceTree = "<group>"; };
 		5D2880932BEA02F9005DC50A /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		5DB771642BF1B951001570ED /* Repositories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Repositories.swift; sourceTree = "<group>"; };
-		5DF65F512BEB41670070651B /* RepositoriesResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoriesResponse.swift; sourceTree = "<group>"; };
 		5DB771682BF1F682001570ED /* RepositoryCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryCollectionViewCell.swift; sourceTree = "<group>"; };
+		5DF65F512BEB41670070651B /* RepositoriesResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoriesResponse.swift; sourceTree = "<group>"; };
 		5DF65F542BEB4C410070651B /* HTMLURLResponse+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HTMLURLResponse+Utils.swift"; sourceTree = "<group>"; };
 		5DF65F5B2BEB907A0070651B /* GitHubAPIType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubAPIType.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -76,6 +77,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5DB7C31E2BF4D75B0074AFC1 /* SDWebImage in Frameworks */,
 				5D0770272BE33EFD007F0724 /* SnapKit in Frameworks */,
 				5D0770292BE33EFD007F0724 /* SnapKit-Dynamic in Frameworks */,
 			);
@@ -262,6 +264,14 @@
 			path = Home;
 			sourceTree = "<group>";
 		};
+		5DB771632BF1B934001570ED /* Presentations */ = {
+			isa = PBXGroup;
+			children = (
+				5DB771642BF1B951001570ED /* Repositories.swift */,
+			);
+			path = Presentations;
+			sourceTree = "<group>";
+		};
 		5DB771662BF1F64E001570ED /* Cells */ = {
 			isa = PBXGroup;
 			children = (
@@ -276,14 +286,6 @@
 				5DB771682BF1F682001570ED /* RepositoryCollectionViewCell.swift */,
 			);
 			path = HomeViewController;
-			sourceTree = "<group>";
-		};
-		5DB771632BF1B934001570ED /* Presentations */ = {
-			isa = PBXGroup;
-			children = (
-				5DB771642BF1B951001570ED /* Repositories.swift */,
-			);
-			path = Presentations;
 			sourceTree = "<group>";
 		};
 		5DF65F4D2BEB41270070651B /* Network */ = {
@@ -329,6 +331,7 @@
 			packageProductDependencies = (
 				5D0770262BE33EFD007F0724 /* SnapKit */,
 				5D0770282BE33EFD007F0724 /* SnapKit-Dynamic */,
+				5DB7C31D2BF4D75B0074AFC1 /* SDWebImage */,
 			);
 			productName = CodeAssignment_MVVM_Combine;
 			productReference = 5D076FE92BE32B9C007F0724 /* CodeAssignment_MVVM_Combine.app */;
@@ -404,6 +407,7 @@
 			mainGroup = 5D076FE02BE32B9C007F0724;
 			packageReferences = (
 				5D0770252BE33D0D007F0724 /* XCRemoteSwiftPackageReference "SnapKit" */,
+				5DB7C31C2BF4D75B0074AFC1 /* XCRemoteSwiftPackageReference "SDWebImage" */,
 			);
 			productRefGroup = 5D076FEA2BE32B9C007F0724 /* Products */;
 			projectDirPath = "";
@@ -806,6 +810,14 @@
 				minimumVersion = 5.7.1;
 			};
 		};
+		5DB7C31C2BF4D75B0074AFC1 /* XCRemoteSwiftPackageReference "SDWebImage" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SDWebImage/SDWebImage";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.19.2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -818,6 +830,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 5D0770252BE33D0D007F0724 /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = "SnapKit-Dynamic";
+		};
+		5DB7C31D2BF4D75B0074AFC1 /* SDWebImage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5DB7C31C2BF4D75B0074AFC1 /* XCRemoteSwiftPackageReference "SDWebImage" */;
+			productName = SDWebImage;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
