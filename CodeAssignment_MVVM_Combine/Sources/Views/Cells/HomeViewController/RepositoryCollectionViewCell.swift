@@ -22,7 +22,7 @@ final class RepositoryCollectionViewCell: UICollectionViewCell {
         let label = UILabel()
         label.font = .systemFont(ofSize: 16, weight: .regular)
         // Descriptionを全て表示するために 0に設定
-        label.numberOfLines = 2
+        label.numberOfLines = 0
         return label
     }()
     
@@ -101,7 +101,10 @@ final class RepositoryCollectionViewCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+}
+
+// MARK: - Function and Logics
+extension RepositoryCollectionViewCell {
     /** Cellのデータの設定を行う
      - 今後、RepositoriesForViewのModelのデータに基づいて、Cellのデータを確立させる
     */
@@ -109,7 +112,17 @@ final class RepositoryCollectionViewCell: UICollectionViewCell {
         nameLabel.text = model.repositoryName ?? ""
         descriptionLabel.text = model.description ?? ""
         userNameLabel.text = model.owner.userName ?? ""
-        starCountsLabel.text = "\(model.stargazersCount ?? 0)"
+        starCountsLabel.text = formatNumberToString(model.stargazersCount ?? 0)
+    }
+    
+    /// 数字が１万を超えたら、1.~万みたいにString型としてformatする
+    private func formatNumberToString(_ number: Int) -> String {
+        if number >= 10000 {
+            let formattedNumber = Double(number) / 10000
+            return String(format: "%.1f万", formattedNumber)
+        } else {
+            return String(number)
+        }
     }
     
     private func setupUI() {
@@ -153,8 +166,8 @@ final class RepositoryCollectionViewCell: UICollectionViewCell {
     
     private func setupDescriptionLabelConstraints() {
         descriptionLabel.snp.makeConstraints { constraint in
-            constraint.height.lessThanOrEqualTo(70)
-            constraint.top.equalTo(nameLabel.snp.bottom).offset(8)
+            constraint.top.equalTo(nameLabel.snp.bottom).offset(15)
+            constraint.bottom.equalTo(userAccessoryView.snp.top).offset(-15)
             constraint.leading.equalTo(contentView.snp.leading).offset(20)
             constraint.trailing.equalTo(contentView.snp.trailing).offset(-20)
         }
@@ -162,10 +175,9 @@ final class RepositoryCollectionViewCell: UICollectionViewCell {
     
     private func setupUserAccessoryViewConstraints() {
         userAccessoryView.snp.makeConstraints { constraint in
-            constraint.height.equalTo(50)
-            constraint.width.equalTo(200).priority(750)
-            constraint.top.equalTo(descriptionLabel.snp.bottom).offset(20)
-            constraint.bottom.equalTo(starButton.snp.top).offset(-20)
+            constraint.height.equalTo(60)
+            constraint.top.equalTo(descriptionLabel.snp.bottom).offset(15)
+            constraint.bottom.equalTo(starButton.snp.top).offset(-15)
             constraint.leading.equalTo(contentView.snp.leading).offset(20)
         }
     }
@@ -185,14 +197,15 @@ final class RepositoryCollectionViewCell: UICollectionViewCell {
         userNameLabel.snp.makeConstraints { constraint in
             constraint.top.equalTo(userAccessoryView.snp.top).offset(5)
             constraint.bottom.equalTo(userAccessoryView.snp.bottom).offset(-5)
+            constraint.leading.equalTo(userImageView.snp.trailing).offset(12)
             constraint.trailing.equalTo(userAccessoryView.snp.trailing).offset(-12)
         }
     }
     
     private func setupStarButtonConstraints() {
         starButton.snp.makeConstraints { constraint in
-            constraint.height.equalTo(20)
-            constraint.width.equalTo(20)
+            constraint.height.equalTo(25)
+            constraint.width.equalTo(25)
             constraint.top.equalTo(userAccessoryView.snp.bottom).offset(20)
             constraint.bottom.equalTo(contentView.snp.bottom).offset(-8)
             constraint.leading.equalTo(contentView.snp.leading).offset(20)
