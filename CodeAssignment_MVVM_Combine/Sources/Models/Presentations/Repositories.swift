@@ -25,8 +25,8 @@ struct Repositories {
         var stargazersCount: Int?
 
         struct RepositoryUser {
-            var login: String?
-            var avatarUrl: String?
+            var userName: String?
+            var profileImageString: String?
         }
     }
     
@@ -34,11 +34,15 @@ struct Repositories {
         self.totalCount = repositories.totalCount
         /// mapメソッドを用いて配列型で渡す
         self.items = repositories.items.map { item in
-                .init(owner: .init(login: item.owner.login, avatarUrl: item.owner.avatarUrl),
-                      name: item.name,
-                      description: item.description,
-                      language: item.language,
-                      stargazersCount: item.stargazersCount)
+                .init(
+                    owner: .init(
+                        userName: item.owner.login,
+                        profileImageString: item.owner.avatarUrl
+                    ),
+                    name: item.name,
+                    description: item.description,
+                    language: item.language,
+                    stargazersCount: item.stargazersCount)
         }
     }
 }
