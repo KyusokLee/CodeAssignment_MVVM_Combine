@@ -24,7 +24,7 @@ class HomeViewController: UIViewController {
     private let flowLayout: UICollectionViewFlowLayout = {
         let layout = UICollectionViewFlowLayout()
         // Cell sizeを動的に設定したい
-        layout.itemSize = .init(width: 350, height: 220)
+        layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
         layout.scrollDirection = .vertical
         return layout
     }()

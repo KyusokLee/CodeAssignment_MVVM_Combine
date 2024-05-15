@@ -32,7 +32,6 @@ final class RepositoryCollectionViewCell: UICollectionViewCell {
     private lazy var userAccessoryView: UIView = {
         let view = UIView()
         view.clipsToBounds = true
-        view.layer.cornerRadius = view.frame.height / 2
         view.backgroundColor = .systemGray4
         return view
     }()
@@ -102,6 +101,16 @@ final class RepositoryCollectionViewCell: UICollectionViewCell {
     // nibファイルを用いて実装していないことをfatalErrorを用いて明確にする
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    /** Cellレイアウトが確定されたタイミングで呼び出されるので、CellのSubViewのCornerRadiusのような設定が可能
+     - lazy varのクロージャ内ではビューのフレームがまだ決定されていないため、frame.heightを使用しても正しい値を取得できない
+     - そのため、layoutSubViewsをオーバーライドして設定する
+    */
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        userAccessoryView.layer.cornerRadius = userAccessoryView.frame.height / 2
     }
 }
 
