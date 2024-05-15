@@ -23,8 +23,6 @@ class HomeViewController: UIViewController {
     /// FlowLayout
     private let flowLayout: UICollectionViewFlowLayout = {
         let layout = UICollectionViewFlowLayout()
-        // Cell sizeを動的に設定したい
-        layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
         layout.scrollDirection = .vertical
         return layout
     }()
@@ -180,6 +178,13 @@ extension HomeViewController: UICollectionViewDataSource {
 // MARK: - UICollectionViewDelegateFlowLayout
 extension HomeViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        <#code#>
+        let width = collectionView.bounds.width
+        // Cell sizeを動的に設定したい
+        let cell = collectionView.dequeueConfiguredReusableCell(using: repositoryCell, for: indexPath, item: repositories[indexPath.row]) as RepositoryCollectionViewCell
+        
+        let targetSize = CGSize(width: width, height: UIView.layoutFittingCompressedSize.height)
+        let size = cell.contentView.systemLayoutSizeFitting(targetSize, withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel)
+                
+        return CGSize(width: width, height: size.height)
     }
 }

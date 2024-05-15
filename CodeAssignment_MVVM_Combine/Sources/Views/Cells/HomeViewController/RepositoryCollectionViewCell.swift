@@ -40,6 +40,7 @@ final class RepositoryCollectionViewCell: UICollectionViewCell {
     private lazy var userImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
+        imageView.image = UIImage(systemName: "person.circle")?.withTintColor(.systemMint, renderingMode: .alwaysOriginal)
         return imageView
     }()
     
@@ -80,7 +81,7 @@ final class RepositoryCollectionViewCell: UICollectionViewCell {
     private lazy var languageColorView: UIView = {
         let view = UIView()
         view.clipsToBounds = true
-        view.layer.cornerRadius = view.frame.height / 2
+        view.backgroundColor = .systemPink
         return view
     }()
     
@@ -111,6 +112,8 @@ final class RepositoryCollectionViewCell: UICollectionViewCell {
         super.layoutSubviews()
         
         userAccessoryView.layer.cornerRadius = userAccessoryView.frame.height / 2
+        userImageView.layer.cornerRadius = userImageView.frame.height / 2
+        languageColorView.layer.cornerRadius = languageColorView.frame.height / 2
     }
 }
 
@@ -124,6 +127,7 @@ extension RepositoryCollectionViewCell {
         descriptionLabel.text = model.description ?? ""
         userNameLabel.text = model.owner.userName ?? ""
         starCountsLabel.text = formatNumberToString(model.stargazersCount ?? 0)
+        languageNameLabel.text = model.language ?? ""
     }
     
     /// 数字が１万を超えたら、1.~万みたいにString型としてformatする
@@ -155,6 +159,7 @@ extension RepositoryCollectionViewCell {
     
     /// Layoutの制約を設定
     private func setupConstraints() {
+        setupContentViewConstraints()
         setupNameLabelConstraints()
         setupDescriptionLabelConstraints()
         setupUserAccessoryViewConstraints()
@@ -164,6 +169,14 @@ extension RepositoryCollectionViewCell {
         setupStarCountsLabelConstraints()
         setupLanguageColorViewConstraints()
         setupLanguageNameLabelConstraints()
+    }
+    
+    /// ContentViewの制約を設定し、Cellの高さや幅を動的に決める
+    private func setupContentViewConstraints() {
+        contentView.snp.makeConstraints { constraint in
+            constraint.edges.equalToSuperview()
+            constraint.width.equalToSuperview()
+        }
     }
     
     private func setupNameLabelConstraints() {
@@ -186,7 +199,6 @@ extension RepositoryCollectionViewCell {
     
     private func setupUserAccessoryViewConstraints() {
         userAccessoryView.snp.makeConstraints { constraint in
-            constraint.height.equalTo(60)
             constraint.top.equalTo(descriptionLabel.snp.bottom).offset(15)
             constraint.bottom.equalTo(starButton.snp.top).offset(-15)
             constraint.leading.equalTo(contentView.snp.leading).offset(20)
@@ -232,10 +244,17 @@ extension RepositoryCollectionViewCell {
     }
     
     private func setupLanguageColorViewConstraints() {
-        
+        languageColorView.snp.makeConstraints { constraint in
+            constraint.leading.equalTo(starCountsLabel.snp.trailing).offset(20)
+            constraint.trailing.equalTo(languageNameLabel.snp.leading).offset(-5)
+            constraint.bottom.equalTo(contentView.snp.bottom).offset(-8)
+        }
     }
     
     private func setupLanguageNameLabelConstraints() {
-        
+        languageNameLabel.snp.makeConstraints { constraint in
+            constraint.leading.equalTo(languageColorView.snp.trailing).offset(5)
+            constraint.bottom.equalTo(contentView.snp.bottom).offset(-8)
+        }
     }
 }
