@@ -18,7 +18,6 @@ class HomeViewController: UIViewController {
      */
     private var cancellables = Set<AnyCancellable>()
     private var repositories: Repositories?
-    private var searchWord: String?
     
     /// FlowLayout
     private let flowLayout: UICollectionViewFlowLayout = {
@@ -139,21 +138,15 @@ extension HomeViewController: UISearchControllerDelegate {
 
 // MARK: - UISearchBarDelegate
 extension HomeViewController: UISearchBarDelegate {
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        print("SearchBar text didChange")
-        searchWord = searchText
-    }
-    
-    /// Return(検索)キーをタップしたときの処理
+   /// Return(検索)キーをタップしたときの処理
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         // Returnキーを押して ViewModelで定義したsearch logicを実行
-        viewModel.search(queryString: searchWord ?? "")
-        print("Search")
+        viewModel.search(queryString: searchBar.text ?? "")
     }
     
     /// Cancelキーをタップしたときの処理
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        print("Cancel")
+        
     }
 }
 
