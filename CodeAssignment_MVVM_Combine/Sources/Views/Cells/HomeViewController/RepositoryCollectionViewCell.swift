@@ -140,6 +140,7 @@ extension RepositoryCollectionViewCell {
                 guard let self else { return }
                 if let error = error {
                     // ロード中にエラーが発生する場合や、URLが無効な場合はdefaultの画像を表示
+                    print("error: \(error.localizedDescription)")
                     self.userImageView.image = defaultImage
                 }
                 self.userImageView.image = image
@@ -176,75 +177,68 @@ extension RepositoryCollectionViewCell {
         contentView.addSubview(languageNameLabel)
     }
     
+    /* MARK: -
+       contentView(W: superView.frame.W, H: superView.frame.H)
+              ┣ nameLabel(W: contentView.frame.W - 40, H: 30)
+              ┣ descriptionLabel(W: contentView.frame.W - 40, H: textのsizeに合わせる)
+              ┣ userAccessoryView(W: 25 + userNameLabelのSizeに合わせる, H: 30)
+                        ┣ userImageView(W: 25, H: 25)
+                        ┣ userNameLabel(W: textのsizeに合わせる, H: 20)
+              ┣ starButton(W: 25, H:25)
+              ┣ starCountsLabel(W: textのsizeに合わせる, H: textのsizeに合わせる)
+              ┣ languageColorView(W: 15, H: 15)
+              ┣ languageNameLabel(W: textのsizeに合わせる, H: textのsizeに合わせる)
+    */
+    
     /// Layoutの制約を設定
     private func setupConstraints() {
-        setupContentViewConstraints()
-        setupNameLabelConstraints()
-        setupDescriptionLabelConstraints()
-        setupUserAccessoryViewConstraints()
-        setupUserImageViewConstraints()
-        setupUserNameLabelConstraints()
-        setupStarButtonConstraints()
-        setupStarCountsLabelConstraints()
-        setupLanguageColorViewConstraints()
-        setupLanguageNameLabelConstraints()
-    }
-    
-    /// ContentViewの制約を設定し、Cellの高さや幅を動的に決める
-    private func setupContentViewConstraints() {
+        /// ContentViewのConstraints
         contentView.snp.makeConstraints { constraint in
             constraint.edges.equalToSuperview()
             constraint.width.equalToSuperview()
         }
-    }
-    
-    private func setupNameLabelConstraints() {
+        
+        /// NameLabelのConstraints
         nameLabel.snp.makeConstraints { constraint in
             constraint.height.equalTo(30)
             constraint.leading.equalTo(contentView.snp.leading).offset(20)
             constraint.trailing.greaterThanOrEqualTo(contentView.snp.trailing).offset(-20)
             constraint.top.equalTo(contentView.snp.top).offset(10)
         }
-    }
-    
-    private func setupDescriptionLabelConstraints() {
+        
+        /// descriptionLabelのConstraints
         descriptionLabel.snp.makeConstraints { constraint in
             constraint.top.equalTo(nameLabel.snp.bottom).offset(15)
             constraint.bottom.equalTo(userAccessoryView.snp.top).offset(-15)
             constraint.leading.equalTo(contentView.snp.leading).offset(20)
             constraint.trailing.equalTo(contentView.snp.trailing).offset(-20)
         }
-    }
-    
-    private func setupUserAccessoryViewConstraints() {
+        
+        /// userAccessoryViewのConstraints
         userAccessoryView.snp.makeConstraints { constraint in
             constraint.top.equalTo(descriptionLabel.snp.bottom).offset(15)
             constraint.bottom.equalTo(starButton.snp.top).offset(-15)
             constraint.leading.equalTo(contentView.snp.leading).offset(20)
         }
-    }
-    
-    private func setupUserImageViewConstraints() {
+        
+        /// userImageViewのConstraints
         userImageView.snp.makeConstraints { constraint in
             constraint.height.equalTo(25)
             constraint.width.equalTo(25)
-            constraint.top.equalTo(userAccessoryView.snp.top).offset(5)
-            constraint.bottom.equalTo(userAccessoryView.snp.bottom).offset(-5)
+            constraint.centerY.equalTo(userNameLabel.snp.centerY)
             constraint.leading.equalTo(userAccessoryView.snp.leading).offset(12)
             constraint.trailing.equalTo(userNameLabel.snp.leading).offset(-10)
         }
-    }
-    
-    private func setupUserNameLabelConstraints() {
+        
+        /// userNameLabelのConstraints
         userNameLabel.snp.makeConstraints { constraint in
             constraint.top.equalTo(userAccessoryView.snp.top).offset(5)
             constraint.bottom.equalTo(userAccessoryView.snp.bottom).offset(-5)
             constraint.leading.equalTo(userImageView.snp.trailing).offset(12)
             constraint.trailing.equalTo(userAccessoryView.snp.trailing).offset(-12)
         }
-    }
-    
-    private func setupStarButtonConstraints() {
+        
+        /// starButtonのConstraints
         starButton.snp.makeConstraints { constraint in
             constraint.height.equalTo(25)
             constraint.width.equalTo(25)
@@ -252,28 +246,28 @@ extension RepositoryCollectionViewCell {
             constraint.bottom.equalTo(contentView.snp.bottom).offset(-8)
             constraint.leading.equalTo(contentView.snp.leading).offset(20)
         }
-    }
-    
-    private func setupStarCountsLabelConstraints() {
+        
+        /// starCountsLabelのConstraints
         starCountsLabel.snp.makeConstraints { constraint in
-            constraint.top.equalTo(userAccessoryView.snp.bottom).offset(20)
-            constraint.bottom.equalTo(contentView.snp.bottom).offset(-8)
+//            constraint.top.equalTo(userAccessoryView.snp.bottom).offset(20)
+//            constraint.bottom.equalTo(contentView.snp.bottom).offset(-8)
+            constraint.centerY.equalTo(starButton.snp.centerY)
             constraint.leading.equalTo(starButton.snp.trailing).offset(5)
         }
-    }
-    
-    private func setupLanguageColorViewConstraints() {
+        
+        /// languageColorViewのConstraints
         languageColorView.snp.makeConstraints { constraint in
+            constraint.height.equalTo(15)
+            constraint.width.equalTo(15)
+            constraint.centerY.equalTo(starCountsLabel.snp.centerY)
             constraint.leading.equalTo(starCountsLabel.snp.trailing).offset(20)
             constraint.trailing.equalTo(languageNameLabel.snp.leading).offset(-5)
-            constraint.bottom.equalTo(contentView.snp.bottom).offset(-8)
         }
-    }
-    
-    private func setupLanguageNameLabelConstraints() {
+        
+        /// languageNameLabelのConstraints
         languageNameLabel.snp.makeConstraints { constraint in
+            constraint.centerY.equalTo(languageColorView.snp.centerY)
             constraint.leading.equalTo(languageColorView.snp.trailing).offset(5)
-            constraint.bottom.equalTo(contentView.snp.bottom).offset(-8)
         }
     }
 }
