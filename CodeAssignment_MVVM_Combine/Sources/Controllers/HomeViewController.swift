@@ -17,7 +17,6 @@ class HomeViewController: UIViewController {
     - Setで複数のSubscription（購読）を１つにまとめることができ、Subscriptionの値を保持する
      */
     private var cancellables = Set<AnyCancellable>()
-    private var repositories: Repositories?
     
     /// FlowLayout
     private let flowLayout: UICollectionViewFlowLayout = {
@@ -101,11 +100,9 @@ extension HomeViewController {
     private func bind() {
         viewModel.repositoriesSubject
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] repositories in
+            .sink { [weak self] _ in
                 guard let self else { return }
-                self.repositories = repositories
                 self.repositoryCollectionView.reloadData()
-                print(self.repositories ?? nil)
             }
             .store(in: &cancellables)
     }
@@ -160,15 +157,11 @@ extension HomeViewController: UICollectionViewDelegate {
 // MARK: - UICollectionViewDataSource
 extension HomeViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        guard let repositories else { return 0 }
-        // return repositories.totalCount
-        print("totalCount: \(repositories.totalCount ?? 0)")
-        print("items count: \(repositories.items.count)")
-        return repositories.items.count
+        return viewModel.repositoriesSubject.value?.items.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        collectionView.dequeueConfiguredReusableCell(using: repositoryCell, for: indexPath, item: repositories?.items[indexPath.row])
+        collectionView.dequeueConfiguredReusableCell(using: repositoryCell, for: indexPath, item: viewModel.repositoriesSubject.value?.items[indexPath.row])
     }
 }
 
@@ -177,7 +170,7 @@ extension HomeViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = collectionView.bounds.width
         // Cell sizeを動的に設定したい
-        let cell = collectionView.dequeueConfiguredReusableCell(using: repositoryCell, for: indexPath, item: repositories?.items[indexPath.row]) as RepositoryCollectionViewCell
+        let cell = collectionView.dequeueConfiguredReusableCell(using: repositoryCell, for: indexPath, item: viewModel.repositoriesSubject.value?.items[indexPath.row]) as RepositoryCollectionViewCell
         
         let targetSize = CGSize(width: width, height: UIView.layoutFittingCompressedSize.height)
         let size = cell.contentView.systemLayoutSizeFitting(targetSize, withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel)

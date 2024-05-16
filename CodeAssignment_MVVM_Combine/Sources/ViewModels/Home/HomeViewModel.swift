@@ -11,11 +11,13 @@ import Combine
 
 final class HomeViewModel {
     private let apiClient = APIClient()
-    /// HomeViewController側に渡すSubject（通路ってイメージ）
-    // RepositoriesForViewはただ、HomeViewControllerに渡す用のModelである
-    var repositoriesSubject = PassthroughSubject<Repositories, Never>()
+    /** HomeViewController側に渡すSubject（通路ってイメージ）
+     - PassThroughSubjectは、値を保持しないので、CurrentValueSubjectを通してVCに値を渡す
+     - RepositoriesForViewはただ、HomeViewControllerに渡す用のModelである
+     */
+    var repositoriesSubject = CurrentValueSubject<Repositories?, Never>(nil)
     /// AnyPublisher：他のTypeでwrapしたものをなくして、AnyPublisherで返す
-    var repositoriesPublisher: AnyPublisher<Repositories, Never> {
+    var repositoriesPublisher: AnyPublisher<Repositories?, Never> {
         return repositoriesSubject.eraseToAnyPublisher()
     }
     
