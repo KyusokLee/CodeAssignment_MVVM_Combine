@@ -23,6 +23,9 @@ struct Repositories {
         var description: String?
         var language: String?
         var stargazersCount: Int?
+        var watchersCount: Int?
+        var forksCount: Int?
+        var openIssuesCount: Int?
 
         struct RepositoryUser {
             var userName: String?
@@ -42,7 +45,11 @@ struct Repositories {
                     name: item.name,
                     description: item.description,
                     language: item.language,
-                    stargazersCount: item.stargazersCount)
+                    stargazersCount: item.stargazersCount,
+                    watchersCount: item.watchersCount,
+                    forksCount: item.forksCount,
+                    openIssuesCount: item.openIssuesCount
+                )
         }
     }
 }
