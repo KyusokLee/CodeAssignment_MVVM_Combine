@@ -23,7 +23,12 @@ final class HomeViewModel {
     
     /// GET リクエストを送信し、repositoryを持ってくるメソッド
     func search(queryString searchWord: String) {
-        let requestProtocol = GitHubSearchRepositoriesRequest(searchQueryWord: searchWord)
+        // 空文字や空白のみの文字列の検索を防ぐために、トリミングされた検索文字列が空でないことを確認
+        let trimmedQuery = searchWord.trimmingCharacters(in: .whitespacesAndNewlines)
+        // 空白の検索を防ぐ
+        guard !trimmedQuery.isEmpty else { return }
+        
+        let requestProtocol = GitHubSearchRepositoriesRequest(searchQueryWord: trimmedQuery)
         apiClient.request(requestProtocol, type: GitHubAPIType.searchRepositories) { result in
             switch result {
             case let .success(repositories):

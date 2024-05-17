@@ -10,11 +10,13 @@ import Combine
 import SnapKit
 import SDWebImage
 
-final class RepositoryCollectionViewCell: UICollectionViewCell {
+/// UICollectionViewCellにaccessoryTypeを表すために、UICollectionViewから UICollectionViewListCellに変更
+final class RepositoryCollectionViewCell: UICollectionViewListCell {
     /// リポジトリ名を表示するlabel
     private lazy var nameLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 18, weight: .semibold)
+        label.numberOfLines = 0
         return label
     }()
     
@@ -33,7 +35,7 @@ final class RepositoryCollectionViewCell: UICollectionViewCell {
     private lazy var userAccessoryView: UIView = {
         let view = UIView()
         view.clipsToBounds = true
-        view.backgroundColor = .systemGray4
+        view.backgroundColor = .systemGray5
         return view
     }()
     
@@ -49,6 +51,7 @@ final class RepositoryCollectionViewCell: UICollectionViewCell {
     private lazy var userNameLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 16, weight: .regular)
+        label.numberOfLines = 0
         return label
     }()
     
@@ -136,9 +139,9 @@ extension RepositoryCollectionViewCell {
            let url = URL(string: urlString) {
             // completedに入れないと、常にplaceHolderImageしか表示されない仕組み
             // completion handlerを用いて、画像のロード中にエラーが発生した場合や、URLが無効な場合にデフォルトの画像を表示する仕組みである
-            userImageView.sd_setImage(with: url, placeholderImage: defaultImage) { [weak self] (image, error, cacheType, url) in
+            userImageView.sd_setImage(with: url, placeholderImage: defaultImage) { [weak self] (image, error, _, _) in
                 guard let self else { return }
-                if let error = error {
+                if let error {
                     // ロード中にエラーが発生する場合や、URLが無効な場合はdefaultの画像を表示
                     print("error: \(error.localizedDescription)")
                     self.userImageView.image = defaultImage
@@ -152,12 +155,7 @@ extension RepositoryCollectionViewCell {
     
     /// 数字が１万を超えたら、1.~万みたいにString型としてformatする
     private func formatNumberToString(_ number: Int) -> String {
-        if number >= 10000 {
-            let formattedNumber = Double(number) / 10000
-            return String(format: "%.1f万", formattedNumber)
-        } else {
-            return String(number)
-        }
+        return number >= Constants.numberFormatThreshold ? String(format: "%.1f万", Double(number) / Double(Constants.numberFormatThreshold)) : String(number)
     }
     
     private func setupUI() {
@@ -179,9 +177,9 @@ extension RepositoryCollectionViewCell {
     
     /* MARK: -
        contentView(W: superView.frame.W, H: superView.frame.H)
-              ┣ nameLabel(W: contentView.frame.W - 40, H: 30)
-              ┣ descriptionLabel(W: contentView.frame.W - 40, H: textのsizeに合わせる)
-              ┣ userAccessoryView(W: 25 + userNameLabelのSizeに合わせる, H: 30)
+              ┣ nameLabel(W: contentView.frame.W - 55, H: textのsizeに合わせる)
+              ┣ descriptionLabel(W: contentView.frame.W - 55, H: textのsizeに合わせる)
+              ┣ userAccessoryView(W: 53 + userNameLabelのSizeに合わせる, H: 30)
                         ┣ userImageView(W: 25, H: 25)
                         ┣ userNameLabel(W: textのsizeに合わせる, H: 20)
               ┣ starButton(W: 25, H:25)
@@ -200,25 +198,23 @@ extension RepositoryCollectionViewCell {
         
         /// NameLabelのConstraints
         nameLabel.snp.makeConstraints { constraint in
-            constraint.height.equalTo(30)
             constraint.leading.equalTo(contentView.snp.leading).offset(20)
-            constraint.trailing.greaterThanOrEqualTo(contentView.snp.trailing).offset(-20)
+            constraint.trailing.equalTo(contentView.snp.trailing).offset(-35)
             constraint.top.equalTo(contentView.snp.top).offset(10)
+            constraint.bottom.equalTo(descriptionLabel.snp.top).offset(-15)
         }
         
         /// descriptionLabelのConstraints
         descriptionLabel.snp.makeConstraints { constraint in
-            constraint.top.equalTo(nameLabel.snp.bottom).offset(15)
             constraint.bottom.equalTo(userAccessoryView.snp.top).offset(-15)
             constraint.leading.equalTo(contentView.snp.leading).offset(20)
-            constraint.trailing.equalTo(contentView.snp.trailing).offset(-20)
+            constraint.trailing.equalTo(contentView.snp.trailing).offset(-35)
         }
         
         /// userAccessoryViewのConstraints
         userAccessoryView.snp.makeConstraints { constraint in
-            constraint.top.equalTo(descriptionLabel.snp.bottom).offset(15)
-            constraint.bottom.equalTo(starButton.snp.top).offset(-15)
             constraint.leading.equalTo(contentView.snp.leading).offset(20)
+            constraint.trailing.lessThanOrEqualTo(contentView.snp.trailing).offset(-35)
         }
         
         /// userImageViewのConstraints
@@ -226,16 +222,16 @@ extension RepositoryCollectionViewCell {
             constraint.height.equalTo(25)
             constraint.width.equalTo(25)
             constraint.centerY.equalTo(userNameLabel.snp.centerY)
-            constraint.leading.equalTo(userAccessoryView.snp.leading).offset(12)
+            constraint.leading.equalTo(userAccessoryView.snp.leading).offset(14)
             constraint.trailing.equalTo(userNameLabel.snp.leading).offset(-10)
         }
         
         /// userNameLabelのConstraints
         userNameLabel.snp.makeConstraints { constraint in
-            constraint.top.equalTo(userAccessoryView.snp.top).offset(5)
-            constraint.bottom.equalTo(userAccessoryView.snp.bottom).offset(-5)
-            constraint.leading.equalTo(userImageView.snp.trailing).offset(12)
-            constraint.trailing.equalTo(userAccessoryView.snp.trailing).offset(-12)
+            constraint.top.equalTo(userAccessoryView.snp.top).offset(8)
+            constraint.bottom.equalTo(userAccessoryView.snp.bottom).offset(-8)
+            constraint.centerY.equalTo(userAccessoryView.snp.centerY)
+            constraint.trailing.equalTo(userAccessoryView.snp.trailing).offset(-14)
         }
         
         /// starButtonのConstraints
@@ -267,7 +263,7 @@ extension RepositoryCollectionViewCell {
         /// languageNameLabelのConstraints
         languageNameLabel.snp.makeConstraints { constraint in
             constraint.centerY.equalTo(languageColorView.snp.centerY)
-            constraint.leading.equalTo(languageColorView.snp.trailing).offset(5)
+            constraint.trailing.lessThanOrEqualTo(contentView.snp.trailing).offset(-35)
         }
     }
 }
