@@ -139,8 +139,9 @@ extension HomeViewController: UISearchControllerDelegate {
 extension HomeViewController: UISearchBarDelegate {
    /// Return(検索)キーをタップしたときの処理
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        guard let searchWord = searchBar.text else { return }
         // Returnキーを押して ViewModelで定義したsearch logicを実行
-        viewModel.search(queryString: searchBar.text ?? "")
+        viewModel.search(queryString: searchWord)
     }
 }
 
