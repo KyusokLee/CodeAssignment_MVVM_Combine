@@ -15,6 +15,7 @@ final class RepositoryCollectionViewCell: UICollectionViewCell {
     private lazy var nameLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 18, weight: .semibold)
+        label.numberOfLines = 0
         return label
     }()
     
@@ -49,6 +50,7 @@ final class RepositoryCollectionViewCell: UICollectionViewCell {
     private lazy var userNameLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 16, weight: .regular)
+        label.numberOfLines = 0
         return label
     }()
     
@@ -179,7 +181,7 @@ extension RepositoryCollectionViewCell {
     
     /* MARK: -
        contentView(W: superView.frame.W, H: superView.frame.H)
-              ┣ nameLabel(W: contentView.frame.W - 40, H: 30)
+              ┣ nameLabel(W: contentView.frame.W - 40, H: textのsizeに合わせる)
               ┣ descriptionLabel(W: contentView.frame.W - 40, H: textのsizeに合わせる)
               ┣ userAccessoryView(W: 25 + userNameLabelのSizeに合わせる, H: 30)
                         ┣ userImageView(W: 25, H: 25)
@@ -200,10 +202,10 @@ extension RepositoryCollectionViewCell {
         
         /// NameLabelのConstraints
         nameLabel.snp.makeConstraints { constraint in
-            constraint.height.equalTo(30)
             constraint.leading.equalTo(contentView.snp.leading).offset(20)
-            constraint.trailing.greaterThanOrEqualTo(contentView.snp.trailing).offset(-20)
+            constraint.trailing.equalTo(contentView.snp.trailing).offset(-20)
             constraint.top.equalTo(contentView.snp.top).offset(10)
+            constraint.bottom.equalTo(descriptionLabel.snp.top).offset(-15)
         }
         
         /// descriptionLabelのConstraints
@@ -219,6 +221,7 @@ extension RepositoryCollectionViewCell {
             constraint.top.equalTo(descriptionLabel.snp.bottom).offset(15)
             constraint.bottom.equalTo(starButton.snp.top).offset(-15)
             constraint.leading.equalTo(contentView.snp.leading).offset(20)
+            constraint.trailing.lessThanOrEqualTo(contentView.snp.trailing).offset(-20)
         }
         
         /// userImageViewのConstraints
