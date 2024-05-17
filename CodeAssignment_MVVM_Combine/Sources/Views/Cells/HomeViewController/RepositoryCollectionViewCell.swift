@@ -132,7 +132,7 @@ extension RepositoryCollectionViewCell {
         nameLabel.text = model.name
         descriptionLabel.text = model.description
         userNameLabel.text = model.owner.userName
-        starCountsLabel.text = formatNumberToString(model.stargazersCount ?? 0)
+        starCountsLabel.text = model.formattedStringWithKanji
         languageNameLabel.text = model.language
         
         if let urlString = model.owner.profileImageString,
@@ -151,11 +151,6 @@ extension RepositoryCollectionViewCell {
         } else {
             userImageView.image = defaultImage
         }
-    }
-    
-    /// 数字が１万を超えたら、1.~万みたいにString型としてformatする
-    private func formatNumberToString(_ number: Int) -> String {
-        return number >= Constants.numberFormatThreshold ? String(format: "%.1f万", Double(number) / Double(Constants.numberFormatThreshold)) : String(number)
     }
     
     private func setupUI() {
@@ -245,8 +240,6 @@ extension RepositoryCollectionViewCell {
         
         /// starCountsLabelのConstraints
         starCountsLabel.snp.makeConstraints { constraint in
-//            constraint.top.equalTo(userAccessoryView.snp.bottom).offset(20)
-//            constraint.bottom.equalTo(contentView.snp.bottom).offset(-8)
             constraint.centerY.equalTo(starButton.snp.centerY)
             constraint.leading.equalTo(starButton.snp.trailing).offset(5)
         }
