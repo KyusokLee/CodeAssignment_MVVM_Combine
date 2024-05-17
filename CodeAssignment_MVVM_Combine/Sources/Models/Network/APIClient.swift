@@ -53,14 +53,7 @@ struct GitHubSearchRepositoriesRequest: GitHubAPIClientProtocol {
             let urlString = "https://api.github.com/search/repositories?q=\(searchQueryWord)"
             guard let url = URL(string: urlString) else { return nil }
             var request = URLRequest(url: url)
-            let headers: [String: String] = [
-                "Accept" : "application/vnd.github+json",
-                "X-GitHub-Api-Version" : "2022-11-28"
-            ]
             request.httpMethod = "GET"
-            headers.forEach { key, value in
-                request.addValue(value, forHTTPHeaderField: key)
-            }
             
             return request
         }

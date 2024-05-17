@@ -142,11 +142,6 @@ extension HomeViewController: UISearchBarDelegate {
         // Returnキーを押して ViewModelで定義したsearch logicを実行
         viewModel.search(queryString: searchBar.text ?? "")
     }
-    
-    /// Cancelキーをタップしたときの処理
-    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        
-    }
 }
 
 // MARK: - UICollectionViewDelegate
