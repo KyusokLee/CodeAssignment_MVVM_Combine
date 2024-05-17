@@ -206,7 +206,6 @@ extension RepositoryCollectionViewCell {
         
         /// descriptionLabelのConstraints
         descriptionLabel.snp.makeConstraints { constraint in
-            constraint.top.equalTo(nameLabel.snp.bottom).offset(15)
             constraint.bottom.equalTo(userAccessoryView.snp.top).offset(-15)
             constraint.leading.equalTo(contentView.snp.leading).offset(20)
             constraint.trailing.equalTo(contentView.snp.trailing).offset(-35)
@@ -214,8 +213,6 @@ extension RepositoryCollectionViewCell {
         
         /// userAccessoryViewのConstraints
         userAccessoryView.snp.makeConstraints { constraint in
-            constraint.top.equalTo(descriptionLabel.snp.bottom).offset(15)
-            constraint.bottom.equalTo(starButton.snp.top).offset(-15)
             constraint.leading.equalTo(contentView.snp.leading).offset(20)
             constraint.trailing.lessThanOrEqualTo(contentView.snp.trailing).offset(-35)
         }
@@ -233,7 +230,7 @@ extension RepositoryCollectionViewCell {
         userNameLabel.snp.makeConstraints { constraint in
             constraint.top.equalTo(userAccessoryView.snp.top).offset(8)
             constraint.bottom.equalTo(userAccessoryView.snp.bottom).offset(-8)
-            constraint.leading.equalTo(userImageView.snp.trailing).offset(10)
+            constraint.centerY.equalTo(userAccessoryView.snp.centerY)
             constraint.trailing.equalTo(userAccessoryView.snp.trailing).offset(-14)
         }
         
@@ -266,7 +263,6 @@ extension RepositoryCollectionViewCell {
         /// languageNameLabelのConstraints
         languageNameLabel.snp.makeConstraints { constraint in
             constraint.centerY.equalTo(languageColorView.snp.centerY)
-            constraint.leading.equalTo(languageColorView.snp.trailing).offset(5)
             constraint.trailing.lessThanOrEqualTo(contentView.snp.trailing).offset(-35)
         }
     }
