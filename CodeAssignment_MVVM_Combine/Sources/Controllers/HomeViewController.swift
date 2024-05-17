@@ -123,10 +123,6 @@ extension HomeViewController {
     
     /// Layoutの制約を調整する
     private func setupConstraints() {
-        setupRepositoryCollectionViewConstraints()
-    }
-    
-    private func setupRepositoryCollectionViewConstraints() {
         repositoryCollectionView.snp.makeConstraints { constraint in
             constraint.edges.equalToSuperview()
         }
