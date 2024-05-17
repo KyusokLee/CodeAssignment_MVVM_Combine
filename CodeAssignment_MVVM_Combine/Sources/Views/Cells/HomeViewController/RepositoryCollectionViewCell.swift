@@ -139,7 +139,7 @@ extension RepositoryCollectionViewCell {
            let url = URL(string: urlString) {
             // completedに入れないと、常にplaceHolderImageしか表示されない仕組み
             // completion handlerを用いて、画像のロード中にエラーが発生した場合や、URLが無効な場合にデフォルトの画像を表示する仕組みである
-            userImageView.sd_setImage(with: url, placeholderImage: defaultImage) { [weak self] (image, error, cacheType, url) in
+            userImageView.sd_setImage(with: url, placeholderImage: defaultImage) { [weak self] (image, error, _, _) in
                 guard let self else { return }
                 if let error = error {
                     // ロード中にエラーが発生する場合や、URLが無効な場合はdefaultの画像を表示
