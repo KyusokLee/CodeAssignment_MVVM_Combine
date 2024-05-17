@@ -19,18 +19,18 @@ class HomeViewController: UIViewController {
     private var cancellables = Set<AnyCancellable>()
     
     /// FlowLayout
-    private let flowLayout: UICollectionViewFlowLayout = {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .vertical
-        return layout
+    private let layout: UICollectionViewLayout = {
+        var config = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
+        config.headerMode = .none
+        config.footerMode = .none
+        return UICollectionViewCompositionalLayout.list(using: config)
     }()
     
     private lazy var repositoryCollectionView: UICollectionView = {
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: self.flowLayout)
-        collectionView.layer.cornerRadius = 8
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: self.layout)
         collectionView.delegate = self
         collectionView.dataSource = self
-        collectionView.backgroundColor = .white
+        collectionView.backgroundColor = .secondarySystemBackground
         collectionView.contentInsetAdjustmentBehavior = .always
         
         return collectionView
@@ -42,6 +42,10 @@ class HomeViewController: UIViewController {
     private let repositoryCell = UICollectionView.CellRegistration<RepositoryCollectionViewCell, Repositories.Repository>() { cell, indexPath, repository in
         cell.backgroundColor = .white
         cell.configure(with: repository)
+        // cellにUICellAccessory（accessories）を追加
+        cell.accessories = [
+            .disclosureIndicator()
+        ]
     }
     
     override func viewDidLoad() {
@@ -72,8 +76,13 @@ extension HomeViewController {
     private func setupNavigationController() {
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = .secondarySystemBackground
         // NavigationBarの下部線を隠す
         appearance.shadowColor = .clear
+        
+        navigationController?.navigationBar.standardAppearance = appearance
+        navigationController?.navigationBar.compactAppearance = appearance
+        navigationController?.navigationBar.compactScrollEdgeAppearance = appearance
         navigationController?.navigationBar.scrollEdgeAppearance = appearance
         setupSearchController()
     }
@@ -119,10 +128,7 @@ extension HomeViewController {
     
     private func setupRepositoryCollectionViewConstraints() {
         repositoryCollectionView.snp.makeConstraints { constraint in
-            constraint.top.equalTo(view.safeAreaLayoutGuide).offset(8)
-            constraint.leading.equalTo(view.snp.leading).offset(22)
-            constraint.trailing.equalTo(view.snp.trailing).offset(-22)
-            constraint.bottom.equalTo(view.safeAreaLayoutGuide)
+            constraint.edges.equalToSuperview()
         }
     }
 }
@@ -165,16 +171,16 @@ extension HomeViewController: UICollectionViewDataSource {
     }
 }
 
-// MARK: - UICollectionViewDelegateFlowLayout
-extension HomeViewController: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = collectionView.bounds.width
-        // Cell sizeを動的に設定したい
-        let cell = collectionView.dequeueConfiguredReusableCell(using: repositoryCell, for: indexPath, item: viewModel.repositoriesSubject.value?.items[indexPath.row]) as RepositoryCollectionViewCell
-        
-        let targetSize = CGSize(width: width, height: UIView.layoutFittingCompressedSize.height)
-        let size = cell.contentView.systemLayoutSizeFitting(targetSize, withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel)
-                
-        return CGSize(width: width, height: size.height)
-    }
-}
+//// MARK: - UICollectionViewDelegateFlowLayout
+//extension HomeViewController: UICollectionViewDelegateFlowLayout {
+//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+//        let width = collectionView.bounds.width
+//        // Cell sizeを動的に設定したい
+//        let cell = collectionView.dequeueConfiguredReusableCell(using: repositoryCell, for: indexPath, item: viewModel.repositoriesSubject.value?.items[indexPath.row]) as RepositoryCollectionViewCell
+//        
+//        let targetSize = CGSize(width: width, height: UIView.layoutFittingCompressedSize.height)
+//        let size = cell.contentView.systemLayoutSizeFitting(targetSize, withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel)
+//                
+//        return CGSize(width: width, height: size.height)
+//    }
+//}
