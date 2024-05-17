@@ -155,12 +155,7 @@ extension RepositoryCollectionViewCell {
     
     /// 数字が１万を超えたら、1.~万みたいにString型としてformatする
     private func formatNumberToString(_ number: Int) -> String {
-        if number >= 10000 {
-            let formattedNumber = Double(number) / 10000
-            return String(format: "%.1f万", formattedNumber)
-        } else {
-            return String(number)
-        }
+        return number >= Constants.numberFormatThreshold ? String(format: "%.1f万", Double(number) / Double(Constants.numberFormatThreshold)) : String(number)
     }
     
     private func setupUI() {

@@ -28,6 +28,7 @@
 		5DF65F522BEB41670070651B /* RepositoriesResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF65F512BEB41670070651B /* RepositoriesResponse.swift */; };
 		5DF65F552BEB4C410070651B /* HTMLURLResponse+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF65F542BEB4C410070651B /* HTMLURLResponse+Utils.swift */; };
 		5DF65F5C2BEB907A0070651B /* GitHubAPIType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF65F5B2BEB907A0070651B /* GitHubAPIType.swift */; };
+		5DF951502BF7369100F6A2AD /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF9514F2BF7369100F6A2AD /* Constants.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -70,6 +71,7 @@
 		5DF65F512BEB41670070651B /* RepositoriesResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoriesResponse.swift; sourceTree = "<group>"; };
 		5DF65F542BEB4C410070651B /* HTMLURLResponse+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HTMLURLResponse+Utils.swift"; sourceTree = "<group>"; };
 		5DF65F5B2BEB907A0070651B /* GitHubAPIType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubAPIType.swift; sourceTree = "<group>"; };
+		5DF9514F2BF7369100F6A2AD /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -236,6 +238,7 @@
 			children = (
 				5D07702F2BE38D38007F0724 /* ErrorType.swift */,
 				5DF65F5B2BEB907A0070651B /* GitHubAPIType.swift */,
+				5DF9514F2BF7369100F6A2AD /* Constants.swift */,
 			);
 			path = Enums;
 			sourceTree = "<group>";
@@ -462,6 +465,7 @@
 				5D076FED2BE32B9C007F0724 /* AppDelegate.swift in Sources */,
 				5D076FEF2BE32B9C007F0724 /* SceneDelegate.swift in Sources */,
 				5DF65F552BEB4C410070651B /* HTMLURLResponse+Utils.swift in Sources */,
+				5DF951502BF7369100F6A2AD /* Constants.swift in Sources */,
 				5D07702D2BE38CA1007F0724 /* APIClient.swift in Sources */,
 				5D0770372BE38E20007F0724 /* UIColor+Utils.swift in Sources */,
 			);
