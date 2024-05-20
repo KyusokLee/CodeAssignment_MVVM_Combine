@@ -120,7 +120,7 @@ extension RepositoryCollectionViewCell {
         nameLabel.text = model.name
         descriptionLabel.text = model.description
         userNameLabel.text = model.owner.userName
-        starCountsLabel.text = formatNumberToString(model.stargazersCount ?? 0)
+        starCountsLabel.text = model.stringFormattedStargazersCountWithKanji
         languageNameLabel.text = model.language
         
         if let urlString = model.owner.profileImageString,
@@ -140,11 +140,6 @@ extension RepositoryCollectionViewCell {
         } else {
             userImageView.image = defaultImage
         }
-    }
-    
-    /// 数字が１万を超えたら、1.~万みたいにString型としてformatする
-    private func formatNumberToString(_ number: Int) -> String {
-        return number >= Constants.numberFormatThreshold ? String(format: "%.1f万", Double(number) / Double(Constants.numberFormatThreshold)) : String(number)
     }
     
     private func setupUI() {
