@@ -59,15 +59,6 @@ final class RepositoryCollectionViewCell: UICollectionViewListCell {
     // Starボタンは、VCからのInput 処理をbindする必要があるので、currentValueSubjectの方に変えた方がいいかも
     private lazy var starButton: UIButton = {
         let button = UIButton()
-//        let config = UIImage.SymbolConfiguration(
-//            pointSize: 20,
-//            weight: .medium,
-//            scale: .medium
-//        )
-//        let startImage = UIImage(
-//            systemName: "star",
-//            withConfiguration: config)?
-//            .withTintColor(.systemGray5, renderingMode: .alwaysOriginal)
         let starImage = UIImage(systemName: "star")?.withTintColor(.systemGray3, renderingMode: .alwaysOriginal)
         button.setImage(starImage, for: .normal)
         return button
@@ -123,9 +114,6 @@ final class RepositoryCollectionViewCell: UICollectionViewListCell {
 
 // MARK: - Function and Logics
 extension RepositoryCollectionViewCell {
-    /** Cellのデータの設定を行う
-     - 今後、RepositoriesForViewのModelのデータに基づいて、Cellのデータを確立させる
-    */
     func configure(with model: Repositories.Repository) {
         let defaultImage = UIImage(systemName: "person.circle")?.withTintColor(.systemMint, renderingMode: .alwaysOriginal)
         
@@ -145,8 +133,9 @@ extension RepositoryCollectionViewCell {
                     // ロード中にエラーが発生する場合や、URLが無効な場合はdefaultの画像を表示
                     print("error: \(error.localizedDescription)")
                     self.userImageView.image = defaultImage
+                } else {
+                    self.userImageView.image = image
                 }
-                self.userImageView.image = image
             }
         } else {
             userImageView.image = defaultImage
