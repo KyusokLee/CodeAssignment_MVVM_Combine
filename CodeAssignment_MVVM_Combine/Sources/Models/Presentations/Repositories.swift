@@ -12,21 +12,21 @@ import Foundation
 */
 struct Repositories {
     /// 検索でマッチされたリポジトリの数
-    let totalCount: Int?
+    let totalCount: Int
     /// リポジトリの詳細データが入っている配列形
     // 個々のリポジトリの情報が入っている配列
     let items: [Repository]
     
     struct Repository {
         var owner: RepositoryUser
-        var name: String?
+        var name: String
         var description: String?
         var language: String?
-        var stargazersCount: Int?
+        var stargazersCount: Int
         
         // computed properties (ex: 62300 -> 6.2万)
         var stringFormattedStargazersCountWithKanji: String {
-            guard let stargazersCount else { return "0" }
+//            guard let stargazersCount else { return "0" }
             return stargazersCount >= Constants.numberFormatThreshold ? String(format: "%.1f万", Double(stargazersCount) / Double(Constants.numberFormatThreshold)) : String(stargazersCount)
         }
 

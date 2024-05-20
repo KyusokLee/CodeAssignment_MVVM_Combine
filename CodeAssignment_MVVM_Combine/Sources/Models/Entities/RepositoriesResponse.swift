@@ -17,16 +17,16 @@ import Foundation
 */
 struct RepositoriesResponse: Codable {
     /// queryに当てはまる結果の数
-    let totalCount: Int?
+    let totalCount: Int
     /// リポジトリの詳細データが入っている配列形
     let items: [RepositoryResponse]
     
     struct RepositoryResponse: Codable {
         var owner: RepositoryUserResponse
-        var name: String?
+        var name: String
         var description: String?
         var language: String?
-        var stargazersCount: Int?
+        var stargazersCount: Int
         
         /// decodeのkeyDecodingStrategyメソッドを用いて、convertFromSnakeCaseで自動的に変換されるstructの中身にしておく
         struct RepositoryUserResponse: Codable {
