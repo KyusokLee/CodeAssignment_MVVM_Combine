@@ -79,7 +79,9 @@ extension HomeViewController {
         appearance.backgroundColor = .secondarySystemBackground
         // NavigationBarの下部線を隠す
         appearance.shadowColor = .clear
-        
+        navigationController?.navigationBar.topItem?.setHidesBackButton(true, animated: false)
+//        navigationController?.navigationBar.tintColor = .black
+        navigationController?.navigationBar.topItem?.backButtonTitle = "戻る"
         navigationController?.navigationBar.standardAppearance = appearance
         navigationController?.navigationBar.compactAppearance = appearance
         navigationController?.navigationBar.compactScrollEdgeAppearance = appearance
@@ -151,9 +153,6 @@ extension HomeViewController: UICollectionViewDelegate {
         guard let repository = viewModel.repositoriesSubject.value?.items[indexPath.row] else { return }
         let detailViewController = DetailViewController.instantiate(with: repository)
         navigationController?.pushViewController(detailViewController, animated: true)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
     }
 }

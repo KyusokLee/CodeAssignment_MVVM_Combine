@@ -11,6 +11,20 @@ import SDWebImage
 
 final class DetailViewController: UIViewController {
     
+    /// ScrollViewで、backgroundCardViewをScroll可能にする
+    private lazy var scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.alwaysBounceVertical = true
+        scrollView.showsVerticalScrollIndicator = true
+        return scrollView
+    }()
+    
+    /// ScrollViewのContentView
+    private lazy var contentView: UIView = {
+        let view = UIView()
+        return view
+    }()
+    
     /// リポジトリのデータを入れるbackgroundView
     private lazy var backgroundCardView: UIView = {
         let view = UIView()
@@ -48,6 +62,7 @@ final class DetailViewController: UIViewController {
     /// User名を表示するためのlabel
     private lazy var userNameLabel: UILabel = {
         let label = UILabel()
+        label.textAlignment = .center
         label.font = .systemFont(ofSize: 22, weight: .bold)
         label.numberOfLines = 0
         return label
@@ -56,9 +71,12 @@ final class DetailViewController: UIViewController {
     /// お気に入りに入れるためのStarボタン
     // Starボタンは、VCからのInput 処理をbindする必要があるので、currentValueSubjectの方に変えた方がいいかも
     private lazy var starButton: UIButton = {
-        let button = UIButton()
-        let starImage = UIImage(systemName: "star")?.withTintColor(.systemGray3, renderingMode: .alwaysOriginal)
-        button.setImage(starImage, for: .normal)
+        var config = UIButton.Configuration.plain()
+        config.image = UIImage(systemName: "star")?.withTintColor(.systemGray3, renderingMode: .alwaysOriginal)
+        config.contentInsets = .zero
+        config.imagePadding = .zero
+        config.imagePlacement = .all
+        let button = UIButton(configuration: config)
         return button
     }()
     
@@ -74,6 +92,7 @@ final class DetailViewController: UIViewController {
     private lazy var languageColorView: UIView = {
         let view = UIView()
         view.clipsToBounds = true
+        view.layer.cornerRadius = Constants.colorViewHeightSize / 2.0
         view.backgroundColor = .systemPink
         return view
     }()
@@ -87,22 +106,22 @@ final class DetailViewController: UIViewController {
     
     private lazy var watchersCountLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 20, weight: .regular)
-        label.textColor = .black.withAlphaComponent(0.8)
+        label.font = .systemFont(ofSize: 18, weight: .regular)
+        label.textColor = .black.withAlphaComponent(0.7)
         return label
     }()
     
     private lazy var forksCountLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 20, weight: .regular)
-        label.textColor = .black.withAlphaComponent(0.8)
+        label.font = .systemFont(ofSize: 18, weight: .regular)
+        label.textColor = .black.withAlphaComponent(0.7)
         return label
     }()
     
     private lazy var openIssuesCountLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 20, weight: .regular)
-        label.textColor = .black.withAlphaComponent(0.8)
+        label.font = .systemFont(ofSize: 18, weight: .regular)
+        label.textColor = .black.withAlphaComponent(0.7)
         return label
     }()
     
@@ -117,12 +136,6 @@ final class DetailViewController: UIViewController {
         super.viewDidLoad()
 
         setupUI()
-    }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        
-        languageColorView.layer.cornerRadius = languageColorView.frame.height / 2
     }
 }
 
@@ -181,26 +194,37 @@ extension DetailViewController {
     }
     
     private func setAddSubViews() {
-        view.addSubview(backgroundCardView)
-        view.addSubview(repositoryNameLabel)
-        view.addSubview(descriptionLabel)
-        view.addSubview(userImageView)
-        view.addSubview(userNameLabel)
-        view.addSubview(starButton)
-        view.addSubview(starCountsLabel)
-        view.addSubview(languageColorView)
-        view.addSubview(languageNameLabel)
-        view.addSubview(watchersCountLabel)
-        view.addSubview(forksCountLabel)
-        view.addSubview(openIssuesCountLabel)
+        backgroundCardView.addSubview(repositoryNameLabel)
+        backgroundCardView.addSubview(descriptionLabel)
+        backgroundCardView.addSubview(userImageView)
+        backgroundCardView.addSubview(userNameLabel)
+        backgroundCardView.addSubview(starButton)
+        backgroundCardView.addSubview(starCountsLabel)
+        backgroundCardView.addSubview(languageColorView)
+        backgroundCardView.addSubview(languageNameLabel)
+        backgroundCardView.addSubview(watchersCountLabel)
+        backgroundCardView.addSubview(forksCountLabel)
+        backgroundCardView.addSubview(openIssuesCountLabel)
+        contentView.addSubview(backgroundCardView)
+        scrollView.addSubview(contentView)
+        view.addSubview(scrollView)
     }
     
     private func setupConstraints() {
+        scrollView.snp.makeConstraints { constraint in
+            constraint.edges.equalTo(view.safeAreaLayoutGuide)
+        }
+        
+        contentView.snp.makeConstraints { constraint in
+            constraint.edges.equalTo(scrollView.contentLayoutGuide)
+            constraint.width.equalTo(scrollView.frameLayoutGuide)
+        }
+        
         backgroundCardView.snp.makeConstraints { constraint in
-            constraint.top.equalTo(view.safeAreaLayoutGuide).offset(50)
-            constraint.leading.equalTo(view.snp.leading).offset(20)
-            constraint.trailing.equalTo(view.snp.trailing).offset(-20)
-            constraint.bottom.equalTo(view.safeAreaLayoutGuide).offset(-50)
+            constraint.top.equalTo(contentView.snp.top).offset(30)
+            constraint.leading.equalTo(contentView.snp.leading).offset(20)
+            constraint.trailing.equalTo(contentView.snp.trailing).offset(-20)
+            constraint.bottom.equalTo(contentView.snp.bottom).offset(-30)
         }
         
         userImageView.snp.makeConstraints { constraint in
@@ -212,8 +236,8 @@ extension DetailViewController {
         
         userNameLabel.snp.makeConstraints { constraint in
             constraint.top.equalTo(userImageView.snp.bottom).offset(10)
-            constraint.leading.greaterThanOrEqualTo(backgroundCardView.snp.leading).offset(20)
-            constraint.trailing.lessThanOrEqualTo(backgroundCardView.snp.trailing).offset(-20)
+            constraint.leading.equalTo(backgroundCardView.snp.leading).offset(20)
+            constraint.trailing.equalTo(backgroundCardView.snp.trailing).offset(-20)
             constraint.centerX.equalTo(userImageView.snp.centerX)
         }
         
@@ -230,8 +254,8 @@ extension DetailViewController {
         }
         
         starButton.snp.makeConstraints { constraint in
-            constraint.height.equalTo(50)
-            constraint.width.equalTo(50)
+            constraint.height.equalTo(20)
+            constraint.width.equalTo(20)
             constraint.top.equalTo(descriptionLabel.snp.bottom).offset(20)
             constraint.leading.equalTo(backgroundCardView.snp.leading).offset(20)
         }

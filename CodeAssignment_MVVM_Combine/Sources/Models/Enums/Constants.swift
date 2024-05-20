@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 enum Constants {
     /// 該当リポジトリをお気に入りした数値を短縮表示する基準
@@ -18,4 +19,6 @@ enum Constants {
     static let forksExplainString: String = " forks"
     /// openIssuesに関するString型の説明文
     static let openIssuesExplainString: String = " issues"
+    /// DetailViewControllerで表すLanguageColorViewのheight サイズ
+    static let colorViewHeightSize: CGFloat = 20
 }
