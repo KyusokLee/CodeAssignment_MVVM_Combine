@@ -43,7 +43,6 @@ final class RepositoryCollectionViewCell: UICollectionViewListCell {
     private lazy var userImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
-//        imageView.image = UIImage(systemName: "person.circle")?.withTintColor(.systemMint, renderingMode: .alwaysOriginal)
         return imageView
     }()
     
