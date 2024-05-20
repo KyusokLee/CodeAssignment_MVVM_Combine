@@ -147,9 +147,7 @@ extension HomeViewController: UISearchBarDelegate {
 
 // MARK: - UICollectionViewDelegate
 extension HomeViewController: UICollectionViewDelegate {
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print("index: \(indexPath.row)")
-    }
+    
 }
 
 // MARK: - UICollectionViewDataSource
