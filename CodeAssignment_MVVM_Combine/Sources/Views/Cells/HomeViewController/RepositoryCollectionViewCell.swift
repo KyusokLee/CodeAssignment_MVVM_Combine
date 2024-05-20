@@ -123,8 +123,7 @@ extension RepositoryCollectionViewCell {
         starCountsLabel.text = model.stringFormattedStargazersCountWithKanji
         languageNameLabel.text = model.language
         
-        if let urlString = model.owner.profileImageString,
-           let url = URL(string: urlString) {
+        if let url = URL(string: model.owner.profileImageString) {
             // completedに入れないと、常にplaceHolderImageしか表示されない仕組み
             // completion handlerを用いて、画像のロード中にエラーが発生した場合や、URLが無効な場合にデフォルトの画像を表示する仕組みである
             userImageView.sd_setImage(with: url, placeholderImage: defaultImage) { [weak self] (image, error, _, _) in

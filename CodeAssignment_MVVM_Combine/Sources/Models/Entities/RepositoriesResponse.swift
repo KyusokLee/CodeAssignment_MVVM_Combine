@@ -30,8 +30,8 @@ struct RepositoriesResponse: Codable {
         
         /// decodeのkeyDecodingStrategyメソッドを用いて、convertFromSnakeCaseで自動的に変換されるstructの中身にしておく
         struct RepositoryUserResponse: Codable {
-            var login: String?
-            var avatarUrl: String?
+            var login: String
+            var avatarUrl: String
         }
     }
 }

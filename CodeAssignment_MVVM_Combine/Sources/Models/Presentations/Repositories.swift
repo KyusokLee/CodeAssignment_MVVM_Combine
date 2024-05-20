@@ -31,8 +31,8 @@ struct Repositories {
         }
 
         struct RepositoryUser {
-            var userName: String?
-            var profileImageString: String?
+            var userName: String
+            var profileImageString: String
         }
     }
     
