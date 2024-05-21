@@ -23,9 +23,9 @@ struct Repositories {
         var description: String?
         var language: String?
         var stargazersCount: Int
-        var watchersCount: Int?
-        var forksCount: Int?
-        var openIssuesCount: Int?
+        var watchersCount: Int
+        var forksCount: Int
+        var openIssuesCount: Int
         
         // computed properties (ex: 62300 -> 6.2万)
         var stringFormattedStargazersCountWithKanji: String {

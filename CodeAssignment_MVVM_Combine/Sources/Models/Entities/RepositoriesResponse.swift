@@ -26,10 +26,10 @@ struct RepositoriesResponse: Codable {
         var name: String
         var description: String?
         var language: String?
-        var stargazersCount: Int?
-        var forksCount: Int?
-        var watchersCount: Int?
-        var openIssuesCount: Int?
+        var stargazersCount: Int
+        var forksCount: Int
+        var watchersCount: Int
+        var openIssuesCount: Int
         
         /// decodeのkeyDecodingStrategyメソッドを用いて、convertFromSnakeCaseで自動的に変換されるstructの中身にしておく
         struct RepositoryUserResponse: Codable {

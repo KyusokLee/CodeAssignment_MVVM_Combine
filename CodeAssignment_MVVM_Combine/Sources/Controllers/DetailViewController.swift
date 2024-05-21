@@ -88,7 +88,10 @@ final class DetailViewController: UIViewController {
         return label
     }()
     
-    /// 言語ごとに色をつけて表示させるためのView
+    /** 言語ごとに色をつけて表示させるためのView
+     - starButtonをUIButton.Configurationを用いた作成に変えた後、layoutSubViewsでcornerRadiusを設定しようとしたら、反映されなかった。
+     - そのため、インスタンス生成時にcornerRadiusをするようにした
+     */
     private lazy var languageColorView: UIView = {
         let view = UIView()
         view.clipsToBounds = true
@@ -147,13 +150,12 @@ extension DetailViewController {
         descriptionLabel.text = model.description
         userNameLabel.text = model.owner.userName
         languageNameLabel.text = model.language
-        starCountsLabel.text = formatNumberToStringWithSeparator(model.stargazersCount ?? 0) + Constants.starsExplainString
-        watchersCountLabel.text = formatNumberToStringWithSeparator(model.watchersCount ?? 0) + Constants.watchersExplainString
-        forksCountLabel.text = formatNumberToStringWithSeparator(model.forksCount ?? 0) + Constants.forksExplainString
-        openIssuesCountLabel.text = formatNumberToStringWithSeparator(model.openIssuesCount ?? 0) + Constants.openIssuesExplainString
+        starCountsLabel.text = formatNumberToStringWithSeparator(model.stargazersCount) + Constants.starsExplainString
+        watchersCountLabel.text = formatNumberToStringWithSeparator(model.watchersCount) + Constants.watchersExplainString
+        forksCountLabel.text = formatNumberToStringWithSeparator(model.forksCount) + Constants.forksExplainString
+        openIssuesCountLabel.text = formatNumberToStringWithSeparator(model.openIssuesCount) + Constants.openIssuesExplainString
         
-        if let urlString = model.owner.profileImageString,
-           let url = URL(string: urlString) {
+        if let url = URL(string: model.owner.profileImageString) {
             userImageView.sd_setImage(with: url, placeholderImage: defaultImage) { [weak self] (image, error, _, _) in
                 guard let self else { return }
                 if let error {
@@ -194,17 +196,11 @@ extension DetailViewController {
     }
     
     private func setAddSubViews() {
-        backgroundCardView.addSubview(repositoryNameLabel)
-        backgroundCardView.addSubview(descriptionLabel)
-        backgroundCardView.addSubview(userImageView)
-        backgroundCardView.addSubview(userNameLabel)
-        backgroundCardView.addSubview(starButton)
-        backgroundCardView.addSubview(starCountsLabel)
-        backgroundCardView.addSubview(languageColorView)
-        backgroundCardView.addSubview(languageNameLabel)
-        backgroundCardView.addSubview(watchersCountLabel)
-        backgroundCardView.addSubview(forksCountLabel)
-        backgroundCardView.addSubview(openIssuesCountLabel)
+        // backgroundCardViewのSubViewを追加
+        [repositoryNameLabel, descriptionLabel, userImageView, userNameLabel, starButton, starCountsLabel, languageColorView, languageNameLabel, watchersCountLabel, forksCountLabel, openIssuesCountLabel].forEach { view in
+            backgroundCardView.addSubview(view)
+        }
+        
         contentView.addSubview(backgroundCardView)
         scrollView.addSubview(contentView)
         view.addSubview(scrollView)
@@ -218,6 +214,27 @@ extension DetailViewController {
         contentView.snp.makeConstraints { constraint in
             constraint.edges.equalTo(scrollView.contentLayoutGuide)
             constraint.width.equalTo(scrollView.frameLayoutGuide)
+        }
+        
+        // backgroundCardViewのSubViewのUIの equalTo Leading Constraint設定
+        [userNameLabel, repositoryNameLabel, descriptionLabel, starButton].forEach { view in
+            view.snp.makeConstraints { constraint in
+                constraint.leading.equalTo(backgroundCardView.snp.leading).offset(Constants.leftPadding)
+            }
+        }
+        
+        // backgroundCardViewのSubViewのUIの greaterThanOrEqualTo Leading Constraint設定
+        [watchersCountLabel, forksCountLabel, openIssuesCountLabel].forEach { view in
+            view.snp.makeConstraints { constraint in
+                constraint.leading.greaterThanOrEqualTo(backgroundCardView.snp.leading).offset(Constants.leftPadding)
+            }
+        }
+        
+        // backgroundCardViewのSubViewのUIのtrailing Constraint設定
+        [userNameLabel, repositoryNameLabel, descriptionLabel, languageNameLabel, watchersCountLabel, forksCountLabel, openIssuesCountLabel].forEach { view in
+            view.snp.makeConstraints { constraint in
+                constraint.trailing.equalTo(backgroundCardView.snp.trailing).offset(-Constants.insetRightPadding)
+            }
         }
         
         backgroundCardView.snp.makeConstraints { constraint in
@@ -236,28 +253,21 @@ extension DetailViewController {
         
         userNameLabel.snp.makeConstraints { constraint in
             constraint.top.equalTo(userImageView.snp.bottom).offset(10)
-            constraint.leading.equalTo(backgroundCardView.snp.leading).offset(20)
-            constraint.trailing.equalTo(backgroundCardView.snp.trailing).offset(-20)
             constraint.centerX.equalTo(userImageView.snp.centerX)
         }
         
         repositoryNameLabel.snp.makeConstraints { constraint in
             constraint.top.equalTo(userNameLabel.snp.bottom).offset(20)
-            constraint.leading.equalTo(backgroundCardView.snp.leading).offset(20)
-            constraint.trailing.equalTo(backgroundCardView.snp.trailing).offset(-20)
         }
         
         descriptionLabel.snp.makeConstraints { constraint in
             constraint.top.equalTo(repositoryNameLabel.snp.bottom).offset(10)
-            constraint.leading.equalTo(backgroundCardView.snp.leading).offset(20)
-            constraint.trailing.equalTo(backgroundCardView.snp.trailing).offset(-20)
         }
         
         starButton.snp.makeConstraints { constraint in
             constraint.height.equalTo(20)
             constraint.width.equalTo(20)
             constraint.top.equalTo(descriptionLabel.snp.bottom).offset(20)
-            constraint.leading.equalTo(backgroundCardView.snp.leading).offset(20)
         }
         
         starCountsLabel.snp.makeConstraints { constraint in
@@ -275,26 +285,19 @@ extension DetailViewController {
         languageNameLabel.snp.makeConstraints { constraint in
             constraint.centerY.equalTo(languageColorView.snp.centerY)
             constraint.leading.equalTo(languageColorView.snp.trailing).offset(8)
-            constraint.trailing.lessThanOrEqualTo(backgroundCardView.snp.trailing).offset(-20)
         }
         
         watchersCountLabel.snp.makeConstraints { constraint in
             constraint.top.greaterThanOrEqualTo(languageNameLabel.snp.bottom).offset(20)
             constraint.bottom.equalTo(forksCountLabel.snp.top).offset(-12)
-            constraint.leading.greaterThanOrEqualTo(backgroundCardView.snp.leading).offset(20)
-            constraint.trailing.equalTo(backgroundCardView.snp.trailing).offset(-20)
         }
         
         forksCountLabel.snp.makeConstraints { constraint in
             constraint.bottom.equalTo(openIssuesCountLabel.snp.top).offset(-12)
-            constraint.leading.greaterThanOrEqualTo(backgroundCardView.snp.leading).offset(20)
-            constraint.trailing.equalTo(backgroundCardView.snp.trailing).offset(-20)
         }
         
         openIssuesCountLabel.snp.makeConstraints { constraint in
             constraint.bottom.equalTo(backgroundCardView.snp.bottom).offset(-20)
-            constraint.leading.greaterThanOrEqualTo(backgroundCardView.snp.leading).offset(20)
-            constraint.trailing.equalTo(backgroundCardView.snp.trailing).offset(-20)
         }
     }
 }
