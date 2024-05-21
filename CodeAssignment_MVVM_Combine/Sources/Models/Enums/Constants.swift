@@ -9,6 +9,10 @@ import Foundation
 import UIKit
 
 enum Constants {
+    /// collectionViewCellで使うleftPadding
+    static let leftPadding: CGFloat = 20
+    /// collectionViewCellで使うRightPadding
+    static let rightPadding: CGFloat = 35
     /// 該当リポジトリをお気に入りした数値を短縮表示する基準
     static let numberFormatThreshold: Int = 10000
     /// starsに関するString型の説明文(スペース入り)

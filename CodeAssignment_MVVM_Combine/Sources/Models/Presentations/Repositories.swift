@@ -12,30 +12,30 @@ import Foundation
 */
 struct Repositories {
     /// 検索でマッチされたリポジトリの数
-    let totalCount: Int?
+    let totalCount: Int
     /// リポジトリの詳細データが入っている配列形
     // 個々のリポジトリの情報が入っている配列
     let items: [Repository]
     
     struct Repository {
         var owner: RepositoryUser
-        var name: String?
+        var name: String
         var description: String?
         var language: String?
-        var stargazersCount: Int?
+        var stargazersCount: Int
         var watchersCount: Int?
         var forksCount: Int?
         var openIssuesCount: Int?
         
-        // computed properties 62300 -> 6.2万
-        var formattedStringWithKanji: String {
-            guard let stargazersCount else { return "0" }
+        // computed properties (ex: 62300 -> 6.2万)
+        var stringFormattedStargazersCountWithKanji: String {
+//            guard let stargazersCount else { return "0" }
             return stargazersCount >= Constants.numberFormatThreshold ? String(format: "%.1f万", Double(stargazersCount) / Double(Constants.numberFormatThreshold)) : String(stargazersCount)
         }
 
         struct RepositoryUser {
-            var userName: String?
-            var profileImageString: String?
+            var userName: String
+            var profileImageString: String
         }
     }
     
