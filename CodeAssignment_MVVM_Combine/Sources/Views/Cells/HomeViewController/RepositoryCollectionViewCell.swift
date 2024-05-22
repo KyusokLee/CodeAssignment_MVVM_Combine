@@ -66,9 +66,13 @@ final class RepositoryCollectionViewCell: UICollectionViewListCell {
     - Starボタンは、VCからのInput 処理をbindする必要があるので、currentValueSubjectの方に変えた方がいいかも
      */
     private lazy var starButton: UIButton = {
-        let button = UIButton()
-        let starImage = UIImage(systemName: "star")?.withTintColor(.systemGray3, renderingMode: .alwaysOriginal)
-        button.setImage(starImage, for: .normal)
+        var config = UIButton.Configuration.plain()
+        config.image = UIImage(systemName: "star")?.withTintColor(.systemGray3, renderingMode: .alwaysOriginal)
+        config.contentInsets = .zero
+        config.imagePadding = .zero
+        config.imagePlacement = .leading
+        config.buttonSize = .small
+        let button = UIButton(configuration: config)
         return button
     }()
     
@@ -230,16 +234,14 @@ extension RepositoryCollectionViewCell {
         
         // starButtonのConstraints
         starButton.snp.makeConstraints { constraint in
-            constraint.height.equalTo(25)
-            constraint.width.equalTo(25)
             constraint.top.equalTo(userAccessoryView.snp.bottom).offset(20)
-            constraint.bottom.equalTo(contentView.snp.bottom).offset(-8)
+            constraint.centerY.equalTo(starCountsLabel.snp.centerY)
         }
         
         // starCountsLabelのConstraints
         starCountsLabel.snp.makeConstraints { constraint in
-            constraint.centerY.equalTo(starButton.snp.centerY)
             constraint.leading.equalTo(starButton.snp.trailing).offset(5)
+            constraint.bottom.lessThanOrEqualTo(contentView.snp.bottom).offset(-8)
         }
         
         // languageColorViewのConstraints
@@ -253,7 +255,7 @@ extension RepositoryCollectionViewCell {
         
         // languageNameLabelのConstraints
         languageNameLabel.snp.makeConstraints { constraint in
-            constraint.centerY.equalTo(languageColorView.snp.centerY)
+            constraint.centerY.equalTo(starCountsLabel.snp.centerY)
         }
     }
 }

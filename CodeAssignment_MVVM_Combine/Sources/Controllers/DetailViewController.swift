@@ -189,7 +189,7 @@ extension DetailViewController {
     }
     
     /** 数字をdecimal StyleのString型としてformatする
-     - Repositoryの中に、funcやcomputed propertyとして定義するより、ここで関数として作った理由は、format作業をする対象が複数だからである
+    - Repositoryの中に、funcやcomputed propertyとして定義するより、ここで関数として作った理由は、format作業をする対象が複数だからである
     */
     private func formatNumberToStringWithSeparator(_ number: Int) -> String {
         let numberFormatter = NumberFormatter()

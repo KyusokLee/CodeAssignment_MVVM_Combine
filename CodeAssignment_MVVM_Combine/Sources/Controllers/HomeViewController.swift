@@ -93,7 +93,6 @@ extension HomeViewController {
      */
     private func setupSearchController() {
         let searchController = UISearchController(searchResultsController: nil)
-        searchController.delegate = self
         searchController.searchBar.placeholder = "リポジトリを検索"
         searchController.searchBar.delegate = self
         self.navigationItem.searchController = searchController
@@ -128,11 +127,6 @@ extension HomeViewController {
             constraint.edges.equalToSuperview()
         }
     }
-}
-
-// MARK: - UISearchController Deleage
-extension HomeViewController: UISearchControllerDelegate {
-    
 }
 
 // MARK: - UISearchBarDelegate
