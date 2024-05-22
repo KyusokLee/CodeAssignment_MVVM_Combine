@@ -17,7 +17,6 @@ protocol GitHubAPIClientProtocol {
     func buildUpRequest(type: GitHubAPIType) -> URLRequest?
 }
 
-// Structにデコードする (指定)
 struct GitHubSearchRepositoriesRequest: GitHubAPIClientProtocol {
     let searchQueryWord: String
     
@@ -49,7 +48,6 @@ struct GitHubSearchRepositoriesRequest: GitHubAPIClientProtocol {
     func buildUpRequest(type: GitHubAPIType) -> URLRequest? {
         switch type {
         case .searchRepositories:
-            // まずは、swiftをクエリに入れて検索する
             let urlString = "https://api.github.com/search/repositories?q=\(searchQueryWord)"
             guard let url = URL(string: urlString) else { return nil }
             var request = URLRequest(url: url)

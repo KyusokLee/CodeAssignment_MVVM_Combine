@@ -36,7 +36,7 @@ class HomeViewController: UIViewController {
     }()
     
     /** RepositoryCollectionViewCellをCellRegistrationで設定
-     - <CellのType(クラス名とか), Itemで表示するもの>
+    - <CellのType(クラス名とか), Itemで表示するもの>
      */
     private let repositoryCell = UICollectionView.CellRegistration<RepositoryCollectionViewCell, Repositories.Repository>() { cell, indexPath, repository in
         cell.backgroundColor = .white
@@ -87,7 +87,7 @@ extension HomeViewController {
     }
     
     /** SearchControllerのセットアップ
-     - NavigationControllerの中で表示するアニメーション付きのsearchBarはSearchControllerで実現できる
+    - NavigationControllerの中で表示するアニメーション付きのsearchBarはSearchControllerで実現できる
      */
     private func setupSearchController() {
         let searchController = UISearchController(searchResultsController: nil)

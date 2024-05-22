@@ -37,7 +37,7 @@ final class RepositoryCollectionViewCell: UICollectionViewListCell {
     }()
     
     /** Userのプロフィール画像と名前を括って表示するためのaccessoryView
-     - userAccessoryViewは、userImageViewとuserNameLabelのサイズに合わせて動的に決める予定
+    - userAccessoryViewは、userImageViewとuserNameLabelのサイズに合わせて動的に決める予定
      */
     private lazy var userAccessoryView: UIView = {
         let view = UIView()
@@ -62,8 +62,9 @@ final class RepositoryCollectionViewCell: UICollectionViewListCell {
         return label
     }()
     
-    /// お気に入りに入れるためのStarボタン
-    // Starボタンは、VCからのInput 処理をbindする必要があるので、currentValueSubjectの方に変えた方がいいかも
+    /** お気に入りに入れるためのStarボタン
+    - Starボタンは、VCからのInput 処理をbindする必要があるので、currentValueSubjectの方に変えた方がいいかも
+     */
     private lazy var starButton: UIButton = {
         let button = UIButton()
         let starImage = UIImage(systemName: "star")?.withTintColor(.systemGray3, renderingMode: .alwaysOriginal)
@@ -107,8 +108,8 @@ final class RepositoryCollectionViewCell: UICollectionViewListCell {
     }
     
     /** Cellレイアウトが確定されたタイミングで呼び出されるので、CellのSubViewのCornerRadiusのような設定が可能
-     - lazy varのクロージャ内ではビューのフレームがまだ決定されていないため、frame.heightを使用しても正しい値を取得できない
-     - そのため、layoutSubViewsをオーバーライドして設定する
+    - lazy varのクロージャ内ではビューのフレームがまだ決定されていないため、frame.heightを使用しても正しい値を取得できない
+    - そのため、layoutSubViewsをオーバーライドして設定する
     */
     override func layoutSubviews() {
         super.layoutSubviews()
