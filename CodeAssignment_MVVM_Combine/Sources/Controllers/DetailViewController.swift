@@ -9,6 +9,23 @@ import UIKit
 import SnapKit
 import SDWebImage
 
+private enum Const {
+    /// layout設定で使うleftPadding
+    static let leftPadding: CGFloat = 20
+    /// layout設定で使うRightPadding
+    static let rightPadding: CGFloat = 20
+    /// starsに関するString型の説明文(スペース入り)
+    static let starsExplainString: String = " stars"
+    /// watchersに関するString型の説明文
+    static let watchersExplainString: String = " watchers"
+    /// forksに関するString型の説明文
+    static let forksExplainString: String = " forks"
+    /// openIssuesに関するString型の説明文
+    static let openIssuesExplainString: String = " issues"
+    /// DetailViewControllerで表すLanguageColorViewのheight サイズ
+    static let colorViewHeightSize: CGFloat = 20
+}
+
 final class DetailViewController: UIViewController {
     
     /// ScrollViewで、backgroundCardViewをScroll可能にする
@@ -54,6 +71,7 @@ final class DetailViewController: UIViewController {
     private lazy var userImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
+        imageView.image = UIImage(systemName: "person.circle")?.withTintColor(.systemMint, renderingMode: .alwaysOriginal)
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 8
         return imageView
@@ -69,7 +87,6 @@ final class DetailViewController: UIViewController {
     }()
     
     /// お気に入りに入れるためのStarボタン
-    // Starボタンは、VCからのInput 処理をbindする必要があるので、currentValueSubjectの方に変えた方がいいかも
     private lazy var starButton: UIButton = {
         var config = UIButton.Configuration.plain()
         config.image = UIImage(systemName: "star")?.withTintColor(.systemGray3, renderingMode: .alwaysOriginal)
@@ -95,7 +112,7 @@ final class DetailViewController: UIViewController {
     private lazy var languageColorView: UIView = {
         let view = UIView()
         view.clipsToBounds = true
-        view.layer.cornerRadius = Constants.colorViewHeightSize / 2.0
+        view.layer.cornerRadius = Const.colorViewHeightSize / 2.0
         view.backgroundColor = .systemPink
         return view
     }()
@@ -150,10 +167,10 @@ extension DetailViewController {
         descriptionLabel.text = model.description
         userNameLabel.text = model.owner.userName
         languageNameLabel.text = model.language
-        starCountsLabel.text = formatNumberToStringWithSeparator(model.stargazersCount) + Constants.starsExplainString
-        watchersCountLabel.text = formatNumberToStringWithSeparator(model.watchersCount) + Constants.watchersExplainString
-        forksCountLabel.text = formatNumberToStringWithSeparator(model.forksCount) + Constants.forksExplainString
-        openIssuesCountLabel.text = formatNumberToStringWithSeparator(model.openIssuesCount) + Constants.openIssuesExplainString
+        starCountsLabel.text = formatNumberToStringWithSeparator(model.stargazersCount) + Const.starsExplainString
+        watchersCountLabel.text = formatNumberToStringWithSeparator(model.watchersCount) + Const.watchersExplainString
+        forksCountLabel.text = formatNumberToStringWithSeparator(model.forksCount) + Const.forksExplainString
+        openIssuesCountLabel.text = formatNumberToStringWithSeparator(model.openIssuesCount) + Const.openIssuesExplainString
         
         if let url = URL(string: model.owner.profileImageString) {
             userImageView.sd_setImage(with: url, placeholderImage: defaultImage) { [weak self] (image, error, _, _) in
@@ -219,21 +236,21 @@ extension DetailViewController {
         // backgroundCardViewのSubViewのUIの equalTo Leading Constraint設定
         [userNameLabel, repositoryNameLabel, descriptionLabel, starButton].forEach { view in
             view.snp.makeConstraints { constraint in
-                constraint.leading.equalTo(backgroundCardView.snp.leading).offset(Constants.leftPadding)
+                constraint.leading.equalTo(backgroundCardView.snp.leading).offset(Const.leftPadding)
             }
         }
         
         // backgroundCardViewのSubViewのUIの greaterThanOrEqualTo Leading Constraint設定
         [watchersCountLabel, forksCountLabel, openIssuesCountLabel].forEach { view in
             view.snp.makeConstraints { constraint in
-                constraint.leading.greaterThanOrEqualTo(backgroundCardView.snp.leading).offset(Constants.leftPadding)
+                constraint.leading.greaterThanOrEqualTo(backgroundCardView.snp.leading).offset(Const.leftPadding)
             }
         }
         
         // backgroundCardViewのSubViewのUIのtrailing Constraint設定
         [userNameLabel, repositoryNameLabel, descriptionLabel, languageNameLabel, watchersCountLabel, forksCountLabel, openIssuesCountLabel].forEach { view in
             view.snp.makeConstraints { constraint in
-                constraint.trailing.equalTo(backgroundCardView.snp.trailing).offset(-Constants.insetRightPadding)
+                constraint.trailing.equalTo(backgroundCardView.snp.trailing).offset(-Const.rightPadding)
             }
         }
         
