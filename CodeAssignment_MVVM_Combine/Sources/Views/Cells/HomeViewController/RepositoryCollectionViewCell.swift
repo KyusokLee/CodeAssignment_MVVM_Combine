@@ -10,6 +10,13 @@ import Combine
 import SnapKit
 import SDWebImage
 
+private enum Const {
+    /// Cellで使うleftPadding
+    static let leftPadding: CGFloat = 20
+    /// Cellで使うRightPadding
+    static let rightPadding: CGFloat = 35
+}
+
 /// UICollectionViewCellにaccessoryTypeを表すために、UICollectionViewから UICollectionViewListCellに変更
 final class RepositoryCollectionViewCell: UICollectionViewListCell {
     /// リポジトリ名を表示するlabel
@@ -30,7 +37,7 @@ final class RepositoryCollectionViewCell: UICollectionViewListCell {
     }()
     
     /** Userのプロフィール画像と名前を括って表示するためのaccessoryView
-     - userAccessoryViewは、userImageViewとuserNameLabelのサイズに合わせて動的に決める予定
+    - userAccessoryViewは、userImageViewとuserNameLabelのサイズに合わせて動的に決める予定
      */
     private lazy var userAccessoryView: UIView = {
         let view = UIView()
@@ -43,6 +50,7 @@ final class RepositoryCollectionViewCell: UICollectionViewListCell {
     private lazy var userImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
+        imageView.image = UIImage(systemName: "person.circle")?.withTintColor(.systemMint, renderingMode: .alwaysOriginal)
         return imageView
     }()
     
@@ -54,12 +62,17 @@ final class RepositoryCollectionViewCell: UICollectionViewListCell {
         return label
     }()
     
-    /// お気に入りに入れるためのStarボタン
-    // Starボタンは、VCからのInput 処理をbindする必要があるので、currentValueSubjectの方に変えた方がいいかも
+    /** お気に入りに入れるためのStarボタン
+    - Starボタンは、VCからのInput 処理をbindする必要があるので、currentValueSubjectの方に変えた方がいいかも
+     */
     private lazy var starButton: UIButton = {
-        let button = UIButton()
-        let starImage = UIImage(systemName: "star")?.withTintColor(.systemGray3, renderingMode: .alwaysOriginal)
-        button.setImage(starImage, for: .normal)
+        var config = UIButton.Configuration.plain()
+        config.image = UIImage(systemName: "star")?.withTintColor(.systemGray3, renderingMode: .alwaysOriginal)
+        config.contentInsets = .zero
+        config.imagePadding = .zero
+        config.imagePlacement = .leading
+        config.buttonSize = .small
+        let button = UIButton(configuration: config)
         return button
     }()
     
@@ -99,8 +112,8 @@ final class RepositoryCollectionViewCell: UICollectionViewListCell {
     }
     
     /** Cellレイアウトが確定されたタイミングで呼び出されるので、CellのSubViewのCornerRadiusのような設定が可能
-     - lazy varのクロージャ内ではビューのフレームがまだ決定されていないため、frame.heightを使用しても正しい値を取得できない
-     - そのため、layoutSubViewsをオーバーライドして設定する
+    - lazy varのクロージャ内ではビューのフレームがまだ決定されていないため、frame.heightを使用しても正しい値を取得できない
+    - そのため、layoutSubViewsをオーバーライドして設定する
     */
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -119,7 +132,7 @@ extension RepositoryCollectionViewCell {
         nameLabel.text = model.name
         descriptionLabel.text = model.description
         userNameLabel.text = model.owner.userName
-        starCountsLabel.text = model.stringFormattedStargazersCountWithKanji
+        starCountsLabel.text = model.stringFormattedStargazersCount
         languageNameLabel.text = model.language
         
         if let url = URL(string: model.owner.profileImageString) {
@@ -150,11 +163,10 @@ extension RepositoryCollectionViewCell {
         contentView.addSubview(descriptionLabel)
         userAccessoryView.addSubview(userImageView)
         userAccessoryView.addSubview(userNameLabel)
-        contentView.addSubview(userAccessoryView)
-        contentView.addSubview(starButton)
-        contentView.addSubview(starCountsLabel)
-        contentView.addSubview(languageColorView)
-        contentView.addSubview(languageNameLabel)
+        
+        [userAccessoryView, starButton, starCountsLabel, languageColorView, languageNameLabel].forEach { view in
+            contentView.addSubview(view)
+        }
     }
     
     /* MARK: -
@@ -181,14 +193,14 @@ extension RepositoryCollectionViewCell {
         // 各SubViewの共通のleading offset設定 (contentView.snp.leadingに合わせる)
         [nameLabel, descriptionLabel, userAccessoryView, starButton].forEach { view in
             view.snp.makeConstraints { constraint in
-                constraint.leading.equalTo(contentView.snp.leading).offset(Constants.leftPadding)
+                constraint.leading.equalTo(contentView.snp.leading).offset(Const.leftPadding)
             }
         }
         
         // 各SubViewの共通のtrailing offset設定 (contentView.snp.trailingに合わせる)
         [nameLabel, descriptionLabel, userAccessoryView, languageNameLabel].forEach { view in
             view.snp.makeConstraints { constraint in
-                constraint.trailing.lessThanOrEqualTo(contentView.snp.trailing).offset(-(Constants.rightPadding))
+                constraint.trailing.lessThanOrEqualTo(contentView.snp.trailing).offset(-(Const.rightPadding))
             }
         }
         
@@ -222,16 +234,14 @@ extension RepositoryCollectionViewCell {
         
         // starButtonのConstraints
         starButton.snp.makeConstraints { constraint in
-            constraint.height.equalTo(25)
-            constraint.width.equalTo(25)
             constraint.top.equalTo(userAccessoryView.snp.bottom).offset(20)
-            constraint.bottom.equalTo(contentView.snp.bottom).offset(-8)
+            constraint.centerY.equalTo(starCountsLabel.snp.centerY)
         }
         
         // starCountsLabelのConstraints
         starCountsLabel.snp.makeConstraints { constraint in
-            constraint.centerY.equalTo(starButton.snp.centerY)
             constraint.leading.equalTo(starButton.snp.trailing).offset(5)
+            constraint.bottom.lessThanOrEqualTo(contentView.snp.bottom).offset(-8)
         }
         
         // languageColorViewのConstraints
@@ -245,7 +255,7 @@ extension RepositoryCollectionViewCell {
         
         // languageNameLabelのConstraints
         languageNameLabel.snp.makeConstraints { constraint in
-            constraint.centerY.equalTo(languageColorView.snp.centerY)
+            constraint.centerY.equalTo(starCountsLabel.snp.centerY)
         }
     }
 }

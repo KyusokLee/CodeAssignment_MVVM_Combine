@@ -17,7 +17,6 @@ protocol GitHubAPIClientProtocol {
     func buildUpRequest(type: GitHubAPIType) -> URLRequest?
 }
 
-// Structにデコードする (指定)
 struct GitHubSearchRepositoriesRequest: GitHubAPIClientProtocol {
     let searchQueryWord: String
     
