@@ -18,8 +18,7 @@ class HomeViewController: UIViewController {
      */
     private var cancellables = Set<AnyCancellable>()
     
-    /// FlowLayout
-    private let compositionalLayout: UICollectionViewLayout = {
+    private let layout: UICollectionViewLayout = {
         var config = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
         config.headerMode = .none
         config.footerMode = .none
@@ -27,7 +26,7 @@ class HomeViewController: UIViewController {
     }()
     
     private lazy var repositoryCollectionView: UICollectionView = {
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: compositionalLayout)
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.backgroundColor = .secondarySystemBackground
