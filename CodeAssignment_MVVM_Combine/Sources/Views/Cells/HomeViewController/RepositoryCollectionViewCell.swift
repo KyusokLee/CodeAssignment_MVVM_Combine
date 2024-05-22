@@ -10,6 +10,13 @@ import Combine
 import SnapKit
 import SDWebImage
 
+private enum Const {
+    /// Cellで使うleftPadding
+    static let leftPadding: CGFloat = 20
+    /// Cellで使うRightPadding
+    static let rightPadding: CGFloat = 35
+}
+
 /// UICollectionViewCellにaccessoryTypeを表すために、UICollectionViewから UICollectionViewListCellに変更
 final class RepositoryCollectionViewCell: UICollectionViewListCell {
     /// リポジトリ名を表示するlabel
@@ -150,11 +157,10 @@ extension RepositoryCollectionViewCell {
         contentView.addSubview(descriptionLabel)
         userAccessoryView.addSubview(userImageView)
         userAccessoryView.addSubview(userNameLabel)
-        contentView.addSubview(userAccessoryView)
-        contentView.addSubview(starButton)
-        contentView.addSubview(starCountsLabel)
-        contentView.addSubview(languageColorView)
-        contentView.addSubview(languageNameLabel)
+        
+        [userAccessoryView, starButton, starCountsLabel, languageColorView, languageNameLabel].forEach { view in
+            contentView.addSubview(view)
+        }
     }
     
     /* MARK: -
@@ -181,14 +187,14 @@ extension RepositoryCollectionViewCell {
         // 各SubViewの共通のleading offset設定 (contentView.snp.leadingに合わせる)
         [nameLabel, descriptionLabel, userAccessoryView, starButton].forEach { view in
             view.snp.makeConstraints { constraint in
-                constraint.leading.equalTo(contentView.snp.leading).offset(Constants.leftPadding)
+                constraint.leading.equalTo(contentView.snp.leading).offset(Const.leftPadding)
             }
         }
         
         // 各SubViewの共通のtrailing offset設定 (contentView.snp.trailingに合わせる)
         [nameLabel, descriptionLabel, userAccessoryView, languageNameLabel].forEach { view in
             view.snp.makeConstraints { constraint in
-                constraint.trailing.lessThanOrEqualTo(contentView.snp.trailing).offset(-(Constants.rightPadding))
+                constraint.trailing.lessThanOrEqualTo(contentView.snp.trailing).offset(-(Const.rightPadding))
             }
         }
         

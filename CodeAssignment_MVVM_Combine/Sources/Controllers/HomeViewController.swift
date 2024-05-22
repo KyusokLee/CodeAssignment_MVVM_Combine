@@ -129,7 +129,6 @@ extension HomeViewController {
 }
 
 // MARK: - UISearchController Deleage
-// 今後、検索候補とか表示したい
 extension HomeViewController: UISearchControllerDelegate {
     
 }
