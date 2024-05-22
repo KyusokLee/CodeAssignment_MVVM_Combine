@@ -49,8 +49,15 @@ struct GitHubSearchRepositoriesRequest: GitHubAPIClientProtocol {
     func buildUpRequest(type: GitHubAPIType) -> URLRequest? {
         switch type {
         case .searchRepositories:
-            // まずは、swiftをクエリに入れて検索する
             let urlString = "https://api.github.com/search/repositories?q=\(searchQueryWord)"
+            guard let url = URL(string: urlString) else { return nil }
+            var request = URLRequest(url: url)
+            request.httpMethod = "GET"
+            
+            return request
+        case .starRepository:
+            // repository owner usernameと repository name必須
+            let urlString = "https://api.github.com/user/starred/repositories?q=\(searchQueryWord)"
             guard let url = URL(string: urlString) else { return nil }
             var request = URLRequest(url: url)
             request.httpMethod = "GET"
