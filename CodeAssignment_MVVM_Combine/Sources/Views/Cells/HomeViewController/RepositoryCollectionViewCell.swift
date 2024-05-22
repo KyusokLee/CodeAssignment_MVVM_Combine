@@ -126,7 +126,7 @@ extension RepositoryCollectionViewCell {
         nameLabel.text = model.name
         descriptionLabel.text = model.description
         userNameLabel.text = model.owner.userName
-        starCountsLabel.text = model.stringFormattedStargazersCountWithKanji
+        starCountsLabel.text = model.stringFormattedStargazersCount
         languageNameLabel.text = model.language
         
         if let url = URL(string: model.owner.profileImageString) {

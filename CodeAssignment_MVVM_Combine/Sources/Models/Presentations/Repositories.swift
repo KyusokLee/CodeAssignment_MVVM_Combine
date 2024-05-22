@@ -25,7 +25,7 @@ struct Repositories {
         var stargazersCount: Int
         
         // computed properties (ex: 62300 -> 6.2万)
-        var stringFormattedStargazersCountWithKanji: String {
+        var stringFormattedStargazersCount: String {
 //            guard let stargazersCount else { return "0" }
             return stargazersCount >= Constants.numberFormatThreshold ? String(format: "%.1f万", Double(stargazersCount) / Double(Constants.numberFormatThreshold)) : String(stargazersCount)
         }
