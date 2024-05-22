@@ -13,19 +13,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        /// UIWindowsのアンラップ
+        // UIWindowsのアンラップ
         guard let windowScene = (scene as? UIWindowScene) else { return }
-        /// Window生成
+        // Window生成
         // Storyboardを使わないときは、Windowのインスタンスを直接生成して設定する必要がある
         let window = UIWindow(windowScene: windowScene)
-        /// UINavigationControllerでembeddedしたViewをRoot Viewとして設定
+        // UINavigationControllerでembeddedしたViewをRoot Viewとして設定
         window.rootViewController = UINavigationController(rootViewController: HomeViewController())
         self.window = window
-        /** Key Window生成
-        - makeKeyAndVisible: 指定したWindowを他の同一レベルもしくは以下のレベルのすべてのWindowより最前面に表示する
-        - 表示中のWindowの上から新たな画面を表示させることができる
-        - これを利用して、表示中の画面に関わらずモーダル表示ができる（全てのユーザにお知らせを表示したい場合などに有用らしい）
-         */
+        // Key Window生成
+        // makeKeyAndVisible: 指定したWindowを他の同一レベルもしくは以下のレベルのすべてのWindowより最前面に表示する
+        // 表示中のWindowの上から新たな画面を表示させることができる
+        // これを利用して、表示中の画面に関わらずモーダル表示ができる（全てのユーザにお知らせを表示したい場合などに有用らしい）
         window.makeKeyAndVisible()
     }
 

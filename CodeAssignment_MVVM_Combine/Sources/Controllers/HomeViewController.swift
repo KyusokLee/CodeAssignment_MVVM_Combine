@@ -18,8 +18,7 @@ class HomeViewController: UIViewController {
      */
     private var cancellables = Set<AnyCancellable>()
     
-    /// FlowLayout
-    private let compositionalLayout: UICollectionViewLayout = {
+    private let layout: UICollectionViewLayout = {
         var config = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
         config.headerMode = .none
         config.footerMode = .none
@@ -27,7 +26,7 @@ class HomeViewController: UIViewController {
     }()
     
     private lazy var repositoryCollectionView: UICollectionView = {
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: compositionalLayout)
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.backgroundColor = .secondarySystemBackground
@@ -37,7 +36,7 @@ class HomeViewController: UIViewController {
     }()
     
     /** RepositoryCollectionViewCellをCellRegistrationで設定
-     - <CellのType(クラス名とか), Itemで表示するもの>
+    - <CellのType(クラス名とか), Itemで表示するもの>
      */
     private let repositoryCell = UICollectionView.CellRegistration<RepositoryCollectionViewCell, Repositories.Repository>() { cell, indexPath, repository in
         cell.backgroundColor = .white
@@ -90,7 +89,7 @@ extension HomeViewController {
     }
     
     /** SearchControllerのセットアップ
-     - NavigationControllerの中で表示するアニメーション付きのsearchBarはSearchControllerで実現できる
+    - NavigationControllerの中で表示するアニメーション付きのsearchBarはSearchControllerで実現できる
      */
     private func setupSearchController() {
         let searchController = UISearchController(searchResultsController: nil)
@@ -132,7 +131,6 @@ extension HomeViewController {
 }
 
 // MARK: - UISearchController Deleage
-// 今後、検索候補とか表示したい
 extension HomeViewController: UISearchControllerDelegate {
     
 }
