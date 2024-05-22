@@ -179,8 +179,9 @@ extension DetailViewController {
                     // ロード中にエラーが発生する場合や、URLが無効な場合はdefaultの画像を表示
                     print("error: \(error.localizedDescription)")
                     self.userImageView.image = defaultImage
+                } else {
+                    self.userImageView.image = image
                 }
-                self.userImageView.image = image
             }
         } else {
             userImageView.image = defaultImage
