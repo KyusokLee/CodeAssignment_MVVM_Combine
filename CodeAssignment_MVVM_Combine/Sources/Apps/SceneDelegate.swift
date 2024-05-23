@@ -15,6 +15,19 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // UIWindowsのアンラップ
         guard let windowScene = (scene as? UIWindowScene) else { return }
+        
+        // Info.Plistに記入したGitHub Client SecretをKeyChainにsave
+        if let clientSecret = Bundle.main.object(forInfoDictionaryKey: "GitHubClientSecret") as? String {
+            let secretData = clientSecret.data(using: .utf8)!
+            KeychainManager.shared.save(secretData, service: "GitHub", account: "GitHubClientSecret")
+        }
+        
+        // Info.Plistに記入したGitHub Client ID를 키체인에 저장
+        if let clientId = Bundle.main.object(forInfoDictionaryKey: "GitHubClientID") as? String {
+            let clientIdData = clientId.data(using: .utf8)!
+            KeychainManager.shared.save(clientIdData, service: "GitHub", account: "GitHubClientID")
+        }
+        
         // Window生成
         // Storyboardを使わないときは、Windowのインスタンスを直接生成して設定する必要がある
         let window = UIWindow(windowScene: windowScene)

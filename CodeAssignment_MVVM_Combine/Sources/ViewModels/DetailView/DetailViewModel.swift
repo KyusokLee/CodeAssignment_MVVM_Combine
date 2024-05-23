@@ -15,11 +15,11 @@ final class DetailViewModel {
      - PassThroughSubjectは、値を保持しないので、CurrentValueSubjectを通してVCに値を渡す
      - RepositoriesForViewはただ、HomeViewControllerに渡す用のModelである
      */
-    var repositorySubject = CurrentValueSubject<Repositories.Repository, Never>(nil)
+//    var repositorySubject = CurrentValueSubject<Repositories.Repository, Never>(nil)
     /// AnyPublisher：他のTypeでwrapしたものをなくして、AnyPublisherで返す
-    var repositoryPublisher: AnyPublisher<Repositories.Repository, Never> {
-        return repositorySubject.eraseToAnyPublisher()
-    }
+//    var repositoryPublisher: AnyPublisher<Repositories.Repository, Never> {
+//        return repositorySubject.eraseToAnyPublisher()
+//    }
     
     /// POST リクエストを送信し、repositoryにスターをつけるメソッド
     func starRepository(owner: String, repo: String) {

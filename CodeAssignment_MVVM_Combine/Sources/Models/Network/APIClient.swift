@@ -46,6 +46,9 @@ struct GitHubSearchRepositoriesRequest: GitHubAPIClientProtocol {
      - リクエストを立てる処理は分離することで、requestだけの処理ができるのではないかと考える
      */
     func buildUpRequest(type: GitHubAPIType) -> URLRequest? {
+        // KeyChainManagerを用いて、Token取得
+        guard let token = KeychainManager.shared.read(service: <#T##String#>, account: <#T##String#>)
+        
         switch type {
         case .searchRepositories:
             let urlString = "https://api.github.com/search/repositories?q=\(searchQueryWord)"
@@ -54,7 +57,7 @@ struct GitHubSearchRepositoriesRequest: GitHubAPIClientProtocol {
             request.httpMethod = "GET"
             
             return request
-        case .starRepository:
+        case .starRepository(let owner, let repo):
             // repository owner usernameと repository name必須
             let urlString = "https://api.github.com/user/starred/repositories?q=\(searchQueryWord)"
             guard let url = URL(string: urlString) else { return nil }
