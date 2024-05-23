@@ -27,7 +27,7 @@ struct Repositories {
         
         // computed properties (ex: 62300 -> 6.2万)
         var stringFormattedStargazersCount: String {
-            return stargazersCount >= Constants.numberFormatThreshold ? String(format: "%.1f万", Double(stargazersCount) / Double(Constants.numberFormatThreshold)) : String(stargazersCount)
+            stargazersCount >= Constants.numberFormatThreshold ? String(format: "%.1f万", Double(stargazersCount) / Double(Constants.numberFormatThreshold)) : String(stargazersCount)
         }
 
         struct RepositoryUser {
