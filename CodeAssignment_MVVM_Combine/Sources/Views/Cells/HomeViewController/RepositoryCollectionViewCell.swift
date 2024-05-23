@@ -17,7 +17,7 @@ private enum Const {
     static let rightPadding: CGFloat = 35
 }
 
-/// UICollectionViewCellにaccessoryTypeを表すために、UICollectionViewから UICollectionViewListCellに変更
+/// リポジトリの情報を表示するCell
 final class RepositoryCollectionViewCell: UICollectionViewListCell {
     /// リポジトリ名を表示するlabel
     private lazy var nameLabel: UILabel = {
