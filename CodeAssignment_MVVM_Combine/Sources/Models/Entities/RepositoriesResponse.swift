@@ -14,6 +14,7 @@ import Foundation
 - itemsの中のownerの中に特定したuserのデータが格納されている
 - 言語は、今後色もつけて画面に表示したい
 - APIで定義したKeyの名前を変えたのは、ViewControllerとかでそのkeyのデータを用いるとき、わかりやすくするためである。そのため、decodingのStrategyは自動で変換されるメソッドを使うのが良さそう
+- 参考URL : https://docs.github.com/ja/rest/search/search?apiVersion=2022-11-28#search-repositories
 */
 struct RepositoriesResponse: Codable {
     /// queryに当てはまる結果の数
