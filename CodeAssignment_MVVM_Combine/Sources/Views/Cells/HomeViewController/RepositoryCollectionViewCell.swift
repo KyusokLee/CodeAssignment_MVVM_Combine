@@ -160,8 +160,8 @@ extension RepositoryCollectionViewCell {
         userAccessoryView.addSubview(userImageView)
         userAccessoryView.addSubview(userNameLabel)
         
-        [userAccessoryView, starButton, starCountsLabel, languageColorView, languageNameLabel].forEach { view in
-            contentView.addSubview(view)
+        [userAccessoryView, starButton, starCountsLabel, languageColorView, languageNameLabel].forEach {
+            contentView.addSubview($0)
         }
     }
     
@@ -194,9 +194,9 @@ extension RepositoryCollectionViewCell {
         }
         
         // 各SubViewの共通のtrailing offset設定 (contentView.snp.trailingに合わせる)
-        [nameLabel, descriptionLabel, userAccessoryView, languageNameLabel].forEach { view in
-            view.snp.makeConstraints { constraint in
-                constraint.trailing.lessThanOrEqualTo(contentView.snp.trailing).offset(-(Const.rightPadding))
+        [nameLabel, descriptionLabel, userAccessoryView, languageNameLabel].forEach {
+            $0.snp.makeConstraints {
+                $0.trailing.lessThanOrEqualTo(contentView.snp.trailing).offset(-(Const.rightPadding))
             }
         }
         
