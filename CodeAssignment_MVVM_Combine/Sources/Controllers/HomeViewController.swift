@@ -80,7 +80,6 @@ extension HomeViewController {
         appearance.shadowColor = .clear
         
         navigationController?.navigationBar.standardAppearance = appearance
-        navigationController?.navigationBar.scrollEdgeAppearance = appearance
         setupSearchController()
     }
     
