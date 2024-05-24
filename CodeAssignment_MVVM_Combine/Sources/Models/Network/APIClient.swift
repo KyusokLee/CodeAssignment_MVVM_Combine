@@ -62,7 +62,7 @@ struct GitHubSearchRepositoriesRequest: GitHubAPIClientProtocol {
             var request = URLRequest(url: url)
             request.httpMethod = "PUT"
             // Authorization ヘッダーにトークン設定
-//            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+            request.setValue("Bearer \(Tokens.accessToken)", forHTTPHeaderField: "Authorization")
             
             return request
         }
@@ -93,11 +93,17 @@ class APIClient {
             
             // レスポンスが有効なレスポンス（200 ~ 299）であるなら、decodeを実行
             if response.isResponseAvailable() {
-                do {
-                    let results = try requestProtocol.decode(from: data)
-                    completion(.success(results))
-                } catch {
-                    completion(.failure(ErrorType.decodeError))
+                switch type {
+                case .searchRepositories:
+                    do {
+                        let results = try requestProtocol.decode(from: data)
+                        completion(.success(results))
+                    } catch {
+                        completion(.failure(ErrorType.decodeError))
+                    }
+                case .starRepository(owner: let owner, repo: let repo):
+                    // Modelの返り値はいらないので、nil
+                    completion(.success(nil))
                 }
             } else {
                 // レスポンスが無効なレスポンスなら、APIサーバー側にエラーがある

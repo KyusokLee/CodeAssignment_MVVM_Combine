@@ -58,4 +58,4 @@ Dependencies/
 .DS_Store
 
 # Ignore Tokens.swift file
-CodeAssignment_MVVM_Combine/Sources/Models/Enums/Tokens.swift
+/CodeAssignment_MVVM_Combine/Sources/Models/Enums/Tokens.swift
