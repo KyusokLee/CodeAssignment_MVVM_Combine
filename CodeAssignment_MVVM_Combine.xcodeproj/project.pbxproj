@@ -22,6 +22,7 @@
 		5D0770352BE38D8C007F0724 /* ErrorType+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0770342BE38D8C007F0724 /* ErrorType+Utils.swift */; };
 		5D0770372BE38E20007F0724 /* UIColor+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0770362BE38E20007F0724 /* UIColor+Utils.swift */; };
 		5D2880942BEA02F9005DC50A /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2880932BEA02F9005DC50A /* HomeViewModel.swift */; };
+		5D5607342C00358C0087676E /* OAuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D5607332C00358C0087676E /* OAuthManager.swift */; };
 		5D89F8952BFDB91F00CE7C30 /* DetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D89F8942BFDB91F00CE7C30 /* DetailViewModel.swift */; };
 		5DA068092BFF13970038CD89 /* KeychainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA068082BFF13970038CD89 /* KeychainManager.swift */; };
 		5DB771652BF1B951001570ED /* Repositories.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB771642BF1B951001570ED /* Repositories.swift */; };
@@ -69,6 +70,7 @@
 		5D0770342BE38D8C007F0724 /* ErrorType+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ErrorType+Utils.swift"; sourceTree = "<group>"; };
 		5D0770362BE38E20007F0724 /* UIColor+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Utils.swift"; sourceTree = "<group>"; };
 		5D2880932BEA02F9005DC50A /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		5D5607332C00358C0087676E /* OAuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthManager.swift; sourceTree = "<group>"; };
 		5D89F8942BFDB91F00CE7C30 /* DetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewModel.swift; sourceTree = "<group>"; };
 		5DA068082BFF13970038CD89 /* KeychainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainManager.swift; sourceTree = "<group>"; };
 		5DB771642BF1B951001570ED /* Repositories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Repositories.swift; sourceTree = "<group>"; };
@@ -175,6 +177,7 @@
 		5D07701E2BE32BF6007F0724 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				5D5607322C0035750087676E /* OAuth */,
 				5DA068072BFF13820038CD89 /* Keychain */,
 				5DB771632BF1B934001570ED /* Presentations */,
 				5DF65F502BEB41580070651B /* Entities */,
@@ -274,6 +277,14 @@
 				5D2880932BEA02F9005DC50A /* HomeViewModel.swift */,
 			);
 			path = Home;
+			sourceTree = "<group>";
+		};
+		5D5607322C0035750087676E /* OAuth */ = {
+			isa = PBXGroup;
+			children = (
+				5D5607332C00358C0087676E /* OAuthManager.swift */,
+			);
+			path = OAuth;
 			sourceTree = "<group>";
 		};
 		5D89F8932BFDB90D00CE7C30 /* DetailView */ = {
@@ -486,6 +497,7 @@
 				5DB771692BF1F682001570ED /* RepositoryCollectionViewCell.swift in Sources */,
 				5DB771652BF1B951001570ED /* Repositories.swift in Sources */,
 				5D0770352BE38D8C007F0724 /* ErrorType+Utils.swift in Sources */,
+				5D5607342C00358C0087676E /* OAuthManager.swift in Sources */,
 				5DA068092BFF13970038CD89 /* KeychainManager.swift in Sources */,
 				5DF65F522BEB41670070651B /* RepositoriesResponse.swift in Sources */,
 				5D076FED2BE32B9C007F0724 /* AppDelegate.swift in Sources */,
