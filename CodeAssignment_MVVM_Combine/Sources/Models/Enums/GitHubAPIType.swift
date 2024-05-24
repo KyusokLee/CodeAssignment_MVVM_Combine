@@ -10,5 +10,4 @@ import Foundation
 /// 利用するGitHub APIのエンドポイントを分類して定義し、今後 Userなども検索できるようにする
 enum GitHubAPIType {
     case searchRepositories
-    /// case searchUsers
 }

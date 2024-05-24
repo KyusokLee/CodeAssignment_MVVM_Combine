@@ -17,7 +17,6 @@ protocol GitHubAPIClientProtocol {
     func buildUpRequest(type: GitHubAPIType) -> URLRequest?
 }
 
-// Structにデコードする (指定)
 struct GitHubSearchRepositoriesRequest: GitHubAPIClientProtocol {
     let searchQueryWord: String
     
@@ -49,15 +48,10 @@ struct GitHubSearchRepositoriesRequest: GitHubAPIClientProtocol {
     func buildUpRequest(type: GitHubAPIType) -> URLRequest? {
         switch type {
         case .searchRepositories:
-            // まずは、swiftをクエリに入れて検索する
             let urlString = "https://api.github.com/search/repositories?q=\(searchQueryWord)"
             guard let url = URL(string: urlString) else { return nil }
             var request = URLRequest(url: url)
-            let headers: [String: String] = [:]
             request.httpMethod = "GET"
-            headers.forEach { key, value in
-                request.addValue(value, forHTTPHeaderField: key)
-            }
             
             return request
         }
@@ -74,7 +68,7 @@ class APIClient {
     func request<T: GitHubAPIClientProtocol>(_ requestProtocol: T, type: GitHubAPIType, completion: @escaping(Result<T.Model?, ErrorType>) -> Void) {
         guard let request = requestProtocol.buildUpRequest(type: type) else { return }
         let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
-            if let error {
+            if let _ = error {
                 completion(.failure(ErrorType.unknownError))
                 return
             }

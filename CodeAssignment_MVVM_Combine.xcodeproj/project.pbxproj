@@ -15,7 +15,6 @@
 		5D0770042BE32B9E007F0724 /* CodeAssignment_MVVM_CombineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0770032BE32B9E007F0724 /* CodeAssignment_MVVM_CombineTests.swift */; };
 		5D07700E2BE32B9E007F0724 /* CodeAssignment_MVVM_CombineUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D07700D2BE32B9E007F0724 /* CodeAssignment_MVVM_CombineUITests.swift */; };
 		5D0770102BE32B9E007F0724 /* CodeAssignment_MVVM_CombineUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D07700F2BE32B9E007F0724 /* CodeAssignment_MVVM_CombineUITestsLaunchTests.swift */; };
-		5D0770242BE32F19007F0724 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 5D0770232BE32F19007F0724 /* .gitignore */; };
 		5D0770272BE33EFD007F0724 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 5D0770262BE33EFD007F0724 /* SnapKit */; };
 		5D0770292BE33EFD007F0724 /* SnapKit-Dynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 5D0770282BE33EFD007F0724 /* SnapKit-Dynamic */; };
 		5D07702D2BE38CA1007F0724 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D07702C2BE38CA1007F0724 /* APIClient.swift */; };
@@ -24,9 +23,12 @@
 		5D0770372BE38E20007F0724 /* UIColor+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0770362BE38E20007F0724 /* UIColor+Utils.swift */; };
 		5D2880942BEA02F9005DC50A /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2880932BEA02F9005DC50A /* HomeViewModel.swift */; };
 		5DB771652BF1B951001570ED /* Repositories.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB771642BF1B951001570ED /* Repositories.swift */; };
+		5DB771692BF1F682001570ED /* RepositoryCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB771682BF1F682001570ED /* RepositoryCollectionViewCell.swift */; };
+		5DB7C31E2BF4D75B0074AFC1 /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = 5DB7C31D2BF4D75B0074AFC1 /* SDWebImage */; };
 		5DF65F522BEB41670070651B /* RepositoriesResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF65F512BEB41670070651B /* RepositoriesResponse.swift */; };
 		5DF65F552BEB4C410070651B /* HTMLURLResponse+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF65F542BEB4C410070651B /* HTMLURLResponse+Utils.swift */; };
 		5DF65F5C2BEB907A0070651B /* GitHubAPIType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF65F5B2BEB907A0070651B /* GitHubAPIType.swift */; };
+		5DF951502BF7369100F6A2AD /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF9514F2BF7369100F6A2AD /* Constants.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,16 +61,17 @@
 		5D0770092BE32B9E007F0724 /* CodeAssignment_MVVM_CombineUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CodeAssignment_MVVM_CombineUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5D07700D2BE32B9E007F0724 /* CodeAssignment_MVVM_CombineUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeAssignment_MVVM_CombineUITests.swift; sourceTree = "<group>"; };
 		5D07700F2BE32B9E007F0724 /* CodeAssignment_MVVM_CombineUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeAssignment_MVVM_CombineUITestsLaunchTests.swift; sourceTree = "<group>"; };
-		5D0770232BE32F19007F0724 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		5D07702C2BE38CA1007F0724 /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
 		5D07702F2BE38D38007F0724 /* ErrorType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorType.swift; sourceTree = "<group>"; };
 		5D0770342BE38D8C007F0724 /* ErrorType+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ErrorType+Utils.swift"; sourceTree = "<group>"; };
 		5D0770362BE38E20007F0724 /* UIColor+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Utils.swift"; sourceTree = "<group>"; };
 		5D2880932BEA02F9005DC50A /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		5DB771642BF1B951001570ED /* Repositories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Repositories.swift; sourceTree = "<group>"; };
+		5DB771682BF1F682001570ED /* RepositoryCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryCollectionViewCell.swift; sourceTree = "<group>"; };
 		5DF65F512BEB41670070651B /* RepositoriesResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoriesResponse.swift; sourceTree = "<group>"; };
 		5DF65F542BEB4C410070651B /* HTMLURLResponse+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HTMLURLResponse+Utils.swift"; sourceTree = "<group>"; };
 		5DF65F5B2BEB907A0070651B /* GitHubAPIType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubAPIType.swift; sourceTree = "<group>"; };
+		5DF9514F2BF7369100F6A2AD /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,6 +79,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5DB7C31E2BF4D75B0074AFC1 /* SDWebImage in Frameworks */,
 				5D0770272BE33EFD007F0724 /* SnapKit in Frameworks */,
 				5D0770292BE33EFD007F0724 /* SnapKit-Dynamic in Frameworks */,
 			);
@@ -121,7 +125,6 @@
 		5D076FEB2BE32B9C007F0724 /* CodeAssignment_MVVM_Combine */ = {
 			isa = PBXGroup;
 			children = (
-				5D0770232BE32F19007F0724 /* .gitignore */,
 				5D0770202BE32C3C007F0724 /* Resources */,
 				5D0770212BE32C43007F0724 /* Sources */,
 			);
@@ -176,6 +179,7 @@
 		5D07701F2BE32C01007F0724 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				5DB771662BF1F64E001570ED /* Cells */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -234,6 +238,7 @@
 			children = (
 				5D07702F2BE38D38007F0724 /* ErrorType.swift */,
 				5DF65F5B2BEB907A0070651B /* GitHubAPIType.swift */,
+				5DF9514F2BF7369100F6A2AD /* Constants.swift */,
 			);
 			path = Enums;
 			sourceTree = "<group>";
@@ -268,6 +273,22 @@
 				5DB771642BF1B951001570ED /* Repositories.swift */,
 			);
 			path = Presentations;
+			sourceTree = "<group>";
+		};
+		5DB771662BF1F64E001570ED /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				5DB771672BF1F653001570ED /* HomeViewController */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
+		5DB771672BF1F653001570ED /* HomeViewController */ = {
+			isa = PBXGroup;
+			children = (
+				5DB771682BF1F682001570ED /* RepositoryCollectionViewCell.swift */,
+			);
+			path = HomeViewController;
 			sourceTree = "<group>";
 		};
 		5DF65F4D2BEB41270070651B /* Network */ = {
@@ -313,6 +334,7 @@
 			packageProductDependencies = (
 				5D0770262BE33EFD007F0724 /* SnapKit */,
 				5D0770282BE33EFD007F0724 /* SnapKit-Dynamic */,
+				5DB7C31D2BF4D75B0074AFC1 /* SDWebImage */,
 			);
 			productName = CodeAssignment_MVVM_Combine;
 			productReference = 5D076FE92BE32B9C007F0724 /* CodeAssignment_MVVM_Combine.app */;
@@ -388,6 +410,7 @@
 			mainGroup = 5D076FE02BE32B9C007F0724;
 			packageReferences = (
 				5D0770252BE33D0D007F0724 /* XCRemoteSwiftPackageReference "SnapKit" */,
+				5DB7C31C2BF4D75B0074AFC1 /* XCRemoteSwiftPackageReference "SDWebImage" */,
 			);
 			productRefGroup = 5D076FEA2BE32B9C007F0724 /* Products */;
 			projectDirPath = "";
@@ -405,7 +428,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5D0770242BE32F19007F0724 /* .gitignore in Resources */,
 				5D076FF92BE32B9E007F0724 /* LaunchScreen.storyboard in Resources */,
 				5D076FF62BE32B9D007F0724 /* Assets.xcassets in Resources */,
 			);
@@ -436,12 +458,14 @@
 				5DF65F5C2BEB907A0070651B /* GitHubAPIType.swift in Sources */,
 				5D2880942BEA02F9005DC50A /* HomeViewModel.swift in Sources */,
 				5D0770302BE38D38007F0724 /* ErrorType.swift in Sources */,
+				5DB771692BF1F682001570ED /* RepositoryCollectionViewCell.swift in Sources */,
 				5DB771652BF1B951001570ED /* Repositories.swift in Sources */,
 				5D0770352BE38D8C007F0724 /* ErrorType+Utils.swift in Sources */,
 				5DF65F522BEB41670070651B /* RepositoriesResponse.swift in Sources */,
 				5D076FED2BE32B9C007F0724 /* AppDelegate.swift in Sources */,
 				5D076FEF2BE32B9C007F0724 /* SceneDelegate.swift in Sources */,
 				5DF65F552BEB4C410070651B /* HTMLURLResponse+Utils.swift in Sources */,
+				5DF951502BF7369100F6A2AD /* Constants.swift in Sources */,
 				5D07702D2BE38CA1007F0724 /* APIClient.swift in Sources */,
 				5D0770372BE38E20007F0724 /* UIColor+Utils.swift in Sources */,
 			);
@@ -790,6 +814,14 @@
 				minimumVersion = 5.7.1;
 			};
 		};
+		5DB7C31C2BF4D75B0074AFC1 /* XCRemoteSwiftPackageReference "SDWebImage" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SDWebImage/SDWebImage";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.19.2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -802,6 +834,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 5D0770252BE33D0D007F0724 /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = "SnapKit-Dynamic";
+		};
+		5DB7C31D2BF4D75B0074AFC1 /* SDWebImage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5DB7C31C2BF4D75B0074AFC1 /* XCRemoteSwiftPackageReference "SDWebImage" */;
+			productName = SDWebImage;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

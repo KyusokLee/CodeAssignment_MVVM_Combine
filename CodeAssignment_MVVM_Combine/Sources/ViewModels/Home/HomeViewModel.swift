@@ -11,17 +11,24 @@ import Combine
 
 final class HomeViewModel {
     private let apiClient = APIClient()
-    /// HomeViewController側に渡すSubject（通路ってイメージ）
-    // RepositoriesForViewはただ、HomeViewControllerに渡す用のModelである
-    var repositoriesSubject = PassthroughSubject<Repositories, Never>()
+    /** HomeViewController側に渡すSubject（通路ってイメージ）
+    - PassThroughSubjectは、値を保持しないので、CurrentValueSubjectを通してVCに値を渡す
+    - RepositoriesForViewはただ、HomeViewControllerに渡す用のModelである
+     */
+    var repositoriesSubject = CurrentValueSubject<Repositories?, Never>(nil)
     /// AnyPublisher：他のTypeでwrapしたものをなくして、AnyPublisherで返す
-    var repositoriesPublisher: AnyPublisher<Repositories, Never> {
+    var repositoriesPublisher: AnyPublisher<Repositories?, Never> {
         return repositoriesSubject.eraseToAnyPublisher()
     }
     
     /// GET リクエストを送信し、repositoryを持ってくるメソッド
-    func didTapGetAPIButton() {
-        let requestProtocol = GitHubSearchRepositoriesRequest(searchQueryWord: "Swift")
+    func search(queryString searchWord: String) {
+        // 空文字や空白のみの文字列の検索を防ぐために、トリミングされた検索文字列が空でないことを確認
+        let trimmedQuery = searchWord.trimmingCharacters(in: .whitespacesAndNewlines)
+        // 空白の検索を防ぐ
+        guard !trimmedQuery.isEmpty else { return }
+        
+        let requestProtocol = GitHubSearchRepositoriesRequest(searchQueryWord: trimmedQuery)
         apiClient.request(requestProtocol, type: GitHubAPIType.searchRepositories) { result in
             switch result {
             case let .success(repositories):
