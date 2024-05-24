@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import UIKit
 
 enum Constants {
     /// 該当リポジトリをお気に入りした数値を短縮表示する基準
