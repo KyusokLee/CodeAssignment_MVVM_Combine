@@ -65,6 +65,14 @@ struct GitHubSearchRepositoriesRequest: GitHubAPIClientProtocol {
             request.setValue("Bearer \(Tokens.accessToken)", forHTTPHeaderField: "Authorization")
             
             return request
+        case .unstarRepository(owner: let owner, repo: let repo):
+            let urlString = "https://api.github.com/user/starred/\(owner)/\(repo)"
+            guard let url = URL(string: urlString) else { return nil }
+            var request = URLRequest(url: url)
+            request.httpMethod = "DELETE"
+            request.setValue("Bearer \(Tokens.accessToken)", forHTTPHeaderField: "Authorization")
+            
+            return request
         }
     }
 }
@@ -101,8 +109,11 @@ class APIClient {
                     } catch {
                         completion(.failure(ErrorType.decodeError))
                     }
-                case .starRepository(owner: let owner, repo: let repo):
+                case .starRepository(owner: _, repo: _):
+                    // リポジトリにスター付け・解除はdecode作業は不要なため、completionはsuccessのみ返す
                     // Modelの返り値はいらないので、nil
+                    completion(.success(nil))
+                case .unstarRepository(owner: _, repo: _):
                     completion(.success(nil))
                 }
             } else {

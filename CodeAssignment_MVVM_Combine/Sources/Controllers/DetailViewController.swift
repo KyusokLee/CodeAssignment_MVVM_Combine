@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 import SnapKit
 import SDWebImage
 
@@ -27,6 +28,9 @@ private enum Const {
 }
 
 final class DetailViewController: UIViewController {
+    
+    private let viewModel = DetailViewModel()
+    private var cancellables = Set<AnyCancellable>()
     
     /// ScrollViewで、backgroundCardViewをScroll可能にする
     private lazy var scrollView: UIScrollView = {
@@ -93,7 +97,12 @@ final class DetailViewController: UIViewController {
         config.contentInsets = .zero
         config.imagePadding = .zero
         config.imagePlacement = .all
+        
         let button = UIButton(configuration: config)
+        button.addAction(.init { [weak self] _ in
+            guard let self else { return }
+            self.didTapStarButton()
+        }, for: .touchUpInside)
         return button
     }()
     
@@ -156,6 +165,7 @@ final class DetailViewController: UIViewController {
         super.viewDidLoad()
 
         setupUI()
+        bind()
     }
 }
 
@@ -195,6 +205,16 @@ extension DetailViewController {
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .decimal
         return numberFormatter.string(from: NSNumber(value: number)) ?? ""
+    }
+    
+    private func bind() {
+        viewModel.starRepositorySubject
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isSeleted in
+                guard let self else { return }
+                self.updateStarButtonState(isSelected: isSeleted)
+            }
+            .store(in: &cancellables)
     }
     
     private func setupUI() {
@@ -316,6 +336,27 @@ extension DetailViewController {
         
         openIssuesCountLabel.snp.makeConstraints { constraint in
             constraint.bottom.equalTo(backgroundCardView.snp.bottom).offset(-20)
+        }
+    }
+    
+    func didTapStarButton() {
+        // Toggle
+        starButton.isSelected.toggle()
+        
+        if starButton.isSelected {
+            viewModel.starRepository(owner: userNameLabel.text!, repo: repositoryNameLabel.text!)
+        } else {
+            viewModel.unstarRepository(owner: userNameLabel.text!, repo: repositoryNameLabel.text!)
+        }
+    }
+    
+    func updateStarButtonState(isSelected: Bool) {
+        if isSelected {
+            starButton.setImage(UIImage(systemName: "star.fill"), for: .normal)
+            starButton.tintColor = .systemYellow
+        } else {
+            starButton.setImage(UIImage(systemName: "star"), for: .normal)
+            starButton.tintColor = .systemGray3
         }
     }
 }
