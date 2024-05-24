@@ -57,5 +57,5 @@ Dependencies/
 # Others
 .DS_Store
 
-# Ignore Info.plist to prevent exposing secrets
-Info.plist
+# Ignore Tokens.swift file
+CodeAssignment_MVVM_Combine/Sources/Models/Enums/Tokens.swift

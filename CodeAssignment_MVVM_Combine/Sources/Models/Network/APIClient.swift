@@ -56,10 +56,6 @@ struct GitHubSearchRepositoriesRequest: GitHubAPIClientProtocol {
             
             return request
         case .starRepository(let owner, let repo):
-//            // Access Tokenがないと、スター付けが不可能であるため、KeychainからToken取得
-//            guard let token = KeychainManager.shared.read(service: <#T##String#>, account: <#T##String#>) else {
-//                
-//            }
             // repository owner usernameと repository name必須
             let urlString = "https://api.github.com/user/starred/\(owner)/\(repo)"
             guard let url = URL(string: urlString) else { return nil }
