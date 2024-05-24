@@ -15,7 +15,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // UIWindowsのアンラップ
         guard let windowScene = (scene as? UIWindowScene) else { return }
-        
         // Window生成
         // Storyboardを使わないときは、Windowのインスタンスを直接生成して設定する必要がある
         let window = UIWindow(windowScene: windowScene)
