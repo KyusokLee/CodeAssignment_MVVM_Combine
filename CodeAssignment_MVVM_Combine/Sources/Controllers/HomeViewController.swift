@@ -82,9 +82,6 @@ extension HomeViewController {
 //        navigationController?.navigationBar.tintColor = .black
         navigationController?.navigationBar.topItem?.backButtonTitle = "戻る"
         navigationController?.navigationBar.standardAppearance = appearance
-        navigationController?.navigationBar.compactAppearance = appearance
-        navigationController?.navigationBar.compactScrollEdgeAppearance = appearance
-        navigationController?.navigationBar.scrollEdgeAppearance = appearance
         setupSearchController()
     }
     
