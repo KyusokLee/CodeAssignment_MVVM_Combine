@@ -16,6 +16,8 @@ final class HomeViewModel {
     - RepositoriesForViewはただ、HomeViewControllerに渡す用のModelである
      */
     var repositoriesSubject = CurrentValueSubject<Repositories?, Never>(nil)
+    /// Loading 状態を指すSubject
+    var loadingSubject = CurrentValueSubject<Bool, Never>(false)
     /// AnyPublisher：他のTypeでwrapしたものをなくして、AnyPublisherで返す
     var repositoriesPublisher: AnyPublisher<Repositories?, Never> {
         return repositoriesSubject.eraseToAnyPublisher()

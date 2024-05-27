@@ -13,6 +13,8 @@ import Combine
 class HomeViewController: UIViewController {
     /// ViewModel
     private let viewModel = HomeViewModel()
+    /// Custom Loading View
+    private let loadingView = LoadingView()
     /** storeでAnyCancellableを保存しておいて、当該の変数がdeinitされるとき、subscribeをキャンセルする方法
     - Setで複数のSubscription（購読）を１つにまとめることができ、Subscriptionの値を保持する
      */
@@ -109,6 +111,15 @@ extension HomeViewController {
             .sink { [weak self] _ in
                 guard let self else { return }
                 self.repositoryCollectionView.reloadData()
+                self.loadingView.isLoading = false
+            }
+            .store(in: &cancellables)
+        
+        viewModel.loadingSubject
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isLoading in
+                guard let self else { return }
+                self.loadingView.isLoading = isLoading
             }
             .store(in: &cancellables)
     }
@@ -116,6 +127,7 @@ extension HomeViewController {
     /// カスタムで作ったViewを全部追加する
     private func setAddSubViews() {
         view.addSubview(repositoryCollectionView)
+        view.addSubview(loadingView)
     }
     
     /// Layoutの制約を調整する
@@ -123,14 +135,21 @@ extension HomeViewController {
         repositoryCollectionView.snp.makeConstraints { constraint in
             constraint.edges.equalToSuperview()
         }
+            
+        loadingView.snp.makeConstraints { constraint in
+            constraint.top.equalTo(view.safeAreaLayoutGuide)
+            constraint.leading.trailing.bottom.equalToSuperview()
+        }
     }
 }
 
 // MARK: - UISearchBarDelegate
 extension HomeViewController: UISearchBarDelegate {
-   /// Return(検索)キーをタップしたときの処理
+    /// Return(検索)キーをタップしたときの処理
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let searchWord = searchBar.text else { return }
+        // Loading View表示
+        loadingView.isLoading = true
         // Returnキーを押して ViewModelで定義したsearch logicを実行
         viewModel.search(queryString: searchWord)
     }
