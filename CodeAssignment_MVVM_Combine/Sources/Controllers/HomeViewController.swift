@@ -78,8 +78,6 @@ extension HomeViewController {
         appearance.backgroundColor = .secondarySystemBackground
         // NavigationBarの下部線を隠す
         appearance.shadowColor = .clear
-        navigationController?.navigationBar.topItem?.setHidesBackButton(true, animated: false)
-//        navigationController?.navigationBar.tintColor = .black
         navigationController?.navigationBar.topItem?.backButtonTitle = "戻る"
         navigationController?.navigationBar.standardAppearance = appearance
         setupSearchController()

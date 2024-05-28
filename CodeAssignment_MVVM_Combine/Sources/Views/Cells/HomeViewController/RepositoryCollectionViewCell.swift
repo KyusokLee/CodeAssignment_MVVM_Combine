@@ -72,8 +72,7 @@ final class RepositoryCollectionViewCell: UICollectionViewListCell {
         config.imagePadding = .zero
         config.imagePlacement = .leading
         config.buttonSize = .small
-        let button = UIButton(configuration: config)
-        return button
+        return UIButton(configuration: config)
     }()
     
     /// starの数を表示するLabel
