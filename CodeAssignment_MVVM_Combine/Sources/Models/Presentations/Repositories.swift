@@ -10,7 +10,7 @@ import Foundation
 /** ViewControllerに渡す用のstruct Model。VCで表示させるViewに適用させるために、新しくModelを作成
 - Viewに表示するだけのModelを作ることで、APIを叩くときに余計にCoding Keysを使わなくてもいいし、テストもしやすくなるというメリットがある。
 */
-struct Repositories {
+struct Repositories: Hashable {
     /// 検索でマッチされたリポジトリの数
     let totalCount: Int
     /** リポジトリの詳細データが入っている配列形
@@ -18,7 +18,7 @@ struct Repositories {
      */
     let items: [Repository]
     
-    struct Repository {
+    struct Repository: Hashable {
         var owner: RepositoryUser
         var name: String
         var description: String?
@@ -33,7 +33,7 @@ struct Repositories {
             stargazersCount >= Constants.numberFormatThreshold ? String(format: "%.1f万", Double(stargazersCount) / Double(Constants.numberFormatThreshold)) : String(stargazersCount)
         }
 
-        struct RepositoryUser {
+        struct RepositoryUser: Hashable {
             var userName: String
             var profileImageString: String
         }

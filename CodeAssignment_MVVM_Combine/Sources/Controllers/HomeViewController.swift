@@ -15,11 +15,16 @@ class HomeViewController: UIViewController {
     private let viewModel = HomeViewModel()
     /// Custom Loading View
     private let loadingView = LoadingView()
+    /// 検索開始前に表示するReadyView
+    private let readyView = ReadySearchView()
     /** storeでAnyCancellableを保存しておいて、当該の変数がdeinitされるとき、subscribeをキャンセルする方法
     - Setで複数のSubscription（購読）を１つにまとめることができ、Subscriptionの値を保持する
      */
     private var cancellables = Set<AnyCancellable>()
-    
+    /** DiffableDataSource
+    - Hashable プロトコルの採択が必須
+     */
+    private var datasource: UICollectionViewDiffableDataSource<Int, Repositories.Repository>!
     private let layout: UICollectionViewLayout = {
         var config = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
         config.headerMode = .none
@@ -30,7 +35,7 @@ class HomeViewController: UIViewController {
     private lazy var repositoryCollectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.delegate = self
-        collectionView.dataSource = self
+        collectionView.dataSource = datasource
         collectionView.backgroundColor = .secondarySystemBackground
         collectionView.contentInsetAdjustmentBehavior = .always
         
@@ -69,8 +74,14 @@ extension HomeViewController {
         view.backgroundColor = .secondarySystemBackground
         
         setupNavigationController()
+        setupDataSource()
         setAddSubViews()
         setupConstraints()
+    }
+    
+    /// CollectionViewのDatasource 設定
+    private func setupDataSource() {
+        
     }
     
     /// NavigationControllerのセットアップ
@@ -128,6 +139,7 @@ extension HomeViewController {
     private func setAddSubViews() {
         view.addSubview(repositoryCollectionView)
         view.addSubview(loadingView)
+        view.addSubview(readyView)
     }
     
     /// Layoutの制約を調整する
@@ -137,6 +149,11 @@ extension HomeViewController {
         }
             
         loadingView.snp.makeConstraints { constraint in
+            constraint.top.equalTo(view.safeAreaLayoutGuide)
+            constraint.leading.trailing.bottom.equalToSuperview()
+        }
+        
+        readyView.snp.makeConstraints { constraint in
             constraint.top.equalTo(view.safeAreaLayoutGuide)
             constraint.leading.trailing.bottom.equalToSuperview()
         }

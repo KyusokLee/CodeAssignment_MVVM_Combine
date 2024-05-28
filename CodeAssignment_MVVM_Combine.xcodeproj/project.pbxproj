@@ -32,6 +32,7 @@
 		5DF65F5C2BEB907A0070651B /* GitHubAPIType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF65F5B2BEB907A0070651B /* GitHubAPIType.swift */; };
 		5DF78D8D2C047D2300F5498E /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF78D8C2C047D2300F5498E /* LoadingView.swift */; };
 		5DF78D8F2C04830200F5498E /* Tokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF78D8E2C04830200F5498E /* Tokens.swift */; };
+		5DF78D932C04A35900F5498E /* ReadySearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF78D922C04A35900F5498E /* ReadySearchView.swift */; };
 		5DF951502BF7369100F6A2AD /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF9514F2BF7369100F6A2AD /* Constants.swift */; };
 /* End PBXBuildFile section */
 
@@ -79,6 +80,7 @@
 		5DF65F5B2BEB907A0070651B /* GitHubAPIType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubAPIType.swift; sourceTree = "<group>"; };
 		5DF78D8C2C047D2300F5498E /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		5DF78D8E2C04830200F5498E /* Tokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tokens.swift; sourceTree = "<group>"; };
+		5DF78D922C04A35900F5498E /* ReadySearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadySearchView.swift; sourceTree = "<group>"; };
 		5DF9514F2BF7369100F6A2AD /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -189,6 +191,7 @@
 			isa = PBXGroup;
 			children = (
 				5DF78D8C2C047D2300F5498E /* LoadingView.swift */,
+				5DF78D922C04A35900F5498E /* ReadySearchView.swift */,
 				5DB771662BF1F64E001570ED /* Cells */,
 			);
 			path = Views;
@@ -477,6 +480,7 @@
 				5D076FF12BE32B9C007F0724 /* HomeViewController.swift in Sources */,
 				5DF65F5C2BEB907A0070651B /* GitHubAPIType.swift in Sources */,
 				5D2880942BEA02F9005DC50A /* HomeViewModel.swift in Sources */,
+				5DF78D932C04A35900F5498E /* ReadySearchView.swift in Sources */,
 				5D0770302BE38D38007F0724 /* ErrorType.swift in Sources */,
 				5DB771692BF1F682001570ED /* RepositoryCollectionViewCell.swift in Sources */,
 				5DB771652BF1B951001570ED /* Repositories.swift in Sources */,
