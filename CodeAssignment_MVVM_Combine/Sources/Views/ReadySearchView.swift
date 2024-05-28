@@ -70,7 +70,9 @@ extension ReadySearchView {
         }
         
         imageView.snp.makeConstraints { constraint in
-            constraint.top.equalTo(backgroundView.snp.top).offset(80)
+            constraint.height.equalTo(120)
+            constraint.width.equalTo(120)
+            constraint.top.equalTo(backgroundView.snp.top).offset(210)
             constraint.centerX.equalTo(backgroundView.snp.centerX)
         }
         
