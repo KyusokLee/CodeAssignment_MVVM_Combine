@@ -20,7 +20,9 @@ private enum Const {
 
 final class DetailViewController: UIViewController {
     
-    /// ScrollViewで、backgroundCardViewをScroll可能にする
+    /** Vertical方向のScrollView
+    - ScrollViewで、backgroundCardViewをScroll可能にする
+     */
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.alwaysBounceVertical = true
