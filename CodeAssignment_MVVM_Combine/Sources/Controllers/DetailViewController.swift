@@ -14,16 +14,8 @@ private enum Const {
     static let leftPadding: CGFloat = 20
     /// layout設定で使うRightPadding
     static let rightPadding: CGFloat = 20
-    /// starsに関するString型の説明文(スペース入り)
-    static let starsExplainString: String = " stars"
-    /// watchersに関するString型の説明文
-    static let watchersExplainString: String = " watchers"
-    /// forksに関するString型の説明文
-    static let forksExplainString: String = " forks"
-    /// openIssuesに関するString型の説明文
-    static let openIssuesExplainString: String = " issues"
-    /// DetailViewControllerで表すLanguageColorViewのheight サイズ
-    static let colorViewHeightSize: CGFloat = 20
+    /// DetailViewControllerで表すLanguageColorViewのHeight
+    static let colorViewHeight: CGFloat = 20
 }
 
 final class DetailViewController: UIViewController {
@@ -112,7 +104,7 @@ final class DetailViewController: UIViewController {
     private lazy var languageColorView: UIView = {
         let view = UIView()
         view.clipsToBounds = true
-        view.layer.cornerRadius = Const.colorViewHeightSize / 2.0
+        view.layer.cornerRadius = Const.colorViewHeight / 2.0
         view.backgroundColor = .systemPink
         return view
     }()
@@ -167,10 +159,10 @@ extension DetailViewController {
         descriptionLabel.text = model.description
         userNameLabel.text = model.owner.userName
         languageNameLabel.text = model.language
-        starCountsLabel.text = formatNumberToStringWithSeparator(model.stargazersCount) + Const.starsExplainString
-        watchersCountLabel.text = formatNumberToStringWithSeparator(model.watchersCount) + Const.watchersExplainString
-        forksCountLabel.text = formatNumberToStringWithSeparator(model.forksCount) + Const.forksExplainString
-        openIssuesCountLabel.text = formatNumberToStringWithSeparator(model.openIssuesCount) + Const.openIssuesExplainString
+        starCountsLabel.text = "\(formatNumberToStringWithSeparator(model.stargazersCount)) stars"
+        watchersCountLabel.text = "\(formatNumberToStringWithSeparator(model.watchersCount)) watchers"
+        forksCountLabel.text = "\(formatNumberToStringWithSeparator(model.forksCount)) forks"
+        openIssuesCountLabel.text = "\(formatNumberToStringWithSeparator(model.openIssuesCount)) issues"
         
         if let url = URL(string: model.owner.profileImageString) {
             userImageView.sd_setImage(with: url, placeholderImage: defaultImage) { [weak self] (image, error, _, _) in
