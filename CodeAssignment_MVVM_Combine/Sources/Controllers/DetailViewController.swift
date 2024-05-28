@@ -139,11 +139,13 @@ final class DetailViewController: UIViewController {
         return label
     }()
     
-    static func instantiate(with repository: Repositories.Repository) -> DetailViewController {
-        let controller = DetailViewController()
-        controller.loadViewIfNeeded()
-        controller.configure(with: repository)
-        return controller
+    init(repository: Repositories.Repository) {
+        super.init(nibName: nil, bundle: nil)
+        self.configure(with: repository)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
     override func viewDidLoad() {

@@ -140,7 +140,7 @@ extension HomeViewController: UISearchBarDelegate {
 extension HomeViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let repository = viewModel.repositoriesSubject.value?.items[indexPath.row] else { return }
-        let detailViewController = DetailViewController.instantiate(with: repository)
+        let detailViewController = DetailViewController(repository: repository)
         navigationController?.pushViewController(detailViewController, animated: true)
         collectionView.deselectItem(at: indexPath, animated: true)
     }
