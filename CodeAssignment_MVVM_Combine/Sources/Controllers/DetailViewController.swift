@@ -252,7 +252,9 @@ extension DetailViewController {
     private func setupNavigationController() {
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
+        // HomeVCに戻ると、navigationBarの背景が変わってしまうので、ここもbackgroundColorを設定
         appearance.backgroundColor = .secondarySystemBackground
+        // NavigationBarの下部線を隠す
         appearance.shadowColor = .clear
         navigationController?.navigationBar.standardAppearance = appearance
     }
