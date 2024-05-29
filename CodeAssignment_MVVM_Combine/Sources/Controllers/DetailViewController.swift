@@ -109,26 +109,9 @@ final class DetailViewController: UIViewController {
         return label
     }()
     
-    private lazy var watchersCountLabel: UILabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 18, weight: .regular)
-        label.textColor = .black.withAlphaComponent(0.7)
-        return label
-    }()
-    
-    private lazy var forksCountLabel: UILabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 18, weight: .regular)
-        label.textColor = .black.withAlphaComponent(0.7)
-        return label
-    }()
-    
-    private lazy var openIssuesCountLabel: UILabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 18, weight: .regular)
-        label.textColor = .black.withAlphaComponent(0.7)
-        return label
-    }()
+    private lazy var watchersCountLabel: UILabel = makeCountLabel()
+    private lazy var forksCountLabel: UILabel = makeCountLabel()
+    private lazy var openIssuesCountLabel: UILabel = makeCountLabel()
     /** descriptionLabelとrepositoryNameLabelを持つStackView
     - StackViewを用いることでconstraintを一概に設定しやすいし、layout設定に関するコードが長くなることを防ぐ
      */
@@ -251,6 +234,13 @@ extension DetailViewController {
         // NavigationBarの下部線を隠す
         appearance.shadowColor = .clear
         navigationController?.navigationBar.standardAppearance = appearance
+    }
+    
+    private func makeCountLabel() -> UILabel {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 18, weight: .regular)
+        label.textColor = .black.withAlphaComponent(0.7)
+        return label
     }
     
     private func setAddSubViews() {

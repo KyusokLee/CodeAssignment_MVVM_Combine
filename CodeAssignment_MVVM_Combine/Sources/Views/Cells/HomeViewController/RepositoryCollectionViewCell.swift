@@ -28,13 +28,13 @@ final class RepositoryCollectionViewCell: UICollectionViewListCell {
     }()
     
     /// Descriptionを表示するlabel
-    private lazy var descriptionLabel: UILabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 16, weight: .regular)
-        // Descriptionを全て表示するために 0に設定
-        label.numberOfLines = 0
-        return label
-    }()
+    private lazy var descriptionLabel: UILabel = makeRegularWeightLabel()
+    /// User名を表示するためのlabel
+    private lazy var userNameLabel: UILabel = makeRegularWeightLabel()
+    /// starの数を表示するLabel
+    private lazy var starCountsLabel: UILabel = makeRegularWeightLabel()
+    /// 言語を表示するLabel
+    private lazy var languageNameLabel: UILabel = makeRegularWeightLabel()
     
     /** Userのプロフィール画像と名前を括って表示するためのaccessoryView
     - userAccessoryViewは、userImageViewとuserNameLabelのサイズに合わせて動的に決める予定
@@ -54,14 +54,6 @@ final class RepositoryCollectionViewCell: UICollectionViewListCell {
         return imageView
     }()
     
-    /// User名を表示するためのlabel
-    private lazy var userNameLabel: UILabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 16, weight: .regular)
-        label.numberOfLines = 0
-        return label
-    }()
-    
     /** お気に入りに入れるためのStarボタン
     - Starボタンは、VCからのInput 処理をbindする必要があるので、currentValueSubjectの方に変えた方がいいかも
      */
@@ -75,27 +67,12 @@ final class RepositoryCollectionViewCell: UICollectionViewListCell {
         return UIButton(configuration: config)
     }()
     
-    /// starの数を表示するLabel
-    private lazy var starCountsLabel: UILabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 16, weight: .regular)
-        label.textColor = .systemGray
-        return label
-    }()
-    
     /// 言語ごとに色をつけて表示させるためのView
     private lazy var languageColorView: UIView = {
         let view = UIView()
         view.clipsToBounds = true
         view.backgroundColor = .systemPink
         return view
-    }()
-    
-    private lazy var languageNameLabel: UILabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 16, weight: .regular)
-        label.textColor = .systemGray
-        return label
     }()
     
     // コードベースなので、ここで必須のfuncを実装する
@@ -155,6 +132,13 @@ extension RepositoryCollectionViewCell {
     private func setupUI() {
         setAddSubViews()
         setupConstraints()
+    }
+    
+    private func makeRegularWeightLabel() -> UILabel {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 16, weight: .regular)
+        label.numberOfLines = 0
+        return label
     }
     
     private func setAddSubViews() {
