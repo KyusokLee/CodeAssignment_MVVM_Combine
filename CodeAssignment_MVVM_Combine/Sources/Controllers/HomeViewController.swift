@@ -176,7 +176,9 @@ extension HomeViewController {
         // recongifureItemは既存セルを再構成するため、prepareForReuseを呼び出さない。
         // そのため、完全に新しいCell（他のTypeのCell）を返すときに使用するのがいい
         // reloadItemsは既存セルの特定のCellだけをReloadするときに使用するのがいい
-        snapshot.appendSections([.main])
+//        // Diffable data source detected an attempt to insert or append 1 section identifier that already exists in the snapshot. Identifiers in a snapshot must be unique. Section identifier that already exists:
+//        // 上記の理由: snapshotの初期設定の際に sectionをすでにappendしたのに、snapshotをアップデート時にまたappendSectionをしているから、errorになった
+//        snapshot.appendSections([.main])
         snapshot.appendItems(repositories, toSection: .main)
         datasource.apply(snapshot, animatingDifferences: true)
     }
@@ -213,6 +215,10 @@ extension HomeViewController: UISearchBarDelegate {
         guard let searchWord = searchBar.text else { return }
         // Loading View表示
         loadingView.isLoading = true
+        // readyViewのisHidden処理
+        if readyView.isBeforeSearch {
+            readyView.isBeforeSearch = false
+        }
         // Returnキーを押して ViewModelで定義したsearch logicを実行
         viewModel.search(queryString: searchWord)
     }

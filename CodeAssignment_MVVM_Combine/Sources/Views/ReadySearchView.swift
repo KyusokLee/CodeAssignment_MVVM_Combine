@@ -40,6 +40,12 @@ final class ReadySearchView: UIView {
         return label
     }()
     
+    var isBeforeSearch = true {
+        didSet {
+            self.isHidden = !self.isBeforeSearch
+        }
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
