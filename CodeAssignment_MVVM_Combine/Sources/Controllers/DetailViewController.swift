@@ -270,10 +270,9 @@ extension DetailViewController {
         
         backgroundCardView.snp.makeConstraints { constraint in
             constraint.top.equalTo(scrollView.contentLayoutGuide.snp.top).offset(30)
-            constraint.leading.equalTo(scrollView.contentLayoutGuide.snp.leading).offset(Const.leftPadding)
-            constraint.trailing.equalTo(scrollView.contentLayoutGuide.snp.trailing).offset(-Const.rightPadding)
+            constraint.width.equalTo(scrollView.snp.width).offset(-(Const.leftPadding + Const.rightPadding))
+            constraint.centerX.equalTo(scrollView.snp.centerX)
             constraint.bottom.equalTo(scrollView.contentLayoutGuide.snp.bottom).offset(-30)
-            constraint.width.equalTo(scrollView.frameLayoutGuide.snp.width).offset(-(Const.leftPadding + Const.rightPadding))
         }
         
         userImageView.snp.makeConstraints { constraint in
@@ -285,7 +284,8 @@ extension DetailViewController {
         
         userNameLabel.snp.makeConstraints { constraint in
             constraint.top.equalTo(userImageView.snp.bottom).offset(10)
-            constraint.centerX.equalTo(userImageView.snp.centerX)
+            constraint.leading.equalTo(backgroundCardView.snp.leading).offset(Const.leftPadding)
+            constraint.trailing.equalTo(backgroundCardView.snp.trailing).offset(-Const.rightPadding)
         }
         
         mainStackView.snp.makeConstraints { constraint in
