@@ -28,12 +28,6 @@ final class DetailViewController: UIViewController {
         return scrollView
     }()
     
-    /// ScrollViewのContentView
-    private lazy var contentView: UIView = {
-        let view = UIView()
-        return view
-    }()
-    
     /// リポジトリのデータを入れるbackgroundView
     private lazy var backgroundCardView: UIView = {
         let view = UIView()
@@ -265,8 +259,7 @@ extension DetailViewController {
             backgroundCardView.addSubview($0)
         }
         
-        contentView.addSubview(backgroundCardView)
-        scrollView.addSubview(contentView)
+        scrollView.addSubview(backgroundCardView)
         view.addSubview(scrollView)
     }
     
@@ -275,16 +268,12 @@ extension DetailViewController {
             constraint.edges.equalTo(view.safeAreaLayoutGuide)
         }
         
-        contentView.snp.makeConstraints { constraint in
-            constraint.edges.equalTo(scrollView.contentLayoutGuide)
-            constraint.width.equalTo(scrollView.frameLayoutGuide)
-        }
-        
         backgroundCardView.snp.makeConstraints { constraint in
-            constraint.top.equalTo(contentView.snp.top).offset(30)
-            constraint.leading.equalTo(contentView.snp.leading).offset(Const.leftPadding)
-            constraint.trailing.equalTo(contentView.snp.trailing).offset(-Const.rightPadding)
-            constraint.bottom.equalTo(contentView.snp.bottom).offset(-30)
+            constraint.top.equalTo(scrollView.contentLayoutGuide.snp.top).offset(30)
+            constraint.leading.equalTo(scrollView.contentLayoutGuide.snp.leading).offset(Const.leftPadding)
+            constraint.trailing.equalTo(scrollView.contentLayoutGuide.snp.trailing).offset(-Const.rightPadding)
+            constraint.bottom.equalTo(scrollView.contentLayoutGuide.snp.bottom).offset(-30)
+            constraint.width.equalTo(scrollView.frameLayoutGuide.snp.width).offset(-(Const.leftPadding + Const.rightPadding))
         }
         
         userImageView.snp.makeConstraints { constraint in
