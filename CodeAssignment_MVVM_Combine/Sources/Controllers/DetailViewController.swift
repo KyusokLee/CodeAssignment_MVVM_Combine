@@ -154,7 +154,7 @@ final class DetailViewController: UIViewController {
         stackView.alignment = .trailing
         return stackView
     }()
-    /// userImageViewとuserNameLabelを除いたUIを持つStackView
+    /// backgroundViewに入れるSubViewを持つStackView
     private lazy var mainStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [
             userImageContentView, userNameLabel, repositoryNameLabel, descriptionLabel, starLanguageStackView, countStackView
