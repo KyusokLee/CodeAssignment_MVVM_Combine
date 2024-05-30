@@ -113,6 +113,17 @@ final class DetailViewController: UIViewController {
             guard let self else { return }
             self.didTapStarButton()
         }, for: .touchUpInside)
+        
+        // configurationUpdateHandlerを用いてButtonのUIを変更
+        button.configurationUpdateHandler = { button in
+            if button.isSelected {
+                button.configuration?.image = UIImage(systemName: "star.fill")
+                button.configuration?.baseForegroundColor = .systemYellow
+            } else {
+                button.configuration?.image = UIImage(systemName: "star")
+                button.configuration?.baseForegroundColor = .systemGray3
+            }
+        }
         return button
     }()
     
@@ -238,9 +249,8 @@ extension DetailViewController {
     private func bind() {
         viewModel.starRepositorySubject
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] isSeleted in
-                guard let self else { return }
-                self.updateStarButtonState(isSelected: isSeleted)
+            .sink { [weak self] _ in
+                
             }
             .store(in: &cancellables)
     }
@@ -334,16 +344,6 @@ extension DetailViewController {
             viewModel.starRepository(owner: userNameLabel.text!, repo: repositoryNameLabel.text!)
         } else {
             viewModel.unstarRepository(owner: userNameLabel.text!, repo: repositoryNameLabel.text!)
-        }
-    }
-    
-    func updateStarButtonState(isSelected: Bool) {
-        if isSelected {
-            starButton.setImage(UIImage(systemName: "star.fill"), for: .normal)
-            starButton.tintColor = .systemYellow
-        } else {
-            starButton.setImage(UIImage(systemName: "star"), for: .normal)
-            starButton.tintColor = .systemGray3
         }
     }
 }
