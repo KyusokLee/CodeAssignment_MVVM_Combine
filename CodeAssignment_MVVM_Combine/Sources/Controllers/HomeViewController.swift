@@ -107,17 +107,11 @@ extension HomeViewController {
             return collectionView.dequeueConfiguredReusableCell(using: self.repositoryCell, for: indexPath, item: repository)
         }
         
-        repositoryCollectionView.dataSource = datasource
+//        repositoryCollectionView.dataSource = datasource
         snapshot = NSDiffableDataSourceSnapshot<Section, Repositories.Repository>()
         // Snapshotの初期化
         snapshot.appendSections([.main])
         datasource.apply(snapshot, animatingDifferences: true)
-        
-//        var snapshot = NSDiffableDataSourceSnapshot<Section, Repositories.Repository>()
-//        snapshot.appendSections([.main])
-//        // セクションを追加した後にアイテムを追加する
-//        snapshot.appendItems(repositories)
-//        datasource.apply(snapshot, animatingDifferences: true)
     }
     
     /// NavigationControllerのセットアップ
@@ -173,12 +167,9 @@ extension HomeViewController {
     private func updateSnapshot(repositories: [Repositories.Repository]) {
         /// DataSourceに適用した現在のSnapShotを取得
         var snapshot = datasource.snapshot()
-        // recongifureItemは既存セルを再構成するため、prepareForReuseを呼び出さない。
-        // そのため、完全に新しいCell（他のTypeのCell）を返すときに使用するのがいい
-        // reloadItemsは既存セルの特定のCellだけをReloadするときに使用するのがいい
-//        // Diffable data source detected an attempt to insert or append 1 section identifier that already exists in the snapshot. Identifiers in a snapshot must be unique. Section identifier that already exists:
-//        // 上記の理由: snapshotの初期設定の際に sectionをすでにappendしたのに、snapshotをアップデート時にまたappendSectionをしているから、errorになった
-//        snapshot.appendSections([.main])
+        // reloadItemsは既存セルの特定のCellだけをReloadするので、deleteしたあとに改めてappendする形でSnapshot適用
+        snapshot.deleteAllItems()
+        snapshot.appendSections([.main])
         snapshot.appendItems(repositories, toSection: .main)
         datasource.apply(snapshot, animatingDifferences: true)
     }
@@ -233,14 +224,3 @@ extension HomeViewController: UICollectionViewDelegate {
         collectionView.deselectItem(at: indexPath, animated: true)
     }
 }
-
-//// MARK: - UICollectionViewDiffableDataSource
-//extension HomeViewController: UICollectionViewDataSource {
-//    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-//        return viewModel.repositoriesSubject.value?.items.count ?? 0
-//    }
-//    
-//    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-//        collectionView.dequeueConfiguredReusableCell(using: repositoryCell, for: indexPath, item: viewModel.repositoriesSubject.value?.items[indexPath.row])
-//    }
-//}

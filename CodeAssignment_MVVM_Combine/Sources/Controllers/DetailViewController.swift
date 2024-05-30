@@ -109,7 +109,6 @@ final class DetailViewController: UIViewController {
         button.titleLabel?.setContentHuggingPriority(.required, for: .horizontal)
         button.titleLabel?.setContentCompressionResistancePriority(.required, for: .horizontal)
         
-        let button = UIButton(configuration: config)
         button.addAction(.init { [weak self] _ in
             guard let self else { return }
             self.didTapStarButton()
