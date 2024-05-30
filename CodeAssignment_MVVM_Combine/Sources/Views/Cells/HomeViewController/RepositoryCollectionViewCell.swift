@@ -28,13 +28,13 @@ final class RepositoryCollectionViewCell: UICollectionViewListCell {
     }()
     
     /// Descriptionを表示するlabel
-    private lazy var descriptionLabel: UILabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 16, weight: .regular)
-        // Descriptionを全て表示するために 0に設定
-        label.numberOfLines = 0
-        return label
-    }()
+    private lazy var descriptionLabel: UILabel = makeRegularWeightLabel(fontSize: 16)
+    /// User名を表示するためのlabel
+    private lazy var userNameLabel: UILabel = makeRegularWeightLabel(fontSize: 16)
+    /// starの数を表示するLabel
+    private lazy var starCountsLabel: UILabel = makeRegularWeightLabel(fontSize: 18)
+    /// 言語を表示するLabel
+    private lazy var languageNameLabel: UILabel = makeRegularWeightLabel(fontSize: 18)
     
     /** Userのプロフィール画像と名前を括って表示するためのaccessoryView
     - userAccessoryViewは、userImageViewとuserNameLabelのサイズに合わせて動的に決める予定
@@ -54,33 +54,20 @@ final class RepositoryCollectionViewCell: UICollectionViewListCell {
         return imageView
     }()
     
-    /// User名を表示するためのlabel
-    private lazy var userNameLabel: UILabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 16, weight: .regular)
-        label.numberOfLines = 0
-        return label
-    }()
-    
     /** お気に入りに入れるためのStarボタン
     - Starボタンは、VCからのInput 処理をbindする必要があるので、currentValueSubjectの方に変えた方がいいかも
      */
     private lazy var starButton: UIButton = {
         var config = UIButton.Configuration.plain()
-        config.image = UIImage(systemName: "star")?.withTintColor(.systemGray3, renderingMode: .alwaysOriginal)
+        let image = UIImage(systemName: "star")?.withTintColor(.systemGray3, renderingMode: .alwaysOriginal)
+        if let image {
+            config.image = image.withConfiguration(UIImage.SymbolConfiguration(pointSize: 22, weight: .regular))
+        }
         config.contentInsets = .zero
         config.imagePadding = .zero
         config.imagePlacement = .leading
         config.buttonSize = .small
         return UIButton(configuration: config)
-    }()
-    
-    /// starの数を表示するLabel
-    private lazy var starCountsLabel: UILabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 16, weight: .regular)
-        label.textColor = .systemGray
-        return label
     }()
     
     /// 言語ごとに色をつけて表示させるためのView
@@ -89,13 +76,6 @@ final class RepositoryCollectionViewCell: UICollectionViewListCell {
         view.clipsToBounds = true
         view.backgroundColor = .systemPink
         return view
-    }()
-    
-    private lazy var languageNameLabel: UILabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 16, weight: .regular)
-        label.textColor = .systemGray
-        return label
     }()
     
     // コードベースなので、ここで必須のfuncを実装する
@@ -155,6 +135,13 @@ extension RepositoryCollectionViewCell {
     private func setupUI() {
         setAddSubViews()
         setupConstraints()
+    }
+    
+    private func makeRegularWeightLabel(fontSize: CGFloat) -> UILabel {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: fontSize, weight: .regular)
+        label.numberOfLines = 0
+        return label
     }
     
     private func setAddSubViews() {
@@ -234,27 +221,29 @@ extension RepositoryCollectionViewCell {
         // starButtonのConstraints
         starButton.snp.makeConstraints { constraint in
             constraint.top.equalTo(userAccessoryView.snp.bottom).offset(20)
-            constraint.centerY.equalTo(starCountsLabel.snp.centerY)
+//            constraint.centerY.equalTo(starCountsLabel.snp.centerY)
+            constraint.bottom.lessThanOrEqualTo(contentView.snp.bottom).offset(-8)
         }
         
         // starCountsLabelのConstraints
         starCountsLabel.snp.makeConstraints { constraint in
             constraint.leading.equalTo(starButton.snp.trailing).offset(5)
-            constraint.bottom.lessThanOrEqualTo(contentView.snp.bottom).offset(-8)
+            constraint.centerY.equalTo(starButton.snp.centerY)
+//            constraint.bottom.lessThanOrEqualTo(contentView.snp.bottom).offset(-8)
         }
         
         // languageColorViewのConstraints
         languageColorView.snp.makeConstraints { constraint in
-            constraint.height.equalTo(15)
-            constraint.width.equalTo(15)
-            constraint.centerY.equalTo(starCountsLabel.snp.centerY)
+            constraint.height.equalTo(22)
+            constraint.width.equalTo(22)
+            constraint.centerY.equalTo(starButton.snp.centerY)
             constraint.leading.equalTo(starCountsLabel.snp.trailing).offset(20)
             constraint.trailing.equalTo(languageNameLabel.snp.leading).offset(-5)
         }
         
         // languageNameLabelのConstraints
         languageNameLabel.snp.makeConstraints { constraint in
-            constraint.centerY.equalTo(starCountsLabel.snp.centerY)
+            constraint.centerY.equalTo(starButton.snp.centerY)
         }
     }
 }
