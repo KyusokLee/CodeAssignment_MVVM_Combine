@@ -4,7 +4,6 @@
 //
 //  Created by gyusoku.i on 2024/05/16.
 //
-
 import UIKit
 import Combine
 import SnapKit
@@ -15,16 +14,8 @@ private enum Const {
     static let leftPadding: CGFloat = 20
     /// layout設定で使うRightPadding
     static let rightPadding: CGFloat = 20
-    /// starsに関するString型の説明文(スペース入り)
-    static let starsExplainString: String = " stars"
-    /// watchersに関するString型の説明文
-    static let watchersExplainString: String = " watchers"
-    /// forksに関するString型の説明文
-    static let forksExplainString: String = " forks"
-    /// openIssuesに関するString型の説明文
-    static let openIssuesExplainString: String = " issues"
-    /// DetailViewControllerで表すLanguageColorViewのheight サイズ
-    static let colorViewHeightSize: CGFloat = 20
+    /// DetailViewControllerで表すLanguageColorViewのHeight
+    static let colorViewHeight: CGFloat = 20
 }
 
 final class DetailViewController: UIViewController {
@@ -32,18 +23,14 @@ final class DetailViewController: UIViewController {
     private let viewModel = DetailViewModel()
     private var cancellables = Set<AnyCancellable>()
     
-    /// ScrollViewで、backgroundCardViewをScroll可能にする
+    /** Vertical方向のScrollView
+    - ScrollViewで、backgroundCardViewをScroll可能にする
+     */
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.alwaysBounceVertical = true
         scrollView.showsVerticalScrollIndicator = true
         return scrollView
-    }()
-    
-    /// ScrollViewのContentView
-    private lazy var contentView: UIView = {
-        let view = UIView()
-        return view
     }()
     
     /// リポジトリのデータを入れるbackgroundView
@@ -71,6 +58,12 @@ final class DetailViewController: UIViewController {
         return label
     }()
     
+    /// UserImageViewを入れるためのContentView
+    private lazy var userImageContentView: UIView = {
+        let view = UIView()
+        return view
+    }()
+    
     /// Userのプロフィール画像
     private lazy var userImageView: UIImageView = {
         let imageView = UIImageView()
@@ -90,15 +83,33 @@ final class DetailViewController: UIViewController {
         return label
     }()
     
-    /// お気に入りに入れるためのStarボタン
+    /// 当該リポジトリのStarの数も一緒に表示するStarボタン
     private lazy var starButton: UIButton = {
-        var config = UIButton.Configuration.plain()
-        config.image = UIImage(systemName: "star")?.withTintColor(.systemGray3, renderingMode: .alwaysOriginal)
-        config.contentInsets = .zero
-        config.imagePadding = .zero
-        config.imagePlacement = .all
+        var config = UIButton.Configuration.filled()
+        let image = UIImage(systemName: "star")?.withTintColor(.systemGray3, renderingMode: .alwaysOriginal)
+        if let image {
+            config.image = image.withConfiguration(UIImage.SymbolConfiguration(pointSize: 25, weight: .regular))
+        }
+        config.baseBackgroundColor = .white
+        config.imagePlacement = .leading
+        // imageとtext間のSpace
+        config.imagePadding = 8
+        config.contentInsets = .init(top: 10, leading: 8, bottom: 10, trailing: 8)
+        config.cornerStyle = .large
+        
+        // borderLayerの設定
+        var backgroundConfig = UIBackgroundConfiguration.clear()
+        backgroundConfig.strokeColor = .systemGray2
+        backgroundConfig.strokeWidth = 2
+        config.background = backgroundConfig
         
         let button = UIButton(configuration: config)
+        // content hugging priorityを設定し、buttonのconstraintsが意図通りに設定されないことを防ぐ
+        button.setContentHuggingPriority(.required, for: .horizontal)
+        button.setContentCompressionResistancePriority(.required, for: .horizontal)
+        button.titleLabel?.setContentHuggingPriority(.required, for: .horizontal)
+        button.titleLabel?.setContentCompressionResistancePriority(.required, for: .horizontal)
+
         button.addAction(.init { [weak self] _ in
             guard let self else { return }
             self.didTapStarButton()
@@ -106,22 +117,14 @@ final class DetailViewController: UIViewController {
         return button
     }()
     
-    /// starの数を表示するLabel
-    private lazy var starCountsLabel: UILabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 20, weight: .regular)
-        label.textColor = .black.withAlphaComponent(0.8)
-        return label
-    }()
-    
     /** 言語ごとに色をつけて表示させるためのView
-     - starButtonをUIButton.Configurationを用いた作成に変えた後、layoutSubViewsでcornerRadiusを設定しようとしたら、反映されなかった。
-     - そのため、インスタンス生成時にcornerRadiusをするようにした
+    - starButtonをUIButton.Configurationを用いた作成に変えた後、layoutSubViewsでcornerRadiusを設定しようとしたら、反映されなかった。
+    - そのため、インスタンス生成時にcornerRadiusをするようにした
      */
     private lazy var languageColorView: UIView = {
         let view = UIView()
         view.clipsToBounds = true
-        view.layer.cornerRadius = Const.colorViewHeightSize / 2.0
+        view.layer.cornerRadius = Const.colorViewHeight / 2.0
         view.backgroundColor = .systemPink
         return view
     }()
@@ -129,41 +132,58 @@ final class DetailViewController: UIViewController {
     private lazy var languageNameLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 20, weight: .regular)
+        label.numberOfLines = 0
+        // byCharWrapping: 単語ごとじゃなく、一文字ごとに改行する
+        label.lineBreakMode = .byCharWrapping
         label.textColor = .black.withAlphaComponent(0.8)
+        label.setContentHuggingPriority(.init(999), for: .horizontal)
+        label.setContentCompressionResistancePriority(.required, for: .horizontal)
         return label
     }()
     
-    private lazy var watchersCountLabel: UILabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 18, weight: .regular)
-        label.textColor = .black.withAlphaComponent(0.7)
-        return label
+    private lazy var watchersCountLabel: UILabel = makeCountLabel()
+    private lazy var forksCountLabel: UILabel = makeCountLabel()
+    private lazy var openIssuesCountLabel: UILabel = makeCountLabel()
+    /// starButton, languageColorView, languageNameLabelを持つStackView
+    private lazy var starLanguageStackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [starButton, languageColorView, languageNameLabel])
+        stackView.axis = .horizontal
+        stackView.alignment = .center
+        stackView.spacing = 8
+        return stackView
+    }()
+    /** starCountLabelを除いたCountLabelを持つStackView
+    - constraintを一概に設定しやすいし、layout設定に関するコードが長くなることを防ぐ
+     */
+    private lazy var countStackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [watchersCountLabel, forksCountLabel, openIssuesCountLabel])
+        stackView.axis = .vertical
+        // subView間のspacing設定
+        stackView.spacing = 12
+        stackView.alignment = .trailing
+        return stackView
+    }()
+    /// backgroundViewに入れるSubViewを持つStackView
+    private lazy var mainStackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [
+            userImageContentView, userNameLabel, repositoryNameLabel, descriptionLabel, starLanguageStackView, countStackView
+        ])
+        stackView.axis = .vertical
+        stackView.spacing = 20
+        return stackView
     }()
     
-    private lazy var forksCountLabel: UILabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 18, weight: .regular)
-        label.textColor = .black.withAlphaComponent(0.7)
-        return label
-    }()
+    init(repository: Repositories.Repository) {
+        super.init(nibName: nil, bundle: nil)
+        self.configure(with: repository)
+    }
     
-    private lazy var openIssuesCountLabel: UILabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 18, weight: .regular)
-        label.textColor = .black.withAlphaComponent(0.7)
-        return label
-    }()
-    
-    static func instantiate(with repository: Repositories.Repository) -> DetailViewController {
-        let controller = DetailViewController()
-        controller.loadViewIfNeeded()
-        controller.configure(with: repository)
-        return controller
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         setupUI()
         bind()
     }
@@ -177,10 +197,20 @@ extension DetailViewController {
         descriptionLabel.text = model.description
         userNameLabel.text = model.owner.userName
         languageNameLabel.text = model.language
-        starCountsLabel.text = formatNumberToStringWithSeparator(model.stargazersCount) + Const.starsExplainString
-        watchersCountLabel.text = formatNumberToStringWithSeparator(model.watchersCount) + Const.watchersExplainString
-        forksCountLabel.text = formatNumberToStringWithSeparator(model.forksCount) + Const.forksExplainString
-        openIssuesCountLabel.text = formatNumberToStringWithSeparator(model.openIssuesCount) + Const.openIssuesExplainString
+        // UIButton.Configurationのtitleを更新
+        if var config = starButton.configuration {
+            config.attributedTitle = AttributedString(
+                "\(formatNumberToStringWithSeparator(model.stargazersCount)) stars",
+                attributes: AttributeContainer([
+                    .font: UIFont.systemFont(ofSize: 20, weight: .regular),
+                            .foregroundColor: UIColor.black.withAlphaComponent(0.8)
+                ]))
+            starButton.configuration = config
+        }
+        
+        watchersCountLabel.text = "\(formatNumberToStringWithSeparator(model.watchersCount)) watchers"
+        forksCountLabel.text = "\(formatNumberToStringWithSeparator(model.forksCount)) forks"
+        openIssuesCountLabel.text = "\(formatNumberToStringWithSeparator(model.openIssuesCount)) issues"
         
         if let url = URL(string: model.owner.profileImageString) {
             userImageView.sd_setImage(with: url, placeholderImage: defaultImage) { [weak self] (image, error, _, _) in
@@ -197,10 +227,9 @@ extension DetailViewController {
             userImageView.image = defaultImage
         }
     }
-    
     /** 数字をdecimal StyleのString型としてformatする
     - Repositoryの中に、funcやcomputed propertyとして定義するより、ここで関数として作った理由は、format作業をする対象が複数だからである
-    */
+     */
     private func formatNumberToStringWithSeparator(_ number: Int) -> String {
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .decimal
@@ -228,115 +257,74 @@ extension DetailViewController {
     private func setupNavigationController() {
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
+        // HomeVCに戻ると、navigationBarの背景が変わってしまうので、ここもbackgroundColorを設定
+        appearance.backgroundColor = .secondarySystemBackground
         // NavigationBarの下部線を隠す
         appearance.shadowColor = .clear
-        navigationController?.navigationBar.scrollEdgeAppearance = appearance
+        navigationController?.navigationBar.standardAppearance = appearance
+    }
+    
+    private func makeCountLabel() -> UILabel {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 18, weight: .regular)
+        label.textColor = .black.withAlphaComponent(0.7)
+        return label
     }
     
     private func setAddSubViews() {
-        // backgroundCardViewのSubViewを追加
-        [repositoryNameLabel, descriptionLabel, userImageView, userNameLabel, starButton, starCountsLabel, languageColorView, languageNameLabel, watchersCountLabel, forksCountLabel, openIssuesCountLabel].forEach { view in
-            backgroundCardView.addSubview(view)
-        }
-        
-        contentView.addSubview(backgroundCardView)
-        scrollView.addSubview(contentView)
+        userImageContentView.addSubview(userImageView)
+        backgroundCardView.addSubview(mainStackView)
+        scrollView.addSubview(backgroundCardView)
         view.addSubview(scrollView)
     }
     
     private func setupConstraints() {
         scrollView.snp.makeConstraints { constraint in
-            constraint.edges.equalTo(view.safeAreaLayoutGuide)
-        }
-        
-        contentView.snp.makeConstraints { constraint in
-            constraint.edges.equalTo(scrollView.contentLayoutGuide)
-            constraint.width.equalTo(scrollView.frameLayoutGuide)
-        }
-        
-        // backgroundCardViewのSubViewのUIの equalTo Leading Constraint設定
-        [userNameLabel, repositoryNameLabel, descriptionLabel, starButton].forEach { view in
-            view.snp.makeConstraints { constraint in
-                constraint.leading.equalTo(backgroundCardView.snp.leading).offset(Const.leftPadding)
-            }
-        }
-        
-        // backgroundCardViewのSubViewのUIの greaterThanOrEqualTo Leading Constraint設定
-        [watchersCountLabel, forksCountLabel, openIssuesCountLabel].forEach { view in
-            view.snp.makeConstraints { constraint in
-                constraint.leading.greaterThanOrEqualTo(backgroundCardView.snp.leading).offset(Const.leftPadding)
-            }
-        }
-        
-        // backgroundCardViewのSubViewのUIのtrailing Constraint設定
-        [userNameLabel, repositoryNameLabel, descriptionLabel, languageNameLabel, watchersCountLabel, forksCountLabel, openIssuesCountLabel].forEach { view in
-            view.snp.makeConstraints { constraint in
-                constraint.trailing.equalTo(backgroundCardView.snp.trailing).offset(-Const.rightPadding)
-            }
+            // ScrollIndicatorの挙動がBottomのSafeAreaを超えてしまうので、equalToSuperViewに変更
+            constraint.edges.equalToSuperview()
         }
         
         backgroundCardView.snp.makeConstraints { constraint in
-            constraint.top.equalTo(contentView.snp.top).offset(30)
-            constraint.leading.equalTo(contentView.snp.leading).offset(20)
-            constraint.trailing.equalTo(contentView.snp.trailing).offset(-20)
-            constraint.bottom.equalTo(contentView.snp.bottom).offset(-30)
+            constraint.top.equalTo(scrollView.contentLayoutGuide.snp.top).offset(30)
+            constraint.width.equalTo(scrollView.snp.width).offset(-(Const.leftPadding + Const.rightPadding))
+            constraint.centerX.equalTo(scrollView.snp.centerX)
+            constraint.bottom.equalTo(scrollView.contentLayoutGuide.snp.bottom).offset(-30)
         }
         
         userImageView.snp.makeConstraints { constraint in
-            constraint.top.equalTo(backgroundCardView.snp.top).offset(20)
+            constraint.top.equalTo(userImageContentView.snp.top)
             constraint.height.equalTo(250)
             constraint.width.equalTo(250)
-            constraint.centerX.equalTo(backgroundCardView.snp.centerX)
+            constraint.centerX.equalTo(userImageContentView.snp.centerX)
         }
         
         userNameLabel.snp.makeConstraints { constraint in
             constraint.top.equalTo(userImageView.snp.bottom).offset(10)
-            constraint.centerX.equalTo(userImageView.snp.centerX)
-        }
-        
-        repositoryNameLabel.snp.makeConstraints { constraint in
-            constraint.top.equalTo(userNameLabel.snp.bottom).offset(20)
-        }
-        
-        descriptionLabel.snp.makeConstraints { constraint in
-            constraint.top.equalTo(repositoryNameLabel.snp.bottom).offset(10)
-        }
-        
-        starButton.snp.makeConstraints { constraint in
-            constraint.height.equalTo(20)
-            constraint.width.equalTo(20)
-            constraint.top.equalTo(descriptionLabel.snp.bottom).offset(20)
-        }
-        
-        starCountsLabel.snp.makeConstraints { constraint in
-            constraint.centerY.equalTo(starButton.snp.centerY)
-            constraint.leading.equalTo(starButton.snp.trailing).offset(8)
+            constraint.leading.equalTo(backgroundCardView.snp.leading).offset(Const.leftPadding)
+            constraint.trailing.equalTo(backgroundCardView.snp.trailing).offset(-Const.rightPadding)
         }
         
         languageColorView.snp.makeConstraints { constraint in
-            constraint.height.equalTo(20)
-            constraint.width.equalTo(20)
-            constraint.centerY.equalTo(starCountsLabel.snp.centerY)
-            constraint.leading.equalTo(starCountsLabel.snp.trailing).offset(20)
+            constraint.height.equalTo(Const.colorViewHeight)
+            constraint.width.equalTo(Const.colorViewHeight)
         }
         
-        languageNameLabel.snp.makeConstraints { constraint in
-            constraint.centerY.equalTo(languageColorView.snp.centerY)
-            constraint.leading.equalTo(languageColorView.snp.trailing).offset(8)
+        starLanguageStackView.snp.makeConstraints { constraint in
+            constraint.height.equalTo(70)
         }
         
-        watchersCountLabel.snp.makeConstraints { constraint in
-            constraint.top.greaterThanOrEqualTo(languageNameLabel.snp.bottom).offset(20)
-            constraint.bottom.equalTo(forksCountLabel.snp.top).offset(-12)
-        }
-        
-        forksCountLabel.snp.makeConstraints { constraint in
-            constraint.bottom.equalTo(openIssuesCountLabel.snp.top).offset(-12)
-        }
-        
-        openIssuesCountLabel.snp.makeConstraints { constraint in
+        mainStackView.snp.makeConstraints { constraint in
+            constraint.top.equalTo(backgroundCardView.snp.top).offset(20)
+            constraint.leading.equalTo(backgroundCardView.snp.leading).offset(Const.leftPadding)
+            constraint.trailing.equalTo(backgroundCardView.snp.trailing).offset(-Const.rightPadding)
             constraint.bottom.equalTo(backgroundCardView.snp.bottom).offset(-20)
         }
+        
+        // mainStackViewのSubViewの中、カスタムでSpacing調整を適用したいViewを特定
+        mainStackView.setCustomSpacing(10, after: userImageContentView)
+        mainStackView.setCustomSpacing(10, after: repositoryNameLabel)
+        // starLanguageStackViewのSubViewの中、カスタムでSpacing調整を適用したいViewを特定
+        starLanguageStackView.setCustomSpacing(20, after: starButton)
     }
     
     func didTapStarButton() {
