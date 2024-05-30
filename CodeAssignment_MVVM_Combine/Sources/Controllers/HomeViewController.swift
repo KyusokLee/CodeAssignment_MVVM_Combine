@@ -53,7 +53,6 @@ class HomeViewController: UIViewController {
     private lazy var repositoryCollectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.delegate = self
-//        collectionView.dataSource = datasource
         collectionView.backgroundColor = .secondarySystemBackground
         collectionView.contentInsetAdjustmentBehavior = .always
         
@@ -106,8 +105,6 @@ extension HomeViewController {
             guard let self else { return UICollectionViewCell() }
             return collectionView.dequeueConfiguredReusableCell(using: self.repositoryCell, for: indexPath, item: repository)
         }
-        
-//        repositoryCollectionView.dataSource = datasource
         snapshot = NSDiffableDataSourceSnapshot<Section, Repositories.Repository>()
         // Snapshotの初期化
         snapshot.appendSections([.main])
