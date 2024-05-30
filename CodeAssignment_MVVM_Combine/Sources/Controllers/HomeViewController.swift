@@ -30,7 +30,7 @@ class HomeViewController: UIViewController {
     - Setで複数のSubscription（購読）を１つにまとめることができ、Subscriptionの値を保持する
      */
     private var cancellables = Set<AnyCancellable>()
-    /** DiffableDataSource
+    /** リポジトリデータを管理するUICollectionViewDiffableDataSource
     - UICollectionViewDiffableDataSource<SectionIdentifierType: Hashable & Sendable, ItemIdentifierType: Hashable & Sendable>
     - CollectionViewに表示する各SectionもHashableを採択する必要があるが、CaseIterable採択でも可能
     - CaseIterableを採択すると、自動的にallCasesが取得される。ただし、associated typeがないことが条件。
