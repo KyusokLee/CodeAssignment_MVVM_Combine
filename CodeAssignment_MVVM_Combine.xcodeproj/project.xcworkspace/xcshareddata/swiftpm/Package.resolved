@@ -1,6 +1,24 @@
 {
   "pins" : [
     {
+      "identity" : "footlessparser",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/kareman/FootlessParser",
+      "state" : {
+        "revision" : "11c7a366720a2cc62d13ee69c8bdb8372bb3bb2b",
+        "version" : "0.5.2"
+      }
+    },
+    {
+      "identity" : "northlayout",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/banjun/NorthLayout.git",
+      "state" : {
+        "revision" : "ad450dadc3a95d35ed0ed159f9eb23b792872a9a",
+        "version" : "5.3.0"
+      }
+    },
+    {
       "identity" : "sdwebimage",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/SDWebImage/SDWebImage",
