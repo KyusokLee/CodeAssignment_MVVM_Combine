@@ -9,6 +9,7 @@ import UIKit
 import Combine
 import SnapKit
 import SDWebImage
+import NorthLayout
 
 private enum Const {
     /// Cellで使うleftPadding
@@ -180,21 +181,58 @@ extension RepositoryCollectionViewCell {
     
     /// Layoutの制約を設定
     private func setupConstraints() {
+        // NorthLayoutを用いた設定
+        let layout = northLayoutFormat([:], [
+            "view": {
+                let view = contentView
+                let layout = northLayoutFormat([
+                    "leftPadding": Const.leftPadding,
+                    "rightPadding": Const.rightPadding
+                ], [
+                    "name": nameLabel,
+                    "description": descriptionLabel,
+                    "userAccessory": {
+                        let view = userAccessoryView
+                        let layout = northLayoutFormat([:], [
+                            "userImage": userImageView,
+                            "userLabel": userNameLabel
+                        ])
+                        layout("H:")
+                        
+                        return view
+                    }(),
+                    "starButton": starButton,
+                    "starCounts": starCountsLabel,
+                    "languageColor": languageColorView,
+                    "languageName": languageNameLabel
+                ])
+                layout("H:|-[leftPadding]-[name]-[rightPadding]-|")
+                layout("H:|-[leftPadding]-[description]-[rightPadding]-|")
+                layout("H:|-[leftPadding]-[userAccessory]-[rightPadding]-|")
+                layout("H:|-[leftPadding]-[starButton(25)]")
+                
+                return view
+            }()
+        ])
+        
+        
+        
+        
         // ContentViewのConstraints
         contentView.snp.makeConstraints { constraint in
             constraint.edges.equalToSuperview()
             constraint.width.equalToSuperview()
         }
         
-        // 各SubViewの共通のleading offset設定 (contentView.snp.leadingに合わせる)
-        [nameLabel, descriptionLabel, userAccessoryView, starButton].forEach { view in
-            view.snp.makeConstraints { constraint in
-                constraint.leading.equalTo(contentView.snp.leading).offset(Const.leftPadding)
-            }
-        }
+//        // 各SubViewの共通のleading offset設定 (contentView.snp.leadingに合わせる)
+//        [descriptionLabel, userAccessoryView, starButton].forEach { view in
+//            view.snp.makeConstraints { constraint in
+//                constraint.leading.equalTo(contentView.snp.leading).offset(Const.leftPadding)
+//            }
+//        }
         
         // 各SubViewの共通のtrailing offset設定 (contentView.snp.trailingに合わせる)
-        [nameLabel, descriptionLabel, userAccessoryView, languageNameLabel].forEach {
+        [descriptionLabel, userAccessoryView, languageNameLabel].forEach {
             $0.snp.makeConstraints {
                 $0.trailing.lessThanOrEqualTo(contentView.snp.trailing).offset(-(Const.rightPadding))
             }
@@ -221,6 +259,7 @@ extension RepositoryCollectionViewCell {
         }
         
         // userNameLabelのConstraints
+        // CenterYだけは、VFLで適用できない
         userNameLabel.snp.makeConstraints { constraint in
             constraint.top.equalTo(userAccessoryView.snp.top).offset(8)
             constraint.bottom.equalTo(userAccessoryView.snp.bottom).offset(-8)

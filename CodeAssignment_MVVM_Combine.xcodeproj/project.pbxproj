@@ -21,6 +21,7 @@
 		5D0770302BE38D38007F0724 /* ErrorType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D07702F2BE38D38007F0724 /* ErrorType.swift */; };
 		5D0770352BE38D8C007F0724 /* ErrorType+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0770342BE38D8C007F0724 /* ErrorType+Utils.swift */; };
 		5D0770372BE38E20007F0724 /* UIColor+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0770362BE38E20007F0724 /* UIColor+Utils.swift */; };
+		5D0FB47B2C0F0F7800B0288B /* NorthLayout in Frameworks */ = {isa = PBXBuildFile; productRef = 5D0FB47A2C0F0F7800B0288B /* NorthLayout */; };
 		5D2880942BEA02F9005DC50A /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2880932BEA02F9005DC50A /* HomeViewModel.swift */; };
 		5DB771652BF1B951001570ED /* Repositories.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB771642BF1B951001570ED /* Repositories.swift */; };
 		5DB771692BF1F682001570ED /* RepositoryCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB771682BF1F682001570ED /* RepositoryCollectionViewCell.swift */; };
@@ -79,6 +80,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5D0FB47B2C0F0F7800B0288B /* NorthLayout in Frameworks */,
 				5DB7C31E2BF4D75B0074AFC1 /* SDWebImage in Frameworks */,
 				5D0770272BE33EFD007F0724 /* SnapKit in Frameworks */,
 				5D0770292BE33EFD007F0724 /* SnapKit-Dynamic in Frameworks */,
@@ -335,6 +337,7 @@
 				5D0770262BE33EFD007F0724 /* SnapKit */,
 				5D0770282BE33EFD007F0724 /* SnapKit-Dynamic */,
 				5DB7C31D2BF4D75B0074AFC1 /* SDWebImage */,
+				5D0FB47A2C0F0F7800B0288B /* NorthLayout */,
 			);
 			productName = CodeAssignment_MVVM_Combine;
 			productReference = 5D076FE92BE32B9C007F0724 /* CodeAssignment_MVVM_Combine.app */;
@@ -411,6 +414,7 @@
 			packageReferences = (
 				5D0770252BE33D0D007F0724 /* XCRemoteSwiftPackageReference "SnapKit" */,
 				5DB7C31C2BF4D75B0074AFC1 /* XCRemoteSwiftPackageReference "SDWebImage" */,
+				5D0FB4792C0F0F7800B0288B /* XCRemoteSwiftPackageReference "NorthLayout" */,
 			);
 			productRefGroup = 5D076FEA2BE32B9C007F0724 /* Products */;
 			projectDirPath = "";
@@ -814,6 +818,14 @@
 				minimumVersion = 5.7.1;
 			};
 		};
+		5D0FB4792C0F0F7800B0288B /* XCRemoteSwiftPackageReference "NorthLayout" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/banjun/NorthLayout";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.3.0;
+			};
+		};
 		5DB7C31C2BF4D75B0074AFC1 /* XCRemoteSwiftPackageReference "SDWebImage" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SDWebImage/SDWebImage";
@@ -834,6 +846,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 5D0770252BE33D0D007F0724 /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = "SnapKit-Dynamic";
+		};
+		5D0FB47A2C0F0F7800B0288B /* NorthLayout */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5D0FB4792C0F0F7800B0288B /* XCRemoteSwiftPackageReference "NorthLayout" */;
+			productName = NorthLayout;
 		};
 		5DB7C31D2BF4D75B0074AFC1 /* SDWebImage */ = {
 			isa = XCSwiftPackageProductDependency;
