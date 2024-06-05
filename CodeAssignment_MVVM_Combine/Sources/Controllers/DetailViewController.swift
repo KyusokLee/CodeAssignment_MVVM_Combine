@@ -16,6 +16,10 @@ private enum Const {
     static let rightPadding: CGFloat = 20
     /// DetailViewControllerで表すLanguageColorViewのHeight
     static let colorViewSize: CGFloat = 20
+    /// Increment
+    static let increment: Int = 1
+    /// Decrement
+    static let decrement: Int = -1
 }
 
 final class DetailViewController: UIViewController {
@@ -105,6 +109,18 @@ final class DetailViewController: UIViewController {
             guard let self else { return }
             self.didTapStarButton()
         }, for: .touchUpInside)
+
+        // configurationUpdateHandlerを用いてButtonのUIを変更
+        button.configurationUpdateHandler = { [weak self] button in
+            guard let self else { return }
+            if button.isSelected {
+                button.configuration?.image = UIImage(systemName: "star.fill")
+                button.configuration?.baseForegroundColor = .systemYellow
+            } else {
+                button.configuration?.image = UIImage(systemName: "star")
+                button.configuration?.baseForegroundColor = .systemGray3
+            }
+        }
         return button
     }()
     
@@ -188,15 +204,7 @@ extension DetailViewController {
         descriptionLabel.text = model.description
         userNameLabel.text = model.owner.userName
         languageNameLabel.text = model.language
-        // UIButton.Configurationのtitleを更新
-        starButton.configuration?.attributedTitle = AttributedString(
-            "\(formatNumberToStringWithSeparator(model.stargazersCount)) stars",
-            attributes: AttributeContainer([
-                .font: UIFont.systemFont(ofSize: 20, weight: .regular),
-                .foregroundColor: UIColor.black.withAlphaComponent(0.8)
-            ])
-        )
-        
+        setupStarButtonAttributedTitle(with: formatNumberToStringWithSeparator(model.stargazersCount))
         watchersCountLabel.text = "\(formatNumberToStringWithSeparator(model.watchersCount)) watchers"
         forksCountLabel.text = "\(formatNumberToStringWithSeparator(model.forksCount)) forks"
         openIssuesCountLabel.text = "\(formatNumberToStringWithSeparator(model.openIssuesCount)) issues"
@@ -227,9 +235,9 @@ extension DetailViewController {
     private func bind() {
         viewModel.starRepositorySubject
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] isSeleted in
+            .sink { [weak self] isSelected in
                 guard let self else { return }
-                self.updateStarButtonState(isSelected: isSeleted)
+                self.updateStarGazersCount(from: (starButton.configuration?.title)!, with: isSelected ? Const.increment : Const.decrement)
             }
             .store(in: &cancellables)
     }
@@ -241,7 +249,34 @@ extension DetailViewController {
         setAddSubViews()
         setupConstraints()
     }
-    
+
+    // StarGazersCountの更新
+    private func updateStarGazersCount(from title: String, with value: Int) {
+        let components = title.split(separator: " ").map { String($0) }
+        guard let numberString = components.first else { return }
+
+        // 数字に,がある場合、それを除去した文字列を定数に変換
+        if numberString.contains(",") {
+            let cleanedNumberString = numberString.replacingOccurrences(of: ",", with: "")
+            guard let number = Int(cleanedNumberString) else { return }
+            setupStarButtonAttributedTitle(with: formatNumberToStringWithSeparator(number + value))
+        } else {
+            guard let number = Int(numberString) else { return }
+            setupStarButtonAttributedTitle(with: formatNumberToStringWithSeparator(number + value))
+        }
+    }
+
+    // StarButtonのUIButton.Configurationのtitleの設定
+    private func setupStarButtonAttributedTitle(with title: String) {
+        starButton.configuration?.attributedTitle = AttributedString(
+            "\(title) stars",
+            attributes: AttributeContainer([
+                .font: UIFont.systemFont(ofSize: 20, weight: .regular),
+                .foregroundColor: UIColor.black.withAlphaComponent(0.8)
+            ])
+        )
+    }
+
     private func setupNavigationController() {
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
@@ -324,16 +359,6 @@ extension DetailViewController {
             viewModel.starRepository(owner: userNameLabel.text!, repo: repositoryNameLabel.text!)
         } else {
             viewModel.unstarRepository(owner: userNameLabel.text!, repo: repositoryNameLabel.text!)
-        }
-    }
-    
-    func updateStarButtonState(isSelected: Bool) {
-        if isSelected {
-            starButton.setImage(UIImage(systemName: "star.fill"), for: .normal)
-            starButton.tintColor = .systemYellow
-        } else {
-            starButton.setImage(UIImage(systemName: "star"), for: .normal)
-            starButton.tintColor = .systemGray3
         }
     }
 }
