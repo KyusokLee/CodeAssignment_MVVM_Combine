@@ -59,10 +59,7 @@ final class RepositoryCollectionViewCell: UICollectionViewListCell {
      */
     private lazy var starButton: UIButton = {
         var config = UIButton.Configuration.plain()
-        let image = UIImage(systemName: "star")?.withTintColor(.systemGray3, renderingMode: .alwaysOriginal)
-        if let image {
-            config.image = image.withConfiguration(UIImage.SymbolConfiguration(pointSize: 22, weight: .regular))
-        }
+        config.image = UIImage(systemName: "star")?.withTintColor(.systemGray3, renderingMode: .alwaysOriginal).withConfiguration(UIImage.SymbolConfiguration(pointSize: 22, weight: .regular))
         config.contentInsets = .zero
         config.imagePadding = .zero
         config.imagePlacement = .leading
