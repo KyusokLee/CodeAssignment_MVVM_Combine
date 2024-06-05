@@ -78,7 +78,7 @@ extension HomeViewController {
         appearance.backgroundColor = .secondarySystemBackground
         // NavigationBarの下部線を隠す
         appearance.shadowColor = .clear
-        
+        navigationController?.navigationBar.topItem?.backButtonTitle = "戻る"
         navigationController?.navigationBar.standardAppearance = appearance
         setupSearchController()
     }
@@ -88,7 +88,6 @@ extension HomeViewController {
      */
     private func setupSearchController() {
         let searchController = UISearchController(searchResultsController: nil)
-        searchController.delegate = self
         searchController.searchBar.placeholder = "リポジトリを検索"
         searchController.searchBar.delegate = self
         self.navigationItem.searchController = searchController
@@ -125,11 +124,6 @@ extension HomeViewController {
     }
 }
 
-// MARK: - UISearchController Deleage
-extension HomeViewController: UISearchControllerDelegate {
-    
-}
-
 // MARK: - UISearchBarDelegate
 extension HomeViewController: UISearchBarDelegate {
    /// Return(検索)キーをタップしたときの処理
@@ -142,7 +136,12 @@ extension HomeViewController: UISearchBarDelegate {
 
 // MARK: - UICollectionViewDelegate
 extension HomeViewController: UICollectionViewDelegate {
-    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let repository = viewModel.repositoriesSubject.value?.items[indexPath.row] else { return }
+        let detailViewController = DetailViewController(repository: repository)
+        navigationController?.pushViewController(detailViewController, animated: true)
+        collectionView.deselectItem(at: indexPath, animated: true)
+    }
 }
 
 // MARK: - UICollectionViewDataSource
