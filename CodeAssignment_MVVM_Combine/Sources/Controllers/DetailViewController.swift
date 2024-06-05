@@ -104,7 +104,6 @@ final class DetailViewController: UIViewController {
         button.setContentCompressionResistancePriority(.required, for: .horizontal)
         button.titleLabel?.setContentHuggingPriority(.required, for: .horizontal)
         button.titleLabel?.setContentCompressionResistancePriority(.required, for: .horizontal)
-        
         return button
     }()
     
