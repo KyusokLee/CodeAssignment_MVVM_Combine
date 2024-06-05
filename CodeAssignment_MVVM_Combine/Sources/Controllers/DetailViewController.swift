@@ -15,7 +15,7 @@ private enum Const {
     /// layout設定で使うRightPadding
     static let rightPadding: CGFloat = 20
     /// DetailViewControllerで表すLanguageColorViewのHeight
-    static let colorViewHeight: CGFloat = 20
+    static let colorViewSize: CGFloat = 20
 }
 
 final class DetailViewController: UIViewController {
@@ -86,10 +86,7 @@ final class DetailViewController: UIViewController {
     /// 当該リポジトリのStarの数も一緒に表示するStarボタン
     private lazy var starButton: UIButton = {
         var config = UIButton.Configuration.filled()
-        let image = UIImage(systemName: "star")?.withTintColor(.systemGray3, renderingMode: .alwaysOriginal)
-        if let image {
-            config.image = image.withConfiguration(UIImage.SymbolConfiguration(pointSize: 25, weight: .regular))
-        }
+        config.image = UIImage(systemName: "star")?.withTintColor(.systemGray3, renderingMode: .alwaysOriginal).withConfiguration(UIImage.SymbolConfiguration(pointSize: 25, weight: .regular))
         config.baseBackgroundColor = .white
         config.imagePlacement = .leading
         // imageとtext間のSpace
@@ -102,14 +99,8 @@ final class DetailViewController: UIViewController {
         backgroundConfig.strokeColor = .systemGray2
         backgroundConfig.strokeWidth = 2
         config.background = backgroundConfig
-        
-        let button = UIButton(configuration: config)
-        // content hugging priorityを設定し、buttonのconstraintsが意図通りに設定されないことを防ぐ
-        button.setContentHuggingPriority(.required, for: .horizontal)
-        button.setContentCompressionResistancePriority(.required, for: .horizontal)
-        button.titleLabel?.setContentHuggingPriority(.required, for: .horizontal)
-        button.titleLabel?.setContentCompressionResistancePriority(.required, for: .horizontal)
 
+        let button = UIButton(configuration: config)
         button.addAction(.init { [weak self] _ in
             guard let self else { return }
             self.didTapStarButton()
@@ -124,7 +115,7 @@ final class DetailViewController: UIViewController {
     private lazy var languageColorView: UIView = {
         let view = UIView()
         view.clipsToBounds = true
-        view.layer.cornerRadius = Const.colorViewHeight / 2.0
+        view.layer.cornerRadius = Const.colorViewSize / 2.0
         view.backgroundColor = .systemPink
         return view
     }()
@@ -136,7 +127,7 @@ final class DetailViewController: UIViewController {
         // byCharWrapping: 単語ごとじゃなく、一文字ごとに改行する
         label.lineBreakMode = .byCharWrapping
         label.textColor = .black.withAlphaComponent(0.8)
-        label.setContentHuggingPriority(.init(999), for: .horizontal)
+        label.setContentHuggingPriority(.required, for: .horizontal)
         label.setContentCompressionResistancePriority(.required, for: .horizontal)
         return label
     }()
@@ -198,33 +189,30 @@ extension DetailViewController {
         userNameLabel.text = model.owner.userName
         languageNameLabel.text = model.language
         // UIButton.Configurationのtitleを更新
-        if var config = starButton.configuration {
-            config.attributedTitle = AttributedString(
-                "\(formatNumberToStringWithSeparator(model.stargazersCount)) stars",
-                attributes: AttributeContainer([
-                    .font: UIFont.systemFont(ofSize: 20, weight: .regular),
-                            .foregroundColor: UIColor.black.withAlphaComponent(0.8)
-                ]))
-            starButton.configuration = config
-        }
+        starButton.configuration?.attributedTitle = AttributedString(
+            "\(formatNumberToStringWithSeparator(model.stargazersCount)) stars",
+            attributes: AttributeContainer([
+                .font: UIFont.systemFont(ofSize: 20, weight: .regular),
+                .foregroundColor: UIColor.black.withAlphaComponent(0.8)
+            ])
+        )
         
         watchersCountLabel.text = "\(formatNumberToStringWithSeparator(model.watchersCount)) watchers"
         forksCountLabel.text = "\(formatNumberToStringWithSeparator(model.forksCount)) forks"
         openIssuesCountLabel.text = "\(formatNumberToStringWithSeparator(model.openIssuesCount)) issues"
         
-        if let url = URL(string: model.owner.profileImageString) {
-            userImageView.sd_setImage(with: url, placeholderImage: defaultImage) { [weak self] (image, error, _, _) in
-                guard let self else { return }
-                if let error {
-                    // ロード中にエラーが発生する場合や、URLが無効な場合はdefaultの画像を表示
-                    print("error: \(error.localizedDescription)")
-                    self.userImageView.image = defaultImage
-                } else {
-                    self.userImageView.image = image
-                }
-            }
-        } else {
+        guard let url = URL(string: model.owner.profileImageString) else {
             userImageView.image = defaultImage
+            return
+        }
+        userImageView.sd_setImage(with: url, placeholderImage: defaultImage) { [weak self] (image, error, _, _) in
+            guard let self else { return }
+            guard let error else {
+                self.userImageView.image = image
+                return
+            }
+            // ロード中にエラーが発生する場合や、URLが無効な場合はdefaultの画像を表示
+            self.userImageView.image = defaultImage
         }
     }
     /** 数字をdecimal StyleのString型としてformatする
@@ -279,6 +267,12 @@ extension DetailViewController {
     }
     
     private func setupConstraints() {
+        // StarButtonのcontent priorityを設定し、buttonのconstraintsが意図通りに設定されないことを防ぐ
+        starButton.setContentHuggingPriority(.required, for: .horizontal)
+        starButton.setContentCompressionResistancePriority(.required, for: .horizontal)
+        starButton.titleLabel?.setContentHuggingPriority(.required, for: .horizontal)
+        starButton.titleLabel?.setContentCompressionResistancePriority(.required, for: .horizontal)
+
         scrollView.snp.makeConstraints { constraint in
             // ScrollIndicatorの挙動がBottomのSafeAreaを超えてしまうので、equalToSuperViewに変更
             constraint.edges.equalToSuperview()
@@ -296,17 +290,12 @@ extension DetailViewController {
             constraint.height.equalTo(250)
             constraint.width.equalTo(250)
             constraint.centerX.equalTo(userImageContentView.snp.centerX)
-        }
-        
-        userNameLabel.snp.makeConstraints { constraint in
-            constraint.top.equalTo(userImageView.snp.bottom).offset(10)
-            constraint.leading.equalTo(backgroundCardView.snp.leading).offset(Const.leftPadding)
-            constraint.trailing.equalTo(backgroundCardView.snp.trailing).offset(-Const.rightPadding)
+            constraint.bottom.equalTo(userImageContentView.snp.bottom)
         }
         
         languageColorView.snp.makeConstraints { constraint in
-            constraint.height.equalTo(Const.colorViewHeight)
-            constraint.width.equalTo(Const.colorViewHeight)
+            constraint.height.equalTo(Const.colorViewSize)
+            constraint.width.equalTo(Const.colorViewSize)
         }
         
         starLanguageStackView.snp.makeConstraints { constraint in
