@@ -13,7 +13,7 @@ private enum Const {
     static let leftPadding: CGFloat = 20
     /// layout設定で使うRightPadding
     static let rightPadding: CGFloat = 20
-    /// DetailViewControllerで表すLanguageColorViewのHeight
+    /// DetailViewControllerで表すLanguageColorViewのサイズ
     static let colorViewSize: CGFloat = 20
 }
 
