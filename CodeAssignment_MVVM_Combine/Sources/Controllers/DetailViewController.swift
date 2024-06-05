@@ -188,15 +188,13 @@ extension DetailViewController {
         userNameLabel.text = model.owner.userName
         languageNameLabel.text = model.language
         // UIButton.Configurationのtitleを更新
-        if var config = starButton.configuration {
-            config.attributedTitle = AttributedString(
-                "\(formatNumberToStringWithSeparator(model.stargazersCount)) stars",
-                attributes: AttributeContainer([
-                    .font: UIFont.systemFont(ofSize: 20, weight: .regular),
-                            .foregroundColor: UIColor.black.withAlphaComponent(0.8)
-                ]))
-            starButton.configuration = config
-        }
+        starButton.configuration?.attributedTitle = AttributedString(
+            "\(formatNumberToStringWithSeparator(model.stargazersCount)) stars",
+            attributes: AttributeContainer([
+                .font: UIFont.systemFont(ofSize: 20, weight: .regular),
+                .foregroundColor: UIColor.black.withAlphaComponent(0.8)
+            ])
+        )
         
         watchersCountLabel.text = "\(formatNumberToStringWithSeparator(model.watchersCount)) watchers"
         forksCountLabel.text = "\(formatNumberToStringWithSeparator(model.forksCount)) forks"
