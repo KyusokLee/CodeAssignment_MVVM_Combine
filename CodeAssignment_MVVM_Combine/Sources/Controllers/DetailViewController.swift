@@ -276,12 +276,7 @@ extension DetailViewController {
             constraint.height.equalTo(250)
             constraint.width.equalTo(250)
             constraint.centerX.equalTo(userImageContentView.snp.centerX)
-        }
-        
-        userNameLabel.snp.makeConstraints { constraint in
-            constraint.top.equalTo(userImageView.snp.bottom).offset(10)
-            constraint.leading.equalTo(backgroundCardView.snp.leading).offset(Const.leftPadding)
-            constraint.trailing.equalTo(backgroundCardView.snp.trailing).offset(-Const.rightPadding)
+            constraint.bottom.equalTo(userImageContentView.snp.bottom)
         }
         
         languageColorView.snp.makeConstraints { constraint in
