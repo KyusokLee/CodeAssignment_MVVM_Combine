@@ -81,10 +81,7 @@ final class DetailViewController: UIViewController {
     /// 当該リポジトリのStarの数も一緒に表示するStarボタン
     private lazy var starButton: UIButton = {
         var config = UIButton.Configuration.filled()
-        let image = UIImage(systemName: "star")?.withTintColor(.systemGray3, renderingMode: .alwaysOriginal)
-        if let image {
-            config.image = image.withConfiguration(UIImage.SymbolConfiguration(pointSize: 25, weight: .regular))
-        }
+        config.image = UIImage(systemName: "star")?.withTintColor(.systemGray3, renderingMode: .alwaysOriginal).withConfiguration(UIImage.SymbolConfiguration(pointSize: 25, weight: .regular))
         config.baseBackgroundColor = .white
         config.imagePlacement = .leading
         // imageとtext間のSpace
