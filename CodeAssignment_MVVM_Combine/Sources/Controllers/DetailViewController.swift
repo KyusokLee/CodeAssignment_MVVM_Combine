@@ -202,19 +202,18 @@ extension DetailViewController {
         forksCountLabel.text = "\(formatNumberToStringWithSeparator(model.forksCount)) forks"
         openIssuesCountLabel.text = "\(formatNumberToStringWithSeparator(model.openIssuesCount)) issues"
         
-        if let url = URL(string: model.owner.profileImageString) {
-            userImageView.sd_setImage(with: url, placeholderImage: defaultImage) { [weak self] (image, error, _, _) in
-                guard let self else { return }
-                if let error {
-                    // ロード中にエラーが発生する場合や、URLが無効な場合はdefaultの画像を表示
-                    print("error: \(error.localizedDescription)")
-                    self.userImageView.image = defaultImage
-                } else {
-                    self.userImageView.image = image
-                }
-            }
-        } else {
+        guard let url = URL(string: model.owner.profileImageString) else {
             userImageView.image = defaultImage
+            return
+        }
+        userImageView.sd_setImage(with: url, placeholderImage: defaultImage) { [weak self] (image, error, _, _) in
+            guard let self else { return }
+            guard let error else {
+                self.userImageView.image = image
+                return
+            }
+            // ロード中にエラーが発生する場合や、URLが無効な場合はdefaultの画像を表示
+            self.userImageView.image = defaultImage
         }
     }
     /** 数字をdecimal StyleのString型としてformatする
