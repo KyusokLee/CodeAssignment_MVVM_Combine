@@ -218,7 +218,6 @@ extension RepositoryCollectionViewCell {
         // starButtonのConstraints
         starButton.snp.makeConstraints { constraint in
             constraint.top.equalTo(userAccessoryView.snp.bottom).offset(20)
-//            constraint.centerY.equalTo(starCountsLabel.snp.centerY)
             constraint.bottom.lessThanOrEqualTo(contentView.snp.bottom).offset(-8)
         }
         
@@ -226,7 +225,6 @@ extension RepositoryCollectionViewCell {
         starCountsLabel.snp.makeConstraints { constraint in
             constraint.leading.equalTo(starButton.snp.trailing).offset(5)
             constraint.centerY.equalTo(starButton.snp.centerY)
-//            constraint.bottom.lessThanOrEqualTo(contentView.snp.bottom).offset(-8)
         }
         
         // languageColorViewのConstraints
