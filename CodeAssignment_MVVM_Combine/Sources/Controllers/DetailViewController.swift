@@ -14,7 +14,7 @@ private enum Const {
     /// layout設定で使うRightPadding
     static let rightPadding: CGFloat = 20
     /// DetailViewControllerで表すLanguageColorViewのHeight
-    static let colorViewHeight: CGFloat = 20
+    static let colorViewSize: CGFloat = 20
 }
 
 final class DetailViewController: UIViewController {
@@ -114,7 +114,7 @@ final class DetailViewController: UIViewController {
     private lazy var languageColorView: UIView = {
         let view = UIView()
         view.clipsToBounds = true
-        view.layer.cornerRadius = Const.colorViewHeight / 2.0
+        view.layer.cornerRadius = Const.colorViewSize / 2.0
         view.backgroundColor = .systemPink
         return view
     }()
@@ -276,8 +276,8 @@ extension DetailViewController {
         }
         
         languageColorView.snp.makeConstraints { constraint in
-            constraint.height.equalTo(Const.colorViewHeight)
-            constraint.width.equalTo(Const.colorViewHeight)
+            constraint.height.equalTo(Const.colorViewSize)
+            constraint.width.equalTo(Const.colorViewSize)
         }
         
         starLanguageStackView.snp.makeConstraints { constraint in
