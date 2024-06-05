@@ -127,7 +127,7 @@ final class DetailViewController: UIViewController {
         // byCharWrapping: 単語ごとじゃなく、一文字ごとに改行する
         label.lineBreakMode = .byCharWrapping
         label.textColor = .black.withAlphaComponent(0.8)
-        label.setContentHuggingPriority(.init(999), for: .horizontal)
+        label.setContentHuggingPriority(.required, for: .horizontal)
         label.setContentCompressionResistancePriority(.required, for: .horizontal)
         return label
     }()
