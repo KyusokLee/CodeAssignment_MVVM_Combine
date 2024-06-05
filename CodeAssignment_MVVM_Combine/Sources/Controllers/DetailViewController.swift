@@ -94,14 +94,8 @@ final class DetailViewController: UIViewController {
         backgroundConfig.strokeColor = .systemGray2
         backgroundConfig.strokeWidth = 2
         config.background = backgroundConfig
-        
-        let button = UIButton(configuration: config)
-        // content hugging priorityを設定し、buttonのconstraintsが意図通りに設定されないことを防ぐ
-        button.setContentHuggingPriority(.required, for: .horizontal)
-        button.setContentCompressionResistancePriority(.required, for: .horizontal)
-        button.titleLabel?.setContentHuggingPriority(.required, for: .horizontal)
-        button.titleLabel?.setContentCompressionResistancePriority(.required, for: .horizontal)
-        return button
+
+        return UIButton(configuration: config)
     }()
     
     /** 言語ごとに色をつけて表示させるためのView
@@ -252,6 +246,12 @@ extension DetailViewController {
     }
     
     private func setupConstraints() {
+        // StarButtonのcontent priorityを設定し、buttonのconstraintsが意図通りに設定されないことを防ぐ
+        starButton.setContentHuggingPriority(.required, for: .horizontal)
+        starButton.setContentCompressionResistancePriority(.required, for: .horizontal)
+        starButton.titleLabel?.setContentHuggingPriority(.required, for: .horizontal)
+        starButton.titleLabel?.setContentCompressionResistancePriority(.required, for: .horizontal)
+
         scrollView.snp.makeConstraints { constraint in
             // ScrollIndicatorの挙動がBottomのSafeAreaを超えてしまうので、equalToSuperViewに変更
             constraint.edges.equalToSuperview()
