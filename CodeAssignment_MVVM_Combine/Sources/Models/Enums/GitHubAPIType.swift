@@ -12,5 +12,5 @@ enum GitHubAPIType {
     // リポジトリを検索
     case searchRepositories
     // リポジトリに星付け・解除
-    case starRepository(owner: String, repo: String, starStatus: Bool)
+    case starRepository
 }

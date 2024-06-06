@@ -19,8 +19,8 @@ final class DetailViewModel {
     
     /// POST・DELETE リクエストを送信し、repositoryにスターの付け・解除するメソッド
     func starRepository(owner: String, repo: String, starStatus: Bool) {
-        let requestProtocol = GitHubSearchRepositoriesRequest(searchQueryWord: "")
-        apiClient.request(requestProtocol, type: .starRepository(owner: owner, repo: repo, starStatus: starStatus)) { result in
+        let requestProtocol = GitHubStarRepositoryRequest(owner: owner, repository: repo, starStatus: starStatus)
+        apiClient.request(requestProtocol, type: .starRepository) { result in
             switch result {
             case .success(_):
                 starStatus ? self.starRepositorySubject.send(true) : self.starRepositorySubject.send(false)

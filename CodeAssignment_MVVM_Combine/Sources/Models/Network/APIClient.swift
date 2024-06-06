@@ -17,6 +17,45 @@ protocol GitHubAPIClientProtocol {
     func buildUpRequest(type: GitHubAPIType) -> URLRequest?
 }
 
+/// リポジトリに星付け・解除のためのリクエスト
+struct GitHubStarRepositoryRequest: GitHubAPIClientProtocol {
+    let owner: String
+    let repository: String
+    let starStatus: Bool
+
+    init(owner: String, repository: String, starStatus: Bool) {
+        self.owner = owner
+        self.repository = repository
+        self.starStatus = starStatus
+    }
+
+    func decode(from data: Data) throws -> RepositoriesResponse {
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        // codingKeysを別途に設けずに、decoder.keyDecodingStrategy = .convertFromSnakeCaseを用いてJSONのconvertがしやすい
+        // ただし、 _以外の名前はマッチしないといけない
+        // 例) JSON上のキーがuserなのに、コード上ではownerという変数として使いたい場合
+        return try decoder.decode(RepositoriesResponse.self, from: data)
+    }
+
+    func buildUpRequest(type: GitHubAPIType) -> URLRequest? {
+        // repository owner usernameと repository name必須
+        let urlString = "https://api.github.com/user/starred/\(owner)/\(repository)"
+        guard let url = URL(string: urlString) else { return nil }
+        var request = URLRequest(url: url)
+        // statStatusで星付け・解除の処理を分岐
+        if starStatus {
+            request.httpMethod = "PUT"
+        } else {
+            request.httpMethod = "DELETE"
+        }
+        // Authorization ヘッダーにトークン設定
+        request.setValue("Bearer \(Tokens.accessToken)", forHTTPHeaderField: "Authorization")
+        return request
+    }
+}
+
+/// リポジトリ検索用のリクエスト
 struct GitHubSearchRepositoriesRequest: GitHubAPIClientProtocol {
     let searchQueryWord: String
     
@@ -46,30 +85,12 @@ struct GitHubSearchRepositoriesRequest: GitHubAPIClientProtocol {
      - リクエストを立てる処理は分離することで、requestだけの処理ができるのではないかと考える
      */
     func buildUpRequest(type: GitHubAPIType) -> URLRequest? {
-        
-        switch type {
-        case .searchRepositories:
-            let urlString = "https://api.github.com/search/repositories?q=\(searchQueryWord)"
-            guard let url = URL(string: urlString) else { return nil }
-            var request = URLRequest(url: url)
-            request.httpMethod = "GET"
-            
-            return request
-        case .starRepository(let owner, let repo, let starStatus):
-            // repository owner usernameと repository name必須
-            let urlString = "https://api.github.com/user/starred/\(owner)/\(repo)"
-            guard let url = URL(string: urlString) else { return nil }
-            var request = URLRequest(url: url)
-            // statStatusで星付け・解除の処理を分岐
-            if starStatus {
-                request.httpMethod = "PUT"
-            } else {
-                request.httpMethod = "DELETE"
-            }
-            // Authorization ヘッダーにトークン設定
-            request.setValue("Bearer \(Tokens.accessToken)", forHTTPHeaderField: "Authorization")
-            return request
-        }
+        let urlString = "https://api.github.com/search/repositories?q=\(searchQueryWord)"
+        guard let url = URL(string: urlString) else { return nil }
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+
+        return request
     }
 }
 
@@ -105,7 +126,7 @@ class APIClient {
                     } catch {
                         completion(.failure(ErrorType.decodeError))
                     }
-                case .starRepository(owner: _, repo: _, starStatus: _):
+                case .starRepository:
                     // リポジトリにスター付け・解除はdecode作業は不要なため、completionはsuccessのみ返す
                     // Modelの返り値はいらないので、nil
                     completion(.success(nil))
