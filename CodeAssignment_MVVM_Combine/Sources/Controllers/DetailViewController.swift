@@ -354,11 +354,6 @@ extension DetailViewController {
     func didTapStarButton() {
         // Toggle
         starButton.isSelected.toggle()
-        
-        if starButton.isSelected {
-            viewModel.starRepository(owner: userNameLabel.text!, repo: repositoryNameLabel.text!)
-        } else {
-            viewModel.unstarRepository(owner: userNameLabel.text!, repo: repositoryNameLabel.text!)
-        }
+        viewModel.starRepository(owner: userNameLabel.text!, repo: repositoryNameLabel.text!, starStatus: starButton.isSelected)
     }
 }

@@ -55,23 +55,19 @@ struct GitHubSearchRepositoriesRequest: GitHubAPIClientProtocol {
             request.httpMethod = "GET"
             
             return request
-        case .starRepository(let owner, let repo):
+        case .starRepository(let owner, let repo, let starStatus):
             // repository owner usernameと repository name必須
             let urlString = "https://api.github.com/user/starred/\(owner)/\(repo)"
             guard let url = URL(string: urlString) else { return nil }
             var request = URLRequest(url: url)
-            request.httpMethod = "PUT"
+            // statStatusで星付け・解除の処理を分岐
+            if starStatus {
+                request.httpMethod = "PUT"
+            } else {
+                request.httpMethod = "DELETE"
+            }
             // Authorization ヘッダーにトークン設定
             request.setValue("Bearer \(Tokens.accessToken)", forHTTPHeaderField: "Authorization")
-            
-            return request
-        case .unstarRepository(owner: let owner, repo: let repo):
-            let urlString = "https://api.github.com/user/starred/\(owner)/\(repo)"
-            guard let url = URL(string: urlString) else { return nil }
-            var request = URLRequest(url: url)
-            request.httpMethod = "DELETE"
-            request.setValue("Bearer \(Tokens.accessToken)", forHTTPHeaderField: "Authorization")
-            
             return request
         }
     }
@@ -109,11 +105,9 @@ class APIClient {
                     } catch {
                         completion(.failure(ErrorType.decodeError))
                     }
-                case .starRepository(owner: _, repo: _):
+                case .starRepository(owner: _, repo: _, starStatus: _):
                     // リポジトリにスター付け・解除はdecode作業は不要なため、completionはsuccessのみ返す
                     // Modelの返り値はいらないので、nil
-                    completion(.success(nil))
-                case .unstarRepository(owner: _, repo: _):
                     completion(.success(nil))
                 }
             } else {
