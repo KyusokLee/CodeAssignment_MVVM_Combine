@@ -44,11 +44,7 @@ struct GitHubStarRepositoryRequest: GitHubAPIClientProtocol {
         guard let url = URL(string: urlString) else { return nil }
         var request = URLRequest(url: url)
         // statStatusで星付け・解除の処理を分岐
-        if starStatus {
-            request.httpMethod = "PUT"
-        } else {
-            request.httpMethod = "DELETE"
-        }
+        request.httpMethod = starStatus ? "PUT" : "DELETE"
         // Authorization ヘッダーにトークン設定
         request.setValue("Bearer \(Tokens.accessToken)", forHTTPHeaderField: "Authorization")
         return request
