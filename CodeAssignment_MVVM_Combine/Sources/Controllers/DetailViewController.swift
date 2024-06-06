@@ -237,6 +237,7 @@ extension DetailViewController {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] isSelected in
                 guard let self else { return }
+                self.starButton.isSelected = isSelected
                 self.updateStarGazersCount(from: (starButton.configuration?.title)!, with: isSelected ? Const.increment : Const.decrement)
             }
             .store(in: &cancellables)
@@ -352,8 +353,6 @@ extension DetailViewController {
     }
     
     func didTapStarButton() {
-        // Toggle
-        starButton.isSelected.toggle()
-        viewModel.starRepository(owner: userNameLabel.text!, repo: repositoryNameLabel.text!, starStatus: starButton.isSelected)
+        viewModel.starRepository(owner: userNameLabel.text!, repo: repositoryNameLabel.text!, starStatus: !starButton.isSelected)
     }
 }
