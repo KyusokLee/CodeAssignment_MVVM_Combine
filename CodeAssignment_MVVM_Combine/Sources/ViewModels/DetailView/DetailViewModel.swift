@@ -11,19 +11,26 @@ import Combine
 
 final class DetailViewModel {
     
+    @Published private(set) var isStarred: Bool = false
+    @Published private(set) var repository: Repositories.Repository
+
     private let apiClient = APIClient()
-    var starRepositorySubject = PassthroughSubject<Bool, Never>()
-    var starRepositoryPublisher: AnyPublisher<Bool, Never> {
-        return starRepositorySubject.eraseToAnyPublisher()
+
+    init(repository: Repositories.Repository) {
+        self.repository = repository
     }
-    
+
     /// POST・DELETE リクエストを送信し、repositoryにスターの付け・解除するメソッド
-    func starRepository(owner: String, repo: String, starStatus: Bool) {
-        let requestProtocol = GitHubStarRepositoryRequest(owner: owner, repository: repo, starStatus: starStatus)
-        apiClient.request(requestProtocol, type: .starRepository) { result in
+    func didTapStarButton() {
+        let requestProtocol = GitHubStarRepositoryRequest(owner: repository.owner.userName, repository: repository.name, starStatus: !isStarred)
+        apiClient.request(requestProtocol, type: .starRepository) { [weak self] result in
             switch result {
             case .success(_):
-                starStatus ? self.starRepositorySubject.send(true) : self.starRepositorySubject.send(false)
+                guard let self else { return }
+                // スター数を増減させる すでにスターが付いている場合は-1, これからスターをつける場合は+1する
+                self.repository.stargazersCount += self.isStarred ? -1 : 1
+                // スターの状態をtoggleする
+                self.isStarred.toggle()
             case let .failure(error):
                 switch error {
                 case .apiServerError:
