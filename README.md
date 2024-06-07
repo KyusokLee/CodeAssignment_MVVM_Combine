@@ -7,6 +7,16 @@
 &nbsp;
 
 ## デモ動画
+> リポジトリを検索
+
+https://github.com/KyusokLee/CodeAssignment_MVVM_Combine/assets/89962765/c45bb097-48d4-4c5b-9c4f-1bcb6915754a
+
+> リポジトリ詳細画面
+
+> リポジトリに星付け・解除
+
+> 入力ワード切り替え
+
 
 
 &nbsp;
