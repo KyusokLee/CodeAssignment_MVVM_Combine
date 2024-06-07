@@ -11,8 +11,6 @@ import Foundation
 enum GitHubAPIType {
     // リポジトリを検索
     case searchRepositories
-    // リポジトリにスターをつける
-    case starRepository(owner: String, repo: String)
-    // リポジトリにつけたスターを解除
-    case unstarRepository(owner: String, repo: String)
+    // リポジトリに星付け・解除
+    case starRepository
 }

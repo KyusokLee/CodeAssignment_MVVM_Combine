@@ -59,10 +59,7 @@ final class RepositoryCollectionViewCell: UICollectionViewListCell {
      */
     private lazy var starButton: UIButton = {
         var config = UIButton.Configuration.plain()
-        let image = UIImage(systemName: "star")?.withTintColor(.systemGray3, renderingMode: .alwaysOriginal)
-        if let image {
-            config.image = image.withConfiguration(UIImage.SymbolConfiguration(pointSize: 22, weight: .regular))
-        }
+        config.image = UIImage(systemName: "star")?.withTintColor(.systemGray3, renderingMode: .alwaysOriginal).withConfiguration(UIImage.SymbolConfiguration(pointSize: 22, weight: .regular))
         config.contentInsets = .zero
         config.imagePadding = .zero
         config.imagePlacement = .leading
@@ -221,7 +218,6 @@ extension RepositoryCollectionViewCell {
         // starButtonのConstraints
         starButton.snp.makeConstraints { constraint in
             constraint.top.equalTo(userAccessoryView.snp.bottom).offset(20)
-//            constraint.centerY.equalTo(starCountsLabel.snp.centerY)
             constraint.bottom.lessThanOrEqualTo(contentView.snp.bottom).offset(-8)
         }
         
@@ -229,7 +225,6 @@ extension RepositoryCollectionViewCell {
         starCountsLabel.snp.makeConstraints { constraint in
             constraint.leading.equalTo(starButton.snp.trailing).offset(5)
             constraint.centerY.equalTo(starButton.snp.centerY)
-//            constraint.bottom.lessThanOrEqualTo(contentView.snp.bottom).offset(-8)
         }
         
         // languageColorViewのConstraints
