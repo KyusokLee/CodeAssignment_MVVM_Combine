@@ -16,7 +16,21 @@ final class DetailViewModel {
     var starRepositoryPublisher: AnyPublisher<Bool, Never> {
         return starRepositorySubject.eraseToAnyPublisher()
     }
-    
+    /** 星付けの状態
+    - PassthroughtSubjectからPublishedに変更
+    - private(set)に設定し、クラスの外部では読み取りだけを可能にする
+     */
+    @Published private(set) var isStarred: Bool = false
+    /// 詳細画面で扱うリポジトリ
+    @Published private(set) var repository: Repositories.Repository
+
+    /** initializerでリポジトリを持っておく
+    - ViewModelにリポジトリデータを持っておき、データの加工をViewModel側で処理するようにする
+     */
+    init(repository: Repositories.Repository) {
+        self.repository = repository
+    }
+
     /// POST・DELETE リクエストを送信し、repositoryにスターの付け・解除するメソッド
     func starRepository(owner: String, repo: String, starStatus: Bool) {
         let requestProtocol = GitHubStarRepositoryRequest(owner: owner, repository: repo, starStatus: starStatus)
