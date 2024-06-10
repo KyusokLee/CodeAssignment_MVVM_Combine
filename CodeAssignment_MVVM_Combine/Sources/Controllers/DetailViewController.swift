@@ -16,10 +16,6 @@ private enum Const {
     static let rightPadding: CGFloat = 20
     /// DetailViewControllerで表すLanguageColorViewのHeight
     static let colorViewSize: CGFloat = 20
-    /// Increment
-    static let increment: Int = 1
-    /// Decrement
-    static let decrement: Int = -1
 }
 
 final class DetailViewController: UIViewController {
@@ -238,7 +234,7 @@ extension DetailViewController {
             .sink { [weak self] isSelected in
                 guard let self else { return }
                 self.starButton.isSelected = isSelected
-                self.updateStarGazersCount(from: (starButton.configuration?.title)!, with: isSelected ? Const.increment : Const.decrement)
+                self.updateStarGazersCount(from: (starButton.configuration?.title)!, with: isSelected ? 1 : -1)
             }
             .store(in: &cancellables)
     }
