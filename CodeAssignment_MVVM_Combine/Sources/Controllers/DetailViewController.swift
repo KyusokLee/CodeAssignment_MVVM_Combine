@@ -348,7 +348,7 @@ extension DetailViewController {
         starLanguageStackView.setCustomSpacing(20, after: starButton)
     }
     
-    func didTapStarButton() {
+    private func didTapStarButton() {
         viewModel.starRepository(owner: userNameLabel.text!, repo: repositoryNameLabel.text!, starStatus: !starButton.isSelected)
     }
 }
