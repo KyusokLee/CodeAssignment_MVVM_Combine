@@ -12,13 +12,10 @@ import Combine
 final class DetailViewModel {
     
     private let apiClient = APIClient()
-    var starRepositorySubject = PassthroughSubject<Bool, Never>()
-    var starRepositoryPublisher: AnyPublisher<Bool, Never> {
-        return starRepositorySubject.eraseToAnyPublisher()
-    }
     /** 星付けの状態
     - PassthroughtSubjectからPublishedに変更
     - private(set)に設定し、クラスの外部では読み取りだけを可能にする
+    - Subjectじゃなく、Publishedを使うと、sendメソッドを使わずに受け取る側(VC)で値の変更を検知可能
      */
     @Published private(set) var isStarred: Bool = false
     /// 詳細画面で扱うリポジトリ
@@ -31,13 +28,19 @@ final class DetailViewModel {
         self.repository = repository
     }
 
-    /// POST・DELETE リクエストを送信し、repositoryにスターの付け・解除するメソッド
-    func starRepository(owner: String, repo: String, starStatus: Bool) {
-        let requestProtocol = GitHubStarRepositoryRequest(owner: owner, repository: repo, starStatus: starStatus)
-        apiClient.request(requestProtocol, type: .starRepository) { result in
+    /** POST・DELETE リクエストを送信し、repositoryにスターの付け・解除するメソッド
+    - ViewControllerのUIから持ってくるのではなく、モデルのデータを利用するようにする
+     */
+    func changeRepositoryStarStatus() {
+        let requestProtocol = GitHubStarRepositoryRequest(owner: repository.owner.userName, repository: repository.name, starStatus: !isStarred)
+        apiClient.request(requestProtocol, type: .starRepository) { [weak self] result in
             switch result {
             case .success(_):
-                starStatus ? self.starRepositorySubject.send(true) : self.starRepositorySubject.send(false)
+                guard let self else { return }
+                // リポジトリのスター数の更新 (星付け: 1, 星解除: -1)
+                self.repository.stargazersCount += self.isStarred ? -1 : 1
+                // スターの状態をtoggle
+                self.isStarred.toggle()
             case let .failure(error):
                 switch error {
                 case .apiServerError:
