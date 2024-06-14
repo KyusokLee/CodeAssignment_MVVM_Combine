@@ -105,18 +105,6 @@ final class DetailViewController: UIViewController {
             guard let self else { return }
             self.didTapStarButton()
         }, for: .touchUpInside)
-
-        // configurationUpdateHandlerを用いてButtonのUIを変更
-        button.configurationUpdateHandler = { [weak self] button in
-            guard let self else { return }
-            if button.isSelected {
-                button.configuration?.image = UIImage(systemName: "star.fill")
-                button.configuration?.baseForegroundColor = .systemYellow
-            } else {
-                button.configuration?.image = UIImage(systemName: "star")
-                button.configuration?.baseForegroundColor = .systemGray3
-            }
-        }
         return button
     }()
     
