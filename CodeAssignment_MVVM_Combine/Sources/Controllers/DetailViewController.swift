@@ -224,7 +224,7 @@ extension DetailViewController {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] repository in
                 guard let self else { return }
-                self.updateStarGazersCount(with: repository.stargazersCount)
+                self.setupStarButtonAttributedTitle(with: formatNumberToStringWithSeparator(repository.stargazersCount))
             }
             .store(in: &cancellables)
 
@@ -234,11 +234,6 @@ extension DetailViewController {
                 self?.updateStarButtonImageAndColor(with: starState)
             }
             .store(in: &cancellables)
-    }
-
-    /// StarGazersCountの更新をstarButtonに反映する
-    private func updateStarGazersCount(with count: Int) {
-        setupStarButtonAttributedTitle(with: formatNumberToStringWithSeparator(count))
     }
 
     /// StarButtonのImageと色の更新
