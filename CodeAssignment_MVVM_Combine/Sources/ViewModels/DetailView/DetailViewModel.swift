@@ -20,10 +20,8 @@ final class DetailViewModel {
     @Published private(set) var isStarred: Bool = false
     /// 詳細画面で扱うリポジトリ
     @Published private(set) var repository: Repositories.Repository
-    /// エラーTitle
-    @Published private(set) var errorTitle: String? = nil
-    /// エラーメッセージ
-    @Published private(set) var errorMessage: String? = nil
+    /// エラータイプ
+    @Published private(set) var errorType: ErrorType? = nil
 
     /** initializerでリポジトリを持っておく
     - ViewModelにリポジトリデータを持っておき、データの加工をViewModel側で処理するようにする
@@ -51,8 +49,7 @@ final class DetailViewModel {
                 self.isStarred.toggle()
             case let .failure(error):
                 guard let self else { return }
-                self.errorTitle = error.errorTitle
-                self.errorMessage = error.errorDescription
+                self.errorType = error
             }
         }
     }
