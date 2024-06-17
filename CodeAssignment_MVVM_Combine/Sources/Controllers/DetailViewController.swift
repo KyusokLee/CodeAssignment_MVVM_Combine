@@ -5,6 +5,7 @@
 //  Created by gyusoku.i on 2024/05/16.
 //
 import UIKit
+import Combine
 import SnapKit
 import SDWebImage
 
@@ -18,6 +19,10 @@ private enum Const {
 }
 
 final class DetailViewController: UIViewController {
+    
+    private var viewModel: DetailViewModel
+    private var cancellables = Set<AnyCancellable>()
+    
     /** Vertical方向のScrollView
     - ScrollViewで、backgroundCardViewをScroll可能にする
      */
@@ -95,7 +100,12 @@ final class DetailViewController: UIViewController {
         backgroundConfig.strokeWidth = 2
         config.background = backgroundConfig
 
-        return UIButton(configuration: config)
+        let button = UIButton(configuration: config)
+        button.addAction(.init { [weak self] _ in
+            guard let self else { return }
+            self.didTapStarButton()
+        }, for: .touchUpInside)
+        return button
     }()
     
     /** 言語ごとに色をつけて表示させるためのView
@@ -155,8 +165,10 @@ final class DetailViewController: UIViewController {
     }()
     
     init(repository: Repositories.Repository) {
+        // Swiftではクラスの属性がsuper.initの前に呼び出されないといけない。そのため、initの前に記述
+        self.viewModel = .init(repository: repository)
         super.init(nibName: nil, bundle: nil)
-        self.configure(with: repository)
+        self.configure()
     }
     
     required init?(coder: NSCoder) {
@@ -166,31 +178,25 @@ final class DetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        bind()
     }
 }
 
 extension DetailViewController {
-    private func configure(with model: Repositories.Repository) {
+    private func configure() {
         let defaultImage = UIImage(systemName: "person.circle")?.withTintColor(.systemMint, renderingMode: .alwaysOriginal)
-        
-        repositoryNameLabel.text = model.name
-        descriptionLabel.text = model.description
-        userNameLabel.text = model.owner.userName
-        languageNameLabel.text = model.language
-        // UIButton.Configurationのtitleを更新
-        starButton.configuration?.attributedTitle = AttributedString(
-            "\(formatNumberToStringWithSeparator(model.stargazersCount)) stars",
-            attributes: AttributeContainer([
-                .font: UIFont.systemFont(ofSize: 20, weight: .regular),
-                .foregroundColor: UIColor.black.withAlphaComponent(0.8)
-            ])
-        )
-        
-        watchersCountLabel.text = "\(formatNumberToStringWithSeparator(model.watchersCount)) watchers"
-        forksCountLabel.text = "\(formatNumberToStringWithSeparator(model.forksCount)) forks"
-        openIssuesCountLabel.text = "\(formatNumberToStringWithSeparator(model.openIssuesCount)) issues"
-        
-        guard let url = URL(string: model.owner.profileImageString) else {
+        let repository = viewModel.repository
+
+        repositoryNameLabel.text = repository.name
+        descriptionLabel.text = repository.description
+        userNameLabel.text = repository.owner.userName
+        languageNameLabel.text = repository.language
+        setStarButtonAttributedTitle(with: formatNumberToStringWithSeparator(repository.stargazersCount))
+        watchersCountLabel.text = "\(formatNumberToStringWithSeparator(repository.watchersCount)) watchers"
+        forksCountLabel.text = "\(formatNumberToStringWithSeparator(repository.forksCount)) forks"
+        openIssuesCountLabel.text = "\(formatNumberToStringWithSeparator(repository.openIssuesCount)) issues"
+
+        guard let url = URL(string: repository.owner.profileImageString) else {
             userImageView.image = defaultImage
             return
         }
@@ -213,6 +219,49 @@ extension DetailViewController {
         return numberFormatter.string(from: NSNumber(value: number)) ?? ""
     }
     
+    private func bind() {
+        viewModel.$repository
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] repository in
+                guard let self else { return }
+                self.setStarButtonAttributedTitle(with: formatNumberToStringWithSeparator(repository.stargazersCount))
+            }
+            .store(in: &cancellables)
+
+        viewModel.$isStarred
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] starState in
+                guard let self else { return }
+                self.updateStarButtonImageAndColor(with: starState)
+            }
+            .store(in: &cancellables)
+
+        viewModel.$errorType
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] error in
+                guard let self, let error else { return }
+                self.presentErrorAlert(error: error)
+            }
+            .store(in: &cancellables)
+    }
+
+    /// エラーTitleとメッセージを表示
+    private func presentErrorAlert(error: ErrorType) {
+        let alert = UIAlertController(
+            title: error.errorTitle,
+            message: error.errorDescription,
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "確認", style: .default))
+        present(alert, animated: true, completion: nil)
+    }
+
+    /// StarButtonのImageと色の更新
+    private func updateStarButtonImageAndColor(with state: Bool) {
+        starButton.configuration?.image = state ? .init(systemName: "star.fill") : .init(systemName: "star")
+        starButton.configuration?.baseForegroundColor = state ? .systemYellow : .systemGray3
+    }
+
     private func setupUI() {
         view.backgroundColor = .secondarySystemBackground
         
@@ -220,7 +269,18 @@ extension DetailViewController {
         setAddSubViews()
         setupConstraints()
     }
-    
+
+    // StarButtonのUIButton.Configurationのtitleの設定
+    private func setStarButtonAttributedTitle(with title: String) {
+        starButton.configuration?.attributedTitle = AttributedString(
+            "\(title) stars",
+            attributes: AttributeContainer([
+                .font: UIFont.systemFont(ofSize: 20, weight: .regular),
+                .foregroundColor: UIColor.black.withAlphaComponent(0.8)
+            ])
+        )
+    }
+
     private func setupNavigationController() {
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
@@ -293,5 +353,9 @@ extension DetailViewController {
         mainStackView.setCustomSpacing(10, after: repositoryNameLabel)
         // starLanguageStackViewのSubViewの中、カスタムでSpacing調整を適用したいViewを特定
         starLanguageStackView.setCustomSpacing(20, after: starButton)
+    }
+    
+    private func didTapStarButton() {
+        viewModel.changeRepositoryStarStatus()
     }
 }

@@ -14,9 +14,44 @@ protocol GitHubAPIClientProtocol {
     associatedtype Model
     
     func decode(from data: Data) throws -> Model
-    func buildUpRequest(type: GitHubAPIType) -> URLRequest?
+    func buildUpRequest() -> URLRequest?
 }
 
+/// リポジトリに星付け・解除のためのリクエスト
+struct GitHubStarRepositoryRequest: GitHubAPIClientProtocol {
+    let owner: String
+    let repository: String
+    let starStatus: Bool
+
+    init(owner: String, repository: String, starStatus: Bool) {
+        self.owner = owner
+        self.repository = repository
+        self.starStatus = starStatus
+    }
+
+    func decode(from data: Data) throws -> RepositoriesResponse {
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        // codingKeysを別途に設けずに、decoder.keyDecodingStrategy = .convertFromSnakeCaseを用いてJSONのconvertがしやすい
+        // ただし、 _以外の名前はマッチしないといけない
+        // 例) JSON上のキーがuserなのに、コード上ではownerという変数として使いたい場合
+        return try decoder.decode(RepositoriesResponse.self, from: data)
+    }
+
+    func buildUpRequest() -> URLRequest? {
+        // repository owner usernameと repository name必須
+        let urlString = "https://api.github.com/user/starred/\(owner)/\(repository)"
+        guard let url = URL(string: urlString) else { return nil }
+        var request = URLRequest(url: url)
+        // statStatusで星付け・解除の処理を分岐
+        request.httpMethod = starStatus ? "PUT" : "DELETE"
+        // Authorization ヘッダーにトークン設定
+        request.setValue("Bearer \(Tokens.accessToken)", forHTTPHeaderField: "Authorization")
+        return request
+    }
+}
+
+/// リポジトリ検索用のリクエスト
 struct GitHubSearchRepositoriesRequest: GitHubAPIClientProtocol {
     let searchQueryWord: String
     
@@ -45,16 +80,13 @@ struct GitHubSearchRepositoriesRequest: GitHubAPIClientProtocol {
      - Requestは、リクエストを立てる と リクエストを実際送る　の２つの流れで行われる
      - リクエストを立てる処理は分離することで、requestだけの処理ができるのではないかと考える
      */
-    func buildUpRequest(type: GitHubAPIType) -> URLRequest? {
-        switch type {
-        case .searchRepositories:
-            let urlString = "https://api.github.com/search/repositories?q=\(searchQueryWord)"
-            guard let url = URL(string: urlString) else { return nil }
-            var request = URLRequest(url: url)
-            request.httpMethod = "GET"
-            
-            return request
-        }
+    func buildUpRequest() -> URLRequest? {
+        let urlString = "https://api.github.com/search/repositories?q=\(searchQueryWord)"
+        guard let url = URL(string: urlString) else { return nil }
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+
+        return request
     }
 }
 
@@ -66,7 +98,7 @@ struct GitHubSearchRepositoriesRequest: GitHubAPIClientProtocol {
  */
 class APIClient {
     func request<T: GitHubAPIClientProtocol>(_ requestProtocol: T, type: GitHubAPIType, completion: @escaping(Result<T.Model?, ErrorType>) -> Void) {
-        guard let request = requestProtocol.buildUpRequest(type: type) else { return }
+        guard let request = requestProtocol.buildUpRequest() else { return }
         let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
             if let _ = error {
                 completion(.failure(ErrorType.unknownError))
@@ -82,11 +114,18 @@ class APIClient {
             
             // レスポンスが有効なレスポンス（200 ~ 299）であるなら、decodeを実行
             if response.isResponseAvailable() {
-                do {
-                    let results = try requestProtocol.decode(from: data)
-                    completion(.success(results))
-                } catch {
-                    completion(.failure(ErrorType.decodeError))
+                switch type {
+                case .searchRepositories:
+                    do {
+                        let results = try requestProtocol.decode(from: data)
+                        completion(.success(results))
+                    } catch {
+                        completion(.failure(ErrorType.decodeError))
+                    }
+                case .starRepository:
+                    // リポジトリにスター付け・解除はdecode作業は不要なため、completionはsuccessのみ返す
+                    // Modelの返り値はいらないので、nil
+                    completion(.success(nil))
                 }
             } else {
                 // レスポンスが無効なレスポンスなら、APIサーバー側にエラーがある
