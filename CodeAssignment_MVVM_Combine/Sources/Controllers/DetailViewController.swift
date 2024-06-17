@@ -231,9 +231,31 @@ extension DetailViewController {
         viewModel.$isStarred
             .receive(on: DispatchQueue.main)
             .sink { [weak self] starState in
-                self?.updateStarButtonImageAndColor(with: starState)
+                guard let self else { return }
+                self.updateStarButtonImageAndColor(with: starState)
             }
             .store(in: &cancellables)
+
+        // CombineLatestを用いて、errorTitleとerrorMessageを結合してAlertControllerをpresentする
+        Publishers.CombineLatest(viewModel.$errorTitle, viewModel.$errorMessage)
+            .compactMap { title, message -> (String, String)? in
+                // nilじゃない値を持つ要素のみ抽出
+                guard let title, let message else { return nil }
+                return (title, message)
+            }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] title, message in
+                guard let self else { return }
+                self.presentErrorAlert(title: title, message: message)
+            }
+            .store(in: &cancellables)
+    }
+
+    /// エラーTitleとメッセージを表示
+    private func presentErrorAlert(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "確認", style: .default))
+        present(alert, animated: true, completion: nil)
     }
 
     /// StarButtonのImageと色の更新
