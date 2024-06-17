@@ -59,3 +59,7 @@ Dependencies/
 
 # Ignore Tokens.swift file
 /CodeAssignment_MVVM_Combine/Sources/Models/Enums/Tokens.swift
+
+# Ignore user data and shared data
+CodeAssignment_MVVM_Combine.xcodeproj/xcuserdata
+CodeAssignment_MVVM_Combine.xcodeproj/xcshareddata
