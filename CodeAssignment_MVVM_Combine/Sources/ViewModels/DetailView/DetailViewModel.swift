@@ -32,8 +32,12 @@ final class DetailViewModel {
     - ViewControllerのUIから持ってくるのではなく、モデルのデータを利用するようにする
      */
     func changeRepositoryStarStatus() {
-        let requestProtocol = GitHubStarRepositoryRequest(owner: repository.owner.userName, repository: repository.name, starStatus: !isStarred)
-        apiClient.request(requestProtocol, type: .starRepository) { [weak self] result in
+        let request = GitHubStarRepositoryRequest(
+            owner: repository.owner.userName,
+            repository: repository.name,
+            starStatus: !isStarred
+        )
+        apiClient.request(request, type: .starRepository) { [weak self] result in
             switch result {
             case .success(_):
                 guard let self else { return }
