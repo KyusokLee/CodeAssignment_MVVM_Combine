@@ -191,7 +191,7 @@ extension DetailViewController {
         descriptionLabel.text = repository.description
         userNameLabel.text = repository.owner.userName
         languageNameLabel.text = repository.language
-        setupStarButtonAttributedTitle(with: formatNumberToStringWithSeparator(repository.stargazersCount))
+        setStarButtonAttributedTitle(with: formatNumberToStringWithSeparator(repository.stargazersCount))
         watchersCountLabel.text = "\(formatNumberToStringWithSeparator(repository.watchersCount)) watchers"
         forksCountLabel.text = "\(formatNumberToStringWithSeparator(repository.forksCount)) forks"
         openIssuesCountLabel.text = "\(formatNumberToStringWithSeparator(repository.openIssuesCount)) issues"
@@ -224,7 +224,7 @@ extension DetailViewController {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] repository in
                 guard let self else { return }
-                self.setupStarButtonAttributedTitle(with: formatNumberToStringWithSeparator(repository.stargazersCount))
+                self.setStarButtonAttributedTitle(with: formatNumberToStringWithSeparator(repository.stargazersCount))
             }
             .store(in: &cancellables)
 
@@ -251,7 +251,7 @@ extension DetailViewController {
     }
 
     // StarButtonのUIButton.Configurationのtitleの設定
-    private func setupStarButtonAttributedTitle(with title: String) {
+    private func setStarButtonAttributedTitle(with title: String) {
         starButton.configuration?.attributedTitle = AttributedString(
             "\(title) stars",
             attributes: AttributeContainer([
