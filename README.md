@@ -21,7 +21,7 @@ https://github.com/KyusokLee/CodeAssignment_MVVM_Combine/assets/89962765/f2886f4
 
 > 入力ワード切り替え
 
-https://github.com/KyusokLee/CodeAssignment_MVVM_Combine/assets/89962765/c150f77e-80b1-4693-a1c0-4e6cad482269
+https://github.com/KyusokLee/CodeAssignment_MVVM_Combine/assets/89962765/e9845d62-3495-4181-96df-976f16d8fafe
 
 &nbsp;
 
