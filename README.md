@@ -42,6 +42,7 @@ https://github.com/KyusokLee/CodeAssignment_MVVM_Combine/assets/89962765/e9845d6
     * [MVVM](#MVVM)
     * [Combine](#combine)
 * [工夫点](#-工夫点)
+    * [画面表示用のレスポンスの結合モデルの作成](#画面表示用のレスポンスの結合モデルの作成)
     * [Personal Access Token の管理方法](#Personal-Access-Token-の管理方法)
     * [エラー処理](#エラー処理)
     * [UI/UX 設計](#UI/UX-設計)
@@ -140,8 +141,8 @@ CodeAssignment_MVVM_Combine
 |:-|:-|
 |`HomeViewController`|`UISearchController`の`searchBar`を用いて検索ワードを入力し、リポジトリを検索してその結果を一覧リストで表示する画面です。|
 |`DetailViewController`|`HomeViewController`でタッチしたリポジトリの詳細データを表示する画面です。|
-|`RepositoriesResponse`|``|
-|`Repositories`|:-|
+|`RepositoriesResponse`|API叩きから得られたリポジトリのデータモデルを直接管理します。|
+|`Repositories`|`RepositoriesResponse`のデータを`ViewController`の画面に表示するためのデータモデルです。|
 
 
 &nbsp;
@@ -150,7 +151,7 @@ CodeAssignment_MVVM_Combine
 
 |class/struct|役割|
 |:-|:-|
-|`APIClient`|APIを呼び出すために必要な処理を管理するクラス。HTTPリクエスト、データの取得、エラーハンドリングなどを担当します。|
+|`APIClient`|APIを呼び出すために必要な処理を管理するクラス。HTTPリクエストのビルドと送信、データの取得・デコーディング、エラーの分岐を担当します。|
 
 &nbsp;
 
@@ -172,8 +173,11 @@ CodeAssignment_MVVM_Combine
 
 ## 🧐 工夫点
 
+### 画面表示用のレスポンスの結合モデルの作成
+
 ### Personal Access Token の管理方法
-    
+
+### エラー処理
 
 
 &nbsp;
@@ -185,11 +189,6 @@ CodeAssignment_MVVM_Combine
 &nbsp;
 
 ### NSDiffableDatasourceSnapshot
-
-&nbsp;
-
-### エラー処理
-
 
 &nbsp;
 
