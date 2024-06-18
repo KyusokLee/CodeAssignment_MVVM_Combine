@@ -13,11 +13,15 @@ https://github.com/KyusokLee/CodeAssignment_MVVM_Combine/assets/89962765/c45bb09
 
 > リポジトリ詳細画面
 
+https://github.com/KyusokLee/CodeAssignment_MVVM_Combine/assets/89962765/0a22c318-116b-48cf-a554-91cd18ca2285
+
 > リポジトリに星付け・解除
+
+https://github.com/KyusokLee/CodeAssignment_MVVM_Combine/assets/89962765/f2886f49-ecfe-4049-b3e4-9968a78318ce
 
 > 入力ワード切り替え
 
-
+https://github.com/KyusokLee/CodeAssignment_MVVM_Combine/assets/89962765/c150f77e-80b1-4693-a1c0-4e6cad482269
 
 &nbsp;
 
