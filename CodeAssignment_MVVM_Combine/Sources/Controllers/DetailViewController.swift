@@ -19,10 +19,9 @@ private enum Const {
 }
 
 final class DetailViewController: UIViewController {
-    
+
     private var viewModel: DetailViewModel
     private var cancellables = Set<AnyCancellable>()
-    
     /** Vertical方向のScrollView
     - ScrollViewで、backgroundCardViewをScroll可能にする
      */

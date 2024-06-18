@@ -22,14 +22,12 @@ final class DetailViewModel {
     @Published private(set) var repository: Repositories.Repository
     /// エラータイプ
     @Published private(set) var errorType: ErrorType? = nil
-
     /** initializerでリポジトリを持っておく
     - ViewModelにリポジトリデータを持っておき、データの加工をViewModel側で処理するようにする
      */
     init(repository: Repositories.Repository) {
         self.repository = repository
     }
-
     /** POST・DELETE リクエストを送信し、repositoryにスターの付け・解除するメソッド
     - ViewControllerのUIから持ってくるのではなく、モデルのデータを利用するようにする
      */
