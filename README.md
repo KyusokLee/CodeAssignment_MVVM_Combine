@@ -41,6 +41,11 @@ https://github.com/KyusokLee/CodeAssignment_MVVM_Combine/assets/89962765/e9845d6
 * [技術的チャレンジ](#-技術的チャレンジ)
     * [MVVM](#MVVM)
     * [Combine](#combine)
+* [実装時に意識したこと](#-実装時に意識したこと)
+    * [AutoLayout](#AutoLayout)
+    * [Life Cycle](#Life-Cycle)
+    * [参照](#参照)
+    * [エラーの分岐](#エラーの分岐)
 * [工夫点](#-工夫点)
     * [画面表示用のレスポンスの結合モデルの作成](#画面表示用のレスポンスの結合モデルの作成)
     * [Personal Access Token の管理方法](#Personal-Access-Token-の管理方法)
@@ -170,6 +175,16 @@ CodeAssignment_MVVM_Combine
 連続したescaping closureを避け、宣言型プログラミングを通じた高い可読性とオペレーターを通じた効率的な非同期処理のためにCombineを採択しました。
 
 &nbsp;
+
+## 🎯 実装時に意識したこと
+
+## AutoLayout
+
+### Life Cycle
+
+### 参照
+
+### エラーの分岐
 
 ## 🧐 工夫点
 
