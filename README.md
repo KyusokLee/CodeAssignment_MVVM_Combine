@@ -41,13 +41,13 @@ https://github.com/KyusokLee/CodeAssignment_MVVM_Combine/assets/89962765/e9845d6
 * [技術的チャレンジ](#-技術的チャレンジ)
     * [MVVM](#MVVM)
     * [Combine](#combine)
-* [Trouble Shooting](#-trouble-Shooting)
-    * [CompositionalLayout](#CompositionalLayout)
-    * [NSDiffableDatasourceSnapshot](#NSDiffableDatasourceSnapshot)
 * [工夫点](#-工夫点)
     * [Personal Access Token の管理方法](#Personal-Access-Token-の管理方法)
     * [エラー処理](#エラー処理)
     * [UI/UX 設計](#UI/UX-設計)
+* [Trouble Shooting](#-trouble-Shooting)
+    * [CompositionalLayout](#CompositionalLayout)
+    * [NSDiffableDatasourceSnapshot](#NSDiffableDatasourceSnapshot)
 
 ## 🗂 ディレクトリ構成
 
@@ -103,11 +103,15 @@ CodeAssignment_MVVM_Combine
 
 * MVVM
 
-&nbsp;
-
 ### データ・UIイベント処理
 
 * Combine
+
+### AutoLayout実装
+* SnapKit
+
+### Web画像の処理
+* SDWebImage
 
 &nbsp;
 
@@ -115,11 +119,10 @@ CodeAssignment_MVVM_Combine
 
 |機能/UI|説明|
 |:-|:-|
-|検索||
-|閲覧リスト||
-|詳細画面||
-|星付け||
-|星付け解除||
+|検索|`GitHub REST API`を使用して検索ワードをパラメータとして渡すことで、GitHub上のリポジトリを検索できます。|
+|一覧リスト|リポジトリ検索結果を一覧として表示します。一覧リストで表示するデータは`リポジトリ名`, `リポジトリのDescription`, `ユーザ名`, `ユーザプロフィール写真`, `スター数`, `使用言語`です。|
+|詳細画面|一覧リストで確認したいリポジトリのセルをタッチすると、そのリポジトリの詳細情報を表示した画面に遷移します。詳細画面では、一覧リストで表示したリポジトリのデータに加えて`Watchersの数`, `forksの数`, `issuesの数`を表示します。|
+|星付け・解除|詳細画面の星ボタンをタッチすると、リポジトリに星を付けたり解除したりできます。`Personal Access Token`を用いてGitHub認証を行うことで、自分のアカウントでこれらの操作が可能になります。|
 
 &nbsp;
 
@@ -127,6 +130,7 @@ CodeAssignment_MVVM_Combine
 
 ### MVVM
 
+(実際のアプリ画面間の関係をModel/ViewModel/Viewの役割に基づいた画像を作成し、ここに挿入するつもり)
 
 &nbsp;
 
@@ -134,6 +138,10 @@ CodeAssignment_MVVM_Combine
 
 |class/struct|役割|
 |:-|:-|
+|`HomeViewController`|`UISearchController`の`searchBar`を用いて検索ワードを入力し、リポジトリを検索してその結果を一覧リストで表示する画面です。|
+|`DetailViewController`|`HomeViewController`でタッチしたリポジトリの詳細データを表示する画面です。|
+|`RepositoriesResponse`|``|
+|`Repositories`|:-|
 
 
 &nbsp;
@@ -142,13 +150,15 @@ CodeAssignment_MVVM_Combine
 
 |class/struct|役割|
 |:-|:-|
-|`APIClient`|APIを呼び出すために必要な処理を管理するクラス。HTTPリクエスト、データの取得、エラーハンドリングなどを担当する。|
+|`APIClient`|APIを呼び出すために必要な処理を管理するクラス。HTTPリクエスト、データの取得、エラーハンドリングなどを担当します。|
 
 &nbsp;
 
 ## 💪🏻 技術的チャレンジ
 
 ### MVVM
+`ViewController`と`View`は画面を描く役割だけに集中させ、データ管理とロジックは`ViewModel`で進められるように構成しました。
+
 
 
 
@@ -160,6 +170,14 @@ CodeAssignment_MVVM_Combine
 
 &nbsp;
 
+## 🧐 工夫点
+
+### Personal Access Token の管理方法
+    
+
+
+&nbsp;
+
 ## 🔥 Trouble Shooting
 
 ### CompositionalLayout
@@ -167,15 +185,6 @@ CodeAssignment_MVVM_Combine
 &nbsp;
 
 ### NSDiffableDatasourceSnapshot
-
-&nbsp;
-
-
-## 😵‍💫 工夫点
-
-### Personal Access Token の管理方法
-    
-
 
 &nbsp;
 
