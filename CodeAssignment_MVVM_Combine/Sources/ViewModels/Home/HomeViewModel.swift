@@ -18,6 +18,8 @@ final class HomeViewModel {
     var repositoriesSubject = CurrentValueSubject<Repositories?, Never>(nil)
     /// Loading 状態を指すSubject
     var loadingSubject = CurrentValueSubject<Bool, Never>(false)
+    /// ReadyViewの表示状態を指すSubject
+    var readyViewSubject = CurrentValueSubject<Bool, Never>(false)
     /// AnyPublisher：他のTypeでwrapしたものをなくして、AnyPublisherで返す
     var repositoriesPublisher: AnyPublisher<Repositories?, Never> {
         return repositoriesSubject.eraseToAnyPublisher()
@@ -52,6 +54,7 @@ final class HomeViewModel {
                     print(error.errorTitle)
                 }
             }
+            self.readyViewSubject.send(true)
         }
     }
 }

@@ -159,6 +159,15 @@ extension HomeViewController {
                 self.loadingView.isLoading = isLoading
             }
             .store(in: &cancellables)
+
+        viewModel.readyViewSubject
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isHidden in
+                guard let self else { return }
+                // readyViewのisHidden処理
+                self.readyView.isHidden = isHidden
+            }
+            .store(in: &cancellables)
     }
     
     private func updateSnapshot(repositories: [Repositories.Repository]) {
@@ -203,10 +212,6 @@ extension HomeViewController: UISearchBarDelegate {
         guard let searchWord = searchBar.text else { return }
         // Loading View表示
         loadingView.isLoading = true
-        // readyViewのisHidden処理
-        if readyView.isBeforeSearch {
-            readyView.isBeforeSearch = false
-        }
         // Returnキーを押して ViewModelで定義したsearch logicを実行
         viewModel.search(queryString: searchWord)
     }
