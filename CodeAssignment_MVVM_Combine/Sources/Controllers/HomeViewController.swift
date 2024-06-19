@@ -192,15 +192,12 @@ extension HomeViewController {
         repositoryCollectionView.snp.makeConstraints { constraint in
             constraint.edges.equalToSuperview()
         }
-            
-        loadingView.snp.makeConstraints { constraint in
-            constraint.top.equalTo(view.safeAreaLayoutGuide)
-            constraint.leading.trailing.bottom.equalToSuperview()
-        }
-        
-        readyView.snp.makeConstraints { constraint in
-            constraint.top.equalTo(view.safeAreaLayoutGuide)
-            constraint.leading.trailing.bottom.equalToSuperview()
+
+        [loadingView, readyView].forEach {
+            $0.snp.makeConstraints { constraint in
+                constraint.top.equalTo(view.safeAreaLayoutGuide)
+                constraint.leading.trailing.bottom.equalToSuperview()
+            }
         }
     }
 }
