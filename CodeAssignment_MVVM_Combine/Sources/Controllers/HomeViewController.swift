@@ -140,7 +140,6 @@ extension HomeViewController {
                 guard let self else { return }
                 guard let repositories else { return }
                 self.updateSnapshot(repositories: repositories.items)
-                self.loadingView.isLoading = false
             }
             .store(in: &cancellables)
         
@@ -199,8 +198,6 @@ extension HomeViewController: UISearchBarDelegate {
     /// Return(検索)キーをタップしたときの処理
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let searchWord = searchBar.text else { return }
-        // Loading View表示
-        loadingView.isLoading = true
         // Returnキーを押して ViewModelで定義したsearch logicを実行
         viewModel.search(queryString: searchWord)
     }

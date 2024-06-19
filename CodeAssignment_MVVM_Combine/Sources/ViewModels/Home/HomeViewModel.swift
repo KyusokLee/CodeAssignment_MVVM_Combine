@@ -31,7 +31,9 @@ final class HomeViewModel {
         let trimmedQuery = searchWord.trimmingCharacters(in: .whitespacesAndNewlines)
         // 空白の検索を防ぐ
         guard !trimmedQuery.isEmpty else { return }
-        
+        // loading状態をTrueに変更
+        loadingSubject.send(true)
+
         let requestProtocol = GitHubSearchRepositoriesRequest(searchQueryWord: trimmedQuery)
         apiClient.request(requestProtocol, type: GitHubAPIType.searchRepositories) { result in
             switch result {
@@ -55,6 +57,8 @@ final class HomeViewModel {
                 }
             }
             self.readyViewSubject.send(true)
+            // Request処理後は、loading状態をFalseに戻す
+            self.loadingSubject.send(false)
         }
     }
 }
