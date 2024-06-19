@@ -134,8 +134,7 @@ extension HomeViewController {
         viewModel.repositoriesSubject
             .receive(on: DispatchQueue.main)
             .sink { [weak self] repositories in
-                guard let self else { return }
-                guard let repositories else { return }
+                guard let self, let repositories else { return }
                 self.updateSnapshot(repositories: repositories.items)
             }
             .store(in: &cancellables)
