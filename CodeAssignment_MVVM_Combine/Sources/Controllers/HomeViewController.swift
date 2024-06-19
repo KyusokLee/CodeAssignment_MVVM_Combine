@@ -40,8 +40,6 @@ class HomeViewController: UIViewController {
     private var dataSource: UICollectionViewDiffableDataSource<Section, Repositories.Repository>!
     private lazy var repositoryCollectionView: UICollectionView = {
         var config = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
-        config.headerMode = .none
-        config.footerMode = .none
         let layout = UICollectionViewCompositionalLayout.list(using: config)
 
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
