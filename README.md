@@ -47,10 +47,11 @@ https://github.com/KyusokLee/CodeAssignment_MVVM_Combine/assets/89962765/e9845d6
     * [参照](#参照)
     * [エラーの分岐](#エラーの分岐)
 * [工夫点](#-工夫点)
-    * [画面表示用のレスポンスの結合モデルの作成](#画面表示用のレスポンスの結合モデルの作成)
     * [Personal Access Token の管理方法](#Personal-Access-Token-の管理方法)
     * [エラー処理](#エラー処理)
     * [UI/UX 設計](#UI/UX-設計)
+* [学び](#-学び)
+    * [画面表示用のレスポンスの結合モデルの作成](#画面表示用のレスポンスの結合モデルの作成)
 * [Trouble Shooting](#-trouble-Shooting)
     * [CompositionalLayout](#CompositionalLayout)
     * [NSDiffableDatasourceSnapshot](#NSDiffableDatasourceSnapshot)
@@ -188,12 +189,22 @@ CodeAssignment_MVVM_Combine
 
 ## 🧐 工夫点
 
-### 画面表示用のレスポンスの結合モデルの作成
-
 ### Personal Access Token の管理方法
 
 ### エラー処理
 
+### UI/UX 設計
+
+> [ホーム画面UIの参考資料URL]() <br>
+
+
+&nbsp;
+
+## 📚 学び
+
+### 画面表示用のレスポンスの結合モデルの作成
+
+今回のアプリを実装するまでは、無意識でAPIを叩いて返ってくるレスポンスを`APIClient`で処理してViewControllerで直接渡すようなコードを書いていた。これはレスポンスの形に依存しちゃうのでは？と考えていてこの依存度をどう分離するかを悩んていたものの、依存度を分離せずに普段から慣れていたコードを書いた。すると、レビュアーからまさにここの部分を指摘され、API叩きから得られるレスポンス用のデータモデルと画面に表示する用のデータモデルを分岐することで依存度を減らせることを教わった。
 
 &nbsp;
 
@@ -206,7 +217,3 @@ CodeAssignment_MVVM_Combine
 ### NSDiffableDatasourceSnapshot
 
 &nbsp;
-
-### UI/UX 設計
-
-> [ホーム画面UIの参考資料URL]() <br>
