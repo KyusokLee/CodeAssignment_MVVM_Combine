@@ -37,7 +37,7 @@ class HomeViewController: UIViewController {
     - enumタイプにassociated typeがなければ、自動的にHashableを遵守することになる
     - Hashable プロトコルの採択が必須
      */
-    private var datasource: UICollectionViewDiffableDataSource<Section, Repositories.Repository>!
+    private var dataSource: UICollectionViewDiffableDataSource<Section, Repositories.Repository>!
     /** DataSourceに表示するSectionとItemの現在のUIの状態
     - appendSections: snapShotを適用するSectionを追加
     - apply(_ :animatingDifferences:) : 表示されるデータを完全にリセットするのではなく、incremental updates(増分更新)を実行してDataSourceにSnapshotを適用する
@@ -94,13 +94,13 @@ extension HomeViewController {
             ]
         }
         // DiffableDataSourceの初期化
-        datasource = UICollectionViewDiffableDataSource<Section, Repositories.Repository>(collectionView: repositoryCollectionView) { collectionView, indexPath, repository in
+        dataSource = UICollectionViewDiffableDataSource<Section, Repositories.Repository>(collectionView: repositoryCollectionView) { collectionView, indexPath, repository in
             return collectionView.dequeueConfiguredReusableCell(using: repositoryCell, for: indexPath, item: repository)
         }
         snapshot = NSDiffableDataSourceSnapshot<Section, Repositories.Repository>()
         // Snapshotの初期化
         snapshot.appendSections([.main])
-        datasource.apply(snapshot, animatingDifferences: true)
+        dataSource.apply(snapshot, animatingDifferences: true)
     }
     
     /// NavigationControllerのセットアップ
@@ -164,12 +164,12 @@ extension HomeViewController {
     
     private func updateSnapshot(repositories: [Repositories.Repository]) {
         /// DataSourceに適用した現在のSnapShotを取得
-        var snapshot = datasource.snapshot()
+        var snapshot = dataSource.snapshot()
         // reloadItemsは既存セルの特定のCellだけをReloadするので、deleteしたあとに改めてappendする形でSnapshot適用
         snapshot.deleteAllItems()
         snapshot.appendSections([.main])
         snapshot.appendItems(repositories, toSection: .main)
-        datasource.apply(snapshot, animatingDifferences: true)
+        dataSource.apply(snapshot, animatingDifferences: true)
     }
     
     /// カスタムで作ったViewを全部追加する
