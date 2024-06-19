@@ -87,16 +87,15 @@ extension HomeViewController {
             ]
         }
 
-        /// DataSourceに表示するSectionとItemの現在のUIの状態
-        var snapshot: NSDiffableDataSourceSnapshot<Section, Repositories.Repository>!
         // DiffableDataSourceの初期化
         dataSource = UICollectionViewDiffableDataSource<Section, Repositories.Repository>(collectionView: repositoryCollectionView) { collectionView, indexPath, repository in
             return collectionView.dequeueConfiguredReusableCell(using: repositoryCell, for: indexPath, item: repository)
         }
+        /// DataSourceに表示するSectionとItemの現在のUIの状態
+        var snapshot = NSDiffableDataSourceSnapshot<Section, Repositories.Repository>()
+        // Snapshotの初期化
         // appendSections: snapShotを適用するSectionを追加
         // apply(_ :animatingDifferences:) : 表示されるデータを完全にリセットするのではなく、incremental updates(増分更新)を実行してDataSourceにSnapshotを適用する
-        snapshot = NSDiffableDataSourceSnapshot<Section, Repositories.Repository>()
-        // Snapshotの初期化
         snapshot.appendSections([.main])
         dataSource.apply(snapshot, animatingDifferences: true)
     }
