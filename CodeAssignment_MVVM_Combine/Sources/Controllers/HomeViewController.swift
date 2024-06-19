@@ -170,8 +170,8 @@ extension HomeViewController {
     /// カスタムで作ったViewを全部追加する
     private func setAddSubViews() {
         view.addSubview(repositoryCollectionView)
-        view.addSubview(loadingView)
         view.addSubview(readyView)
+        view.addSubview(loadingView)
     }
     
     /// Layoutの制約を調整する
