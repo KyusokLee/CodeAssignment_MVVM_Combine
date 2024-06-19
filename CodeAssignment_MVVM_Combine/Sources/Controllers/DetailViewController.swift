@@ -200,6 +200,8 @@ extension DetailViewController {
             return
         }
         userImageView.sd_setImage(with: url, placeholderImage: defaultImage) { [weak self] (image, error, _, _) in
+            // weak selfを用いて、メモリリークを防ぐ
+            // Closure内でselfを弱い参照でキャプチャすることで、DetailViewControllerインスタンスが解除されたとき、Closureが自動でnilに設定されるので、メモリの解除ができる
             guard let self else { return }
             guard let error else {
                 self.userImageView.image = image
