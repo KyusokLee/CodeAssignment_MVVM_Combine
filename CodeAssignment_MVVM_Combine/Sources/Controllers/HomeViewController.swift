@@ -43,14 +43,12 @@ class HomeViewController: UIViewController {
     - apply(_ :animatingDifferences:) : 表示されるデータを完全にリセットするのではなく、incremental updates(増分更新)を実行してDataSourceにSnapshotを適用する
      */
     private var snapshot: NSDiffableDataSourceSnapshot<Section, Repositories.Repository>!
-    private let layout: UICollectionViewLayout = {
+    private lazy var repositoryCollectionView: UICollectionView = {
         var config = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
         config.headerMode = .none
         config.footerMode = .none
-        return UICollectionViewCompositionalLayout.list(using: config)
-    }()
-    
-    private lazy var repositoryCollectionView: UICollectionView = {
+        let layout = UICollectionViewCompositionalLayout.list(using: config)
+
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.delegate = self
         collectionView.backgroundColor = .secondarySystemBackground
