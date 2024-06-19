@@ -9,45 +9,45 @@ import UIKit
 import SnapKit
 import Combine
 
+/** DiffableDataSourceで用いるSectionIdentifierType
+- CaseIterableを採択したenum(列挙型)は、自動的に全てのケースのコレクションを提供するallCases属性を持つようになる
+- これにより、enumのすべてのケースを繰り返ししたり、容易にアクセスできる
+ */
+private enum Section: CaseIterable {
+    // 今回はsection１つしか使わないので、mainだけ定義
+    case main
+}
+
 // MARK: - Life Cycle & Variables
 class HomeViewController: UIViewController {
     /// ViewModel
     private let viewModel = HomeViewModel()
     /// Custom Loading View
     private let loadingView = LoadingView()
+    /// 検索開始前に表示するReadyView
+    private let readyView = ReadySearchView()
     /** storeでAnyCancellableを保存しておいて、当該の変数がdeinitされるとき、subscribeをキャンセルする方法
     - Setで複数のSubscription（購読）を１つにまとめることができ、Subscriptionの値を保持する
      */
     private var cancellables = Set<AnyCancellable>()
-    
-    private let layout: UICollectionViewLayout = {
-        var config = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
-        config.headerMode = .none
-        config.footerMode = .none
-        return UICollectionViewCompositionalLayout.list(using: config)
-    }()
-    
+    /** リポジトリデータを管理するUICollectionViewDiffableDataSource
+    - UICollectionViewDiffableDataSource<SectionIdentifierType: Hashable & Sendable, ItemIdentifierType: Hashable & Sendable>
+    - CollectionViewに表示する各SectionもHashableを採択する必要があるが、CaseIterable採択でも可能
+    - CaseIterableを採択すると、自動的にallCasesが取得される。ただし、associated typeがないことが条件。
+    - enumタイプにassociated typeがなければ、自動的にHashableを遵守することになる
+    - Hashable プロトコルの採択が必須
+     */
+    private var dataSource: UICollectionViewDiffableDataSource<Section, Repositories.Repository>!
     private lazy var repositoryCollectionView: UICollectionView = {
+        var config = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
+        let layout = UICollectionViewCompositionalLayout.list(using: config)
+
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.delegate = self
-        collectionView.dataSource = self
         collectionView.backgroundColor = .secondarySystemBackground
         collectionView.contentInsetAdjustmentBehavior = .always
-        
         return collectionView
     }()
-    
-    /** RepositoryCollectionViewCellをCellRegistrationで設定
-    - <CellのType(クラス名とか), Itemで表示するもの>
-     */
-    private let repositoryCell = UICollectionView.CellRegistration<RepositoryCollectionViewCell, Repositories.Repository>() { cell, indexPath, repository in
-        cell.backgroundColor = .white
-        cell.configure(with: repository)
-        // cellにUICellAccessory（accessories）を追加
-        cell.accessories = [
-            .disclosureIndicator()
-        ]
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -69,8 +69,35 @@ extension HomeViewController {
         view.backgroundColor = .secondarySystemBackground
         
         setupNavigationController()
+        setupDataSource()
         setAddSubViews()
         setupConstraints()
+    }
+    
+    /// CollectionViewのDatasource 設定
+    private func setupDataSource() {
+        /// RepositoryCollectionViewCellをCellRegistrationで設定
+        let repositoryCell = UICollectionView.CellRegistration<RepositoryCollectionViewCell, Repositories.Repository>() { cell, indexPath, repository in
+            // <CellのType(クラス名とか), Itemで表示するもの>
+            cell.backgroundColor = .white
+            cell.configure(with: repository)
+            // cellにUICellAccessory（accessories）を追加
+            cell.accessories = [
+                .disclosureIndicator()
+            ]
+        }
+
+        // DiffableDataSourceの初期化
+        dataSource = UICollectionViewDiffableDataSource<Section, Repositories.Repository>(collectionView: repositoryCollectionView) { collectionView, indexPath, repository in
+            return collectionView.dequeueConfiguredReusableCell(using: repositoryCell, for: indexPath, item: repository)
+        }
+        /// DataSourceに表示するSectionとItemの現在のUIの状態
+        var snapshot = NSDiffableDataSourceSnapshot<Section, Repositories.Repository>()
+        // Snapshotの初期化
+        // appendSections: snapShotを適用するSectionを追加
+        // apply(_ :animatingDifferences:) : 表示されるデータを完全にリセットするのではなく、incremental updates(増分更新)を実行してDataSourceにSnapshotを適用する
+        snapshot.appendSections([.main])
+        dataSource.apply(snapshot, animatingDifferences: true)
     }
     
     /// NavigationControllerのセットアップ
@@ -106,9 +133,9 @@ extension HomeViewController {
     private func bind() {
         viewModel.repositoriesSubject
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in
-                guard let self else { return }
-                self.repositoryCollectionView.reloadData()
+            .sink { [weak self] repositories in
+                guard let self, let repositories else { return }
+                self.updateSnapshot(repositories: repositories.items)
             }
             .store(in: &cancellables)
         
@@ -119,11 +146,31 @@ extension HomeViewController {
                 self.loadingView.isLoading = isLoading
             }
             .store(in: &cancellables)
+
+        viewModel.readyViewSubject
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isPresented in
+                guard let self else { return }
+                // readyViewのisHidden処理
+                self.readyView.isHidden = !isPresented
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func updateSnapshot(repositories: [Repositories.Repository]) {
+        /// DataSourceに適用した現在のSnapShotを取得
+        var snapshot = dataSource.snapshot()
+        // reloadItemsは既存セルの特定のCellだけをReloadするので、deleteしたあとに改めてappendする形でSnapshot適用
+        snapshot.deleteAllItems()
+        snapshot.appendSections([.main])
+        snapshot.appendItems(repositories, toSection: .main)
+        dataSource.apply(snapshot, animatingDifferences: true)
     }
     
     /// カスタムで作ったViewを全部追加する
     private func setAddSubViews() {
         view.addSubview(repositoryCollectionView)
+        view.addSubview(readyView)
         view.addSubview(loadingView)
     }
     
@@ -132,10 +179,12 @@ extension HomeViewController {
         repositoryCollectionView.snp.makeConstraints { constraint in
             constraint.edges.equalToSuperview()
         }
-            
-        loadingView.snp.makeConstraints { constraint in
-            constraint.top.equalTo(view.safeAreaLayoutGuide)
-            constraint.leading.trailing.bottom.equalToSuperview()
+
+        [loadingView, readyView].forEach {
+            $0.snp.makeConstraints { constraint in
+                constraint.top.equalTo(view.safeAreaLayoutGuide)
+                constraint.leading.trailing.bottom.equalToSuperview()
+            }
         }
     }
 }
@@ -157,16 +206,5 @@ extension HomeViewController: UICollectionViewDelegate {
         let detailViewController = DetailViewController(repository: repository)
         navigationController?.pushViewController(detailViewController, animated: true)
         collectionView.deselectItem(at: indexPath, animated: true)
-    }
-}
-
-// MARK: - UICollectionViewDataSource
-extension HomeViewController: UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return viewModel.repositoriesSubject.value?.items.count ?? 0
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        collectionView.dequeueConfiguredReusableCell(using: repositoryCell, for: indexPath, item: viewModel.repositoriesSubject.value?.items[indexPath.row])
     }
 }
