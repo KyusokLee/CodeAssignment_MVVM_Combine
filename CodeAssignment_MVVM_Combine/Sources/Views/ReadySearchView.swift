@@ -25,7 +25,7 @@ final class ReadySearchView: UIView {
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 20, weight: .semibold)
-        label.text = "GitHubのリポジトリが検索できる"
+        label.text = "GitHubのリポジトリが検索できます"
         label.textAlignment = .center
         label.textColor = .black
         return label
