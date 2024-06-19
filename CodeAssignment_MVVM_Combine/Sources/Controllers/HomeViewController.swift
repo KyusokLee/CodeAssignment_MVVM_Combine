@@ -149,10 +149,10 @@ extension HomeViewController {
 
         viewModel.readyViewSubject
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] isHidden in
+            .sink { [weak self] isPresented in
                 guard let self else { return }
                 // readyViewのisHidden処理
-                self.readyView.isHidden = !isHidden
+                self.readyView.isHidden = !isPresented
             }
             .store(in: &cancellables)
     }
