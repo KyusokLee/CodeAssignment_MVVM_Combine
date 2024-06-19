@@ -85,7 +85,7 @@ extension HomeViewController {
     private func setupDataSource() {
         /// RepositoryCollectionViewCellをCellRegistrationで設定
         let repositoryCell = UICollectionView.CellRegistration<RepositoryCollectionViewCell, Repositories.Repository>() { cell, indexPath, repository in
-            //<CellのType(クラス名とか), Itemで表示するもの>
+            // <CellのType(クラス名とか), Itemで表示するもの>
             cell.backgroundColor = .white
             cell.configure(with: repository)
             // cellにUICellAccessory（accessories）を追加
@@ -93,10 +93,15 @@ extension HomeViewController {
                 .disclosureIndicator()
             ]
         }
+
+        /// DataSourceに表示するSectionとItemの現在のUIの状態
+        var snapshot: NSDiffableDataSourceSnapshot<Section, Repositories.Repository>!
         // DiffableDataSourceの初期化
         dataSource = UICollectionViewDiffableDataSource<Section, Repositories.Repository>(collectionView: repositoryCollectionView) { collectionView, indexPath, repository in
             return collectionView.dequeueConfiguredReusableCell(using: repositoryCell, for: indexPath, item: repository)
         }
+        // appendSections: snapShotを適用するSectionを追加
+        // apply(_ :animatingDifferences:) : 表示されるデータを完全にリセットするのではなく、incremental updates(増分更新)を実行してDataSourceにSnapshotを適用する
         snapshot = NSDiffableDataSourceSnapshot<Section, Repositories.Repository>()
         // Snapshotの初期化
         snapshot.appendSections([.main])
