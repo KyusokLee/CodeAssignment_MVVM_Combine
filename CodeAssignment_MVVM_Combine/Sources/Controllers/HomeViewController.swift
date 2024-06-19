@@ -38,11 +38,6 @@ class HomeViewController: UIViewController {
     - Hashable プロトコルの採択が必須
      */
     private var dataSource: UICollectionViewDiffableDataSource<Section, Repositories.Repository>!
-    /** DataSourceに表示するSectionとItemの現在のUIの状態
-    - appendSections: snapShotを適用するSectionを追加
-    - apply(_ :animatingDifferences:) : 表示されるデータを完全にリセットするのではなく、incremental updates(増分更新)を実行してDataSourceにSnapshotを適用する
-     */
-    private var snapshot: NSDiffableDataSourceSnapshot<Section, Repositories.Repository>!
     private lazy var repositoryCollectionView: UICollectionView = {
         var config = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
         config.headerMode = .none
