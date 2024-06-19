@@ -152,7 +152,7 @@ extension HomeViewController {
             .sink { [weak self] isHidden in
                 guard let self else { return }
                 // readyViewのisHidden処理
-                self.readyView.isHidden = isHidden
+                self.readyView.isHidden = !isHidden
             }
             .store(in: &cancellables)
     }
