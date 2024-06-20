@@ -212,7 +212,7 @@ private func makeCountLabel(fontSize: CGFloat, color: UIColor) -> UILabel {
    return label
 }
 ```  
-`UILabel`インスタンス定義時に同じコードを使用しているものはメソッドとしてまとめ、重複コードを避けました。
+- `UILabel`インスタンス定義時に同じコードを使用しているものはメソッドとしてまとめ、重複コードを避けました。
 
 &nbsp;
 
@@ -241,9 +241,11 @@ struct GitHubSearchRepositoriesRequest: GitHubAPIClientProtocol {
 }
 
 ```
-本アプリは`GitHub Rest API`の中、検索用のエンドポイントと星付けー・解除用のエンドポイントを使用しています。検索用の`strcut`である`GitHubSearchRepositoriesRequest`と星付けー・解除用である`GitHubStarRepositoriesRequest`はそれぞれ異なるリクエストを処理しているが、ジェネリックとプロトコルを用いることでコードの再利用性を増やすことができます。
-`GitHubSearchRepositoriesRequest`と`GitHubStarRepositoriesRequest`が共通のプロトコル`GitHubAPIClientProtocol`を準拠するように定義し、`APIClient`クラスでジェネリックを使用してリクエストを送信するようにすると、重複したコードの削減と、複数のAPIリクエストに対して同じロジックを使用できるようになります。
-各リクエストタイプが自分自身のリクエストを組み立てるロジック`buildUpRequest`を持つようにし、`APIClient`はリクエストタイプに応じた処理を行う必要がなくなり、関心事の分離が実現されます。
+- 本アプリは`GitHub Rest API`の中、検索用のエンドポイントと星付けー・解除用のエンドポイントを使用しています。検索用の`strcut`である`GitHubSearchRepositoriesRequest`と星付けー・解除用である`GitHubStarRepositoriesRequest`はそれぞれ異なるリクエストを処理しているが、ジェネリックとプロトコルを用いることでコードの再利用性を増やすことができます。
+
+- `GitHubSearchRepositoriesRequest`と`GitHubStarRepositoriesRequest`が共通のプロトコル`GitHubAPIClientProtocol`を準拠するように定義し、`APIClient`クラスでジェネリックを使用してリクエストを送信するようにすると、重複したコードの削減と、複数のAPIリクエストに対して同じロジックを使用できるようになります。
+
+- 各リクエストタイプが自分自身のリクエストを組み立てるロジック`buildUpRequest`を持つようにし、`APIClient`はリクエストタイプに応じた処理を行う必要がなくなり、関心事の分離が実現されます。
 
 &nbsp;
 
