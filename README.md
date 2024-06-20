@@ -179,13 +179,77 @@ CodeAssignment_MVVM_Combine
 
 ## 🎯 実装時に意識したこと
 
-## AutoLayout
+### AutoLayout
 
 ### Life Cycle
 
 ### 参照
 
 ### エラーの分岐
+
+### DRY原則
+重複コードを避け、汎用的なコードを書くよう意識しました。
+
+#### 重複コードのメソッド化
+```swift
+private lazy var watchersCountLabel: UILabel = makeCountLabel()
+private lazy var forksCountLabel: UILabel = makeCountLabel()
+private lazy var openIssuesCountLabel: UILabel = makeCountLabel()
+
+private func makeCountLabel() -> UILabel {
+   let label = UILabel()
+   label.font = .systemFont(ofSize: 18, weight: .regular)
+   label.textColor = .black.withAlphaComponent(0.7)
+   return label
+}
+
+/// フォントのサイズやテキストカラーに差を付与してインスタンスを生成するときは、以下のように応用できるメリットがある
+private func makeCountLabel(fontSize: CGFloat, color: UIColor) -> UILabel {
+   let label = UILabel()
+   label.font = .systemFont(ofSize: 18, weight: .regular)
+   label.textColor = .black.withAlphaComponent(0.7)
+   return label
+}
+```  
+`UILabel`インスタンス定義時に同じコードを使用しているものはメソッドとしてまとめ、重複コードを避けました。
+
+&nbsp;
+
+#### ジェネリックとプロトコルの使用
+```swift
+class APIClient {
+    /// ジェネリック(Tタイプ)を使用することで、GitHubAPIClientProtocolを準拠する全てのタイプのリクエスト処理が可能になる
+    func request<T: GitHubAPIClientProtocol>(_ requestProtocol: T, type: GitHubAPIType, completion: @escaping(Result<T.Model?, ErrorType>) -> Void) {
+        guard let request = requestProtocol.buildUpRequest() else { return }
+        /// 他は省略
+    }
+}
+
+/// リポジトリ検索用のリクエスト
+struct GitHubSearchRepositoriesRequest: GitHubAPIClientProtocol {
+   /// リクエストを立てる処理とリクエストを実際に送る処理を分離し、コードの可読性とテストおよび保守時のメンテナンス性を向上させる
+   func buildUpRequest() -> URLRequest? {
+      let urlString = "[URL string you want to use]"
+      guard let url = URL(string: urlString) else { return nil }
+      var request = URLRequest(url: url)
+      request.httpMethod = "GET"
+
+      return request
+   }
+   /// 他は省略
+}
+
+```
+本アプリは`GitHub Rest API`の中、検索用のエンドポイントと星付けー・解除用のエンドポイントを使用しています。検索用の`strcut`である`GitHubSearchRepositoriesRequest`と星付けー・解除用である`GitHubStarRepositoriesRequest`はそれぞれ異なるリクエストを処理しているが、ジェネリックとプロトコルを用いることでコードの再利用性を増やすことができます。
+`GitHubSearchRepositoriesRequest`と`GitHubStarRepositoriesRequest`が共通のプロトコル`GitHubAPIClientProtocol`を準拠するように定義し、`APIClient`クラスでジェネリックを使用してリクエストを送信するようにすると、重複したコードの削減と、複数のAPIリクエストに対して同じロジックを使用できるようになります。
+各リクエストタイプが自分自身のリクエストを組み立てるロジック`buildUpRequest`を持つようにし、`APIClient`はリクエストタイプに応じた処理を行う必要がなくなり、関心事の分離が実現されます。
+
+&nbsp;
+
+#### カスタムコンポーネント
+
+
+&nbsp;
 
 ## 🧐 工夫点
 
@@ -204,7 +268,13 @@ CodeAssignment_MVVM_Combine
 
 ### 画面表示用のレスポンスの結合モデルの作成
 
-今回のアプリを実装するまでは、無意識でAPIを叩いて返ってくるレスポンスを`APIClient`で処理してViewControllerで直接渡すようなコードを書いていた。これはレスポンスの形に依存しちゃうのでは？と考えていてこの依存度をどう分離するかを悩んていたものの、依存度を分離せずに普段から慣れていたコードを書いた。すると、レビュアーからまさにここの部分を指摘され、API叩きから得られるレスポンス用のデータモデルと画面に表示する用のデータモデルを分岐することで依存度を減らせることを教わった。
+`背景`
+- 今回のアプリを実装するまでは、無意識でAPIを叩いて返ってくるレスポンスを`APIClient`で処理してViewControllerで直接渡すようなコードを書いていた。これはレスポンスの形に依存しちゃうのでは？と考えていてこの依存度をどう分離するかを悩んていたものの、依存度を分離せずに普段から慣れていたコードを書いた。すると、レビュアーからまさにここの部分を指摘され、API叩きから得られるレスポンス用のデータモデルと画面に表示する用のデータモデルを分岐することで依存度を減らせることを教わった。
+
+`解決`
+- データモデルをAPIを叩いてから取得するリポジトリのデータを`RepositoriesResponse`に、それらを画面に表示するためのモデルを`Repositories`に分け、Codableを継承するstructの中に不要なCodingKeysロジックを消す。また、テストを容易にするため、ビューとして表示するためのモデルを容易した。
+
+レスポンスの形に依存しちゃうので、アンチパータンなので、Viewに表示するためのレスポンスの結合モデルを生成して、適用しました
 
 &nbsp;
 
