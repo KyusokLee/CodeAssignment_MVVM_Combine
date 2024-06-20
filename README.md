@@ -167,13 +167,10 @@ CodeAssignment_MVVM_Combine
 ### MVVM
 `ViewController`と`View`は画面を描く役割だけに集中させ、データ管理とロジックは`ViewModel`で進められるように構成しました。
 
-
-
-
 &nbsp;
 
 ### Combine
-
+Appleの基本APIである`Combine`を利用してリアクティブプログラミングの実装にチャレンジしました。
 連続したescaping closureを避け、宣言型プログラミングを通じた高い可読性とオペレーターを通じた効率的な非同期処理のためにCombineを採択しました。
 
 &nbsp;
@@ -182,11 +179,81 @@ CodeAssignment_MVVM_Combine
 
 ### AutoLayout
 
+&nbsp;
+
 ### Life Cycle
+
+&nbsp;
 
 ### 参照
 
-### エラーの分岐
+&nbsp;
+
+### 例外処理・通信時のエラー処理
+#### 例外処理
+
+```swift
+/// 通常の関数
+func decode(from data: Data) -> RepositoriesResponse? {
+    let decoder = JSONDecoder()
+    decoder.keyDecodingStrategy = .convertFromSnakeCase
+    
+    do {
+        let response = try decoder.decode(RepositoriesResponse.self, from: data)
+        return response
+    } catch {
+        // エラーのとき、メッセージの表示と同時に nil を返す
+        print("Failed to decode JSON: \(error)")
+        return nil
+    }
+}
+
+/// throw関数
+func decode(from data: Data) throws -> RepositoriesResponse {
+   let decoder = JSONDecoder()
+   decoder.keyDecodingStrategy = .convertFromSnakeCase
+   return try decoder.decode(RepositoriesResponse.self, from: data)
+}
+
+/// 使う側でのコード
+do {
+   let results = try requestProtocol.decode(from: data)
+   completion(.success(results))
+} catch {
+   completion(.failure(ErrorType.decodeError))
+}
+
+```
+
+- `throws`関数を用いて、Errorの発生可能性があることを`throws`キーワードで明示し、エラーを投げるようにしました。
+
+- 関数内部の `try catch`のコードブロックの記載が不要になり、実際に使う側でロジックを実行するときにエラー処理を行うようにし、コードの可読性と保守性を意識しました。
+
+#### 通信時のエラー処理
+
+```swift
+private lazy var watchersCountLabel: UILabel = makeCountLabel()
+private lazy var forksCountLabel: UILabel = makeCountLabel()
+private lazy var openIssuesCountLabel: UILabel = makeCountLabel()
+
+private func makeCountLabel() -> UILabel {
+   let label = UILabel()
+   label.font = .systemFont(ofSize: 18, weight: .regular)
+   label.textColor = .black.withAlphaComponent(0.7)
+   return label
+}
+
+/// フォントのサイズやテキストカラーに差を付与してインスタンスを生成するときは、以下のように応用できるメリットがある
+private func makeCountLabel(fontSize: CGFloat, color: UIColor) -> UILabel {
+   let label = UILabel()
+   label.font = .systemFont(ofSize: 18, weight: .regular)
+   label.textColor = .black.withAlphaComponent(0.7)
+   return label
+}
+``` 
+
+
+&nbsp;
 
 ### DRY原則
 重複コードを避け、汎用的なコードを書くよう意識しました。
