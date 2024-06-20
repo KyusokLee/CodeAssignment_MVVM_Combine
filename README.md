@@ -40,19 +40,20 @@ https://github.com/KyusokLee/CodeAssignment_MVVM_Combine/assets/89962765/e9845d6
 * [設計及び実装](#-設計及び実装)
 * [技術的チャレンジ](#-技術的チャレンジ)
     * [MVVM](#MVVM)
-    * [Combine](#combine)
+    * [Combine](#Combine)
 * [実装時に意識したこと](#-実装時に意識したこと)
     * [AutoLayout](#AutoLayout)
     * [Life Cycle](#Life-Cycle)
     * [参照](#参照)
     * [エラーの分岐](#エラーの分岐)
+    * [DRY原則](#DRY原則)
 * [工夫点](#-工夫点)
     * [Personal Access Token の管理方法](#Personal-Access-Token-の管理方法)
     * [エラー処理](#エラー処理)
     * [UI/UX 設計](#UI/UX-設計)
 * [学び](#-学び)
     * [画面表示用のレスポンスの結合モデルの作成](#画面表示用のレスポンスの結合モデルの作成)
-* [Trouble Shooting](#-trouble-Shooting)
+* [Trouble Shooting](#trouble-Shooting)
     * [CompositionalLayout](#CompositionalLayout)
     * [NSDiffableDatasourceSnapshot](#NSDiffableDatasourceSnapshot)
 
@@ -166,13 +167,10 @@ CodeAssignment_MVVM_Combine
 ### MVVM
 `ViewController`と`View`は画面を描く役割だけに集中させ、データ管理とロジックは`ViewModel`で進められるように構成しました。
 
-
-
-
 &nbsp;
 
 ### Combine
-
+Appleの基本APIである`Combine`を利用してリアクティブプログラミングの実装にチャレンジしました。
 連続したescaping closureを避け、宣言型プログラミングを通じた高い可読性とオペレーターを通じた効率的な非同期処理のためにCombineを採択しました。
 
 &nbsp;
@@ -181,11 +179,81 @@ CodeAssignment_MVVM_Combine
 
 ### AutoLayout
 
+&nbsp;
+
 ### Life Cycle
+
+&nbsp;
 
 ### 参照
 
-### エラーの分岐
+&nbsp;
+
+### 例外処理・通信時のエラー処理
+#### 例外処理
+
+```swift
+/// 通常の関数
+func decode(from data: Data) -> RepositoriesResponse? {
+    let decoder = JSONDecoder()
+    decoder.keyDecodingStrategy = .convertFromSnakeCase
+    
+    do {
+        let response = try decoder.decode(RepositoriesResponse.self, from: data)
+        return response
+    } catch {
+        // エラーのとき、メッセージの表示と同時に nil を返す
+        print("Failed to decode JSON: \(error)")
+        return nil
+    }
+}
+
+/// throw関数
+func decode(from data: Data) throws -> RepositoriesResponse {
+   let decoder = JSONDecoder()
+   decoder.keyDecodingStrategy = .convertFromSnakeCase
+   return try decoder.decode(RepositoriesResponse.self, from: data)
+}
+
+/// 使う側でのコード
+do {
+   let results = try requestProtocol.decode(from: data)
+   completion(.success(results))
+} catch {
+   completion(.failure(ErrorType.decodeError))
+}
+
+```
+
+- `throws`関数を用いて、Errorの発生可能性があることを`throws`キーワードで明示し、エラーを投げるようにしました。
+
+- 関数内部の `try catch`のコードブロックの記載が不要になり、実際に使う側でロジックを実行するときにエラー処理を行うようにし、コードの可読性と保守性を意識しました。
+
+#### 通信時のエラー処理
+
+```swift
+private lazy var watchersCountLabel: UILabel = makeCountLabel()
+private lazy var forksCountLabel: UILabel = makeCountLabel()
+private lazy var openIssuesCountLabel: UILabel = makeCountLabel()
+
+private func makeCountLabel() -> UILabel {
+   let label = UILabel()
+   label.font = .systemFont(ofSize: 18, weight: .regular)
+   label.textColor = .black.withAlphaComponent(0.7)
+   return label
+}
+
+/// フォントのサイズやテキストカラーに差を付与してインスタンスを生成するときは、以下のように応用できるメリットがある
+private func makeCountLabel(fontSize: CGFloat, color: UIColor) -> UILabel {
+   let label = UILabel()
+   label.font = .systemFont(ofSize: 18, weight: .regular)
+   label.textColor = .black.withAlphaComponent(0.7)
+   return label
+}
+``` 
+
+
+&nbsp;
 
 ### DRY原則
 重複コードを避け、汎用的なコードを書くよう意識しました。
@@ -211,7 +279,7 @@ private func makeCountLabel(fontSize: CGFloat, color: UIColor) -> UILabel {
    return label
 }
 ```  
-`UILabel`インスタンス定義時に同じコードを使用しているものはメソッドとしてまとめ、重複コードを避けました。
+- `UILabel`インスタンス定義時に同じコードを使用しているものはメソッドとしてまとめ、重複コードを避けました。
 
 &nbsp;
 
@@ -240,13 +308,38 @@ struct GitHubSearchRepositoriesRequest: GitHubAPIClientProtocol {
 }
 
 ```
-本アプリは`GitHub Rest API`の中、検索用のエンドポイントと星付けー・解除用のエンドポイントを使用しています。検索用の`strcut`である`GitHubSearchRepositoriesRequest`と星付けー・解除用である`GitHubStarRepositoriesRequest`はそれぞれ異なるリクエストを処理しているが、ジェネリックとプロトコルを用いることでコードの再利用性を増やすことができます。
-`GitHubSearchRepositoriesRequest`と`GitHubStarRepositoriesRequest`が共通のプロトコル`GitHubAPIClientProtocol`を準拠するように定義し、`APIClient`クラスでジェネリックを使用してリクエストを送信するようにすると、重複したコードの削減と、複数のAPIリクエストに対して同じロジックを使用できるようになります。
-各リクエストタイプが自分自身のリクエストを組み立てるロジック`buildUpRequest`を持つようにし、`APIClient`はリクエストタイプに応じた処理を行う必要がなくなり、関心事の分離が実現されます。
+- 本アプリは`GitHub Rest API`の中、検索用のエンドポイントと星付けー・解除用のエンドポイントを使用しています。検索用の`strcut`である`GitHubSearchRepositoriesRequest`と星付けー・解除用である`GitHubStarRepositoriesRequest`はそれぞれ異なるリクエストを処理しているが、ジェネリックとプロトコルを用いることでコードの再利用性を増やすことができます。
+
+- `GitHubSearchRepositoriesRequest`と`GitHubStarRepositoriesRequest`が共通のプロトコル`GitHubAPIClientProtocol`を準拠するように定義し、`APIClient`クラスでジェネリックを使用してリクエストを送信するようにすると、重複したコードの削減と、複数のAPIリクエストに対して同じロジックを使用できるようになります。
+
+- 各リクエストタイプが自分自身のリクエストを組み立てるロジック`buildUpRequest`を持つようにし、`APIClient`はリクエストタイプに応じた処理を行う必要がなくなり、関心事の分離が実現されます。
 
 &nbsp;
 
 #### カスタムコンポーネント
+
+```swift
+final class LoadingView: UIView {
+    /// didSetを用いてプロパティの値が更新された直後に実行し、古い値を新しい値に置き換えることが可能
+    var isLoading = false {
+        didSet {
+            isHidden = !isLoading
+            isLoading ? loadingIndicatorView.startAnimating() : loadingIndicatorView.stopAnimating()
+        }
+    }
+    /// 他は省略
+}
+
+/// loadingViewを使う側で以下のように定義することで、どの画面でも利用できる
+private let loadingView = LoadingView()
+loadingView.isLoading = true
+
+/// 他は省略
+
+```
+- ローディング中であることをユーザに示す`LoadingView`をカスタムコンポーネント化し、コードの再利用性を増やした。同じ機能やUI要素を一つの箇所にカプセル化したため、`ViewController`や`View`などどの場所でもこれらを利用することができます。
+
+- UIやロジックを修正する際、当該コンポーネントだけ修正すればいいので、コードの保守がしやすくなります。例えば、`UIActivityIndicatorView`の色や表示するテキストを変えたいときは、`LoadingView`クラスを修正すればいいので、関心事の分離ができ、テストもしやすくなります。
 
 
 &nbsp;
