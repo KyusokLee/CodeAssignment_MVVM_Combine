@@ -251,6 +251,29 @@ struct GitHubSearchRepositoriesRequest: GitHubAPIClientProtocol {
 
 #### カスタムコンポーネント
 
+```swift
+final class LoadingView: UIView {
+    /// didSetを用いてプロパティの値が更新された直後に実行し、古い値を新しい値に置き換えることが可能
+    var isLoading = false {
+        didSet {
+            isHidden = !isLoading
+            isLoading ? loadingIndicatorView.startAnimating() : loadingIndicatorView.stopAnimating()
+        }
+    }
+    /// 他は省略
+}
+
+/// loadingViewを使う側で以下のように定義することで、どの画面でも利用できる
+private let loadingView = LoadingView()
+loadingView.isLoading = true
+
+/// 他は省略
+
+```
+- ローディング中であることをユーザに示す`LoadingView`をカスタムコンポーネント化し、コードの再利用性を増やした。同じ機能やUI要素を一つの箇所にカプセル化したため、`ViewController`や`View`などどの場所でもこれらを利用することができます。
+
+- UIやロジックを修正する際、当該コンポーネントだけ修正すればいいので、コードの保守がしやすくなります。例えば、`UIActivityIndicatorView`の色や表示するテキストを変えたいときは、`LoadingView`クラスを修正すればいいので、関心事の分離ができ、テストもしやすくなります。
+
 
 &nbsp;
 
