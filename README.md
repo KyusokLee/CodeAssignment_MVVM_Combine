@@ -42,6 +42,7 @@ https://github.com/KyusokLee/CodeAssignment_MVVM_Combine/assets/89962765/e9845d6
     * [MVVM](#MVVM)
     * [Combine](#Combine)
 * [実装時に意識したこと](#-実装時に意識したこと)
+    * [Extension活用](#Extension活用) 
     * [AutoLayout](#AutoLayout)
     * [Life Cycle](#Life-Cycle)
     * [参照](#参照)
@@ -170,12 +171,71 @@ CodeAssignment_MVVM_Combine
 &nbsp;
 
 ### Combine
-Appleの基本APIである`Combine`を利用してリアクティブプログラミングの実装にチャレンジしました。
+Appleの基本APIである`Combine`を利用してリアクティブプログラミングの実装にチャレンジしました。<br>
 連続したescaping closureを避け、宣言型プログラミングを通じた高い可読性とオペレーターを通じた効率的な非同期処理のためにCombineを採択しました。
 
 &nbsp;
 
 ## 🎯 実装時に意識したこと
+
+### Extension活用
+
+```swift
+/// Status Codeの値ごとに有効であるか無効であるかを定義しておくためのExtension
+extension HTTPURLResponse {
+    func isResponseAvailable() -> Bool {
+        return (200...299).contains(self.statusCode)
+    }
+}
+
+// MARK: - UISearchBarDelegate
+extension HomeViewController: UISearchBarDelegate {
+    /// Return(検索)キーをタップしたときの処理
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        guard let searchWord = searchBar.text else { return }
+    }
+    // 他は省略
+}
+
+// MARK: - Life Cycle & Variables
+class HomeViewController: UIViewController {
+    /// ViewModel
+    private let viewModel = HomeViewModel()
+    /// Custom Loading View
+    private let loadingView = LoadingView()
+    /// 検索開始前に表示するReadyView
+    private let readyView = ReadySearchView()
+
+    // 他は省略
+}
+
+// MARK: - Functions & Logics
+extension HomeViewController {
+    /// ViewControllerのUIをセットアップする
+    private func setupUI() {
+        view.backgroundColor = .secondarySystemBackground
+        
+        setupNavigationController()
+        setupDataSource()
+        setAddSubViews()
+        setupConstraints()
+    }
+
+    // 他は省略
+}
+```
+
+- `extension`を用いて、既存のオブジェクトやタイプを修正することなく、新しい機能を追加することができます。
+
+- 上記のコードに記載した`HTTPURLResponse`のように `isResponseAvailable` の関数を追加することで、複数の場所で同様の機能が使用できるようにし、コードの重複を減らすことを意識しました。
+
+- `UISearchBarDelegate`のように deleage パターンは `extension`を使って責任の分離をしておき、特定の機能に関するコードを一箇所にまとめて管理しやすくしました。
+
+- 人の好みによると思いますが、`ViewController`や `View`の`class`の定義する際に、`extension`を用いて「ライフサイクル・プロパティ」と「ロジック・関数」を分離するようにしました。
+  - 理由としては、`class`のコードが長くなり過ぎないように一度 `extension` で区切って整理することで、コードの可読性を向上させたかったからです。
+  - また、delegateパターンを `extension`を使って責任分離を行なうのと同様に、ロジックの部分とクラスのライフサイクルを分離しました。
+
+&nbsp;
 
 ### AutoLayout
 
@@ -222,7 +282,6 @@ do {
 } catch {
    completion(.failure(ErrorType.decodeError))
 }
-
 ```
 
 - `throws`関数を用いて、Errorの発生可能性があることを`throws`キーワードで明示し、エラーを投げるようにしました。
@@ -232,26 +291,57 @@ do {
 #### 通信時のエラー処理
 
 ```swift
-private lazy var watchersCountLabel: UILabel = makeCountLabel()
-private lazy var forksCountLabel: UILabel = makeCountLabel()
-private lazy var openIssuesCountLabel: UILabel = makeCountLabel()
-
-private func makeCountLabel() -> UILabel {
-   let label = UILabel()
-   label.font = .systemFont(ofSize: 18, weight: .regular)
-   label.textColor = .black.withAlphaComponent(0.7)
-   return label
+/// ErrorTypeの定義
+enum ErrorType: Error {
+    case apiServerError
+    case noResponseError
+    case decodeError
+    case unknownError
 }
 
-/// フォントのサイズやテキストカラーに差を付与してインスタンスを生成するときは、以下のように応用できるメリットがある
-private func makeCountLabel(fontSize: CGFloat, color: UIColor) -> UILabel {
-   let label = UILabel()
-   label.font = .systemFont(ofSize: 18, weight: .regular)
-   label.textColor = .black.withAlphaComponent(0.7)
-   return label
+extension ErrorType {
+    var errorTitle: String {
+        switch self {
+        case .apiServerError:
+            return "APIサーバーエラー"
+        case .noResponseError:
+            return "レスポンスエラー"
+        case .decodeError:
+            return "デコードエラー"
+        case .unknownError:
+            return "不明なエラー"
+        }
+    }
+    
+    var errorDescription: String {
+        switch self {
+        case .apiServerError:
+            return "サーバーにエラーが起きました。\nもう一度、お試しください。"
+        case .noResponseError:
+            return "レスポンスがないです。\nもう一度、確認してください。"
+        case .decodeError:
+            return "デコードエラーが発生しました。\nもう一度、お試しください。"
+        case .unknownError:
+            return "不明なエラーが返ってきました。\nもう一度、確認ください。"
+        }
+    }
 }
-``` 
 
+/// 使う側でのコード例
+func presentError(_ error: ErrorType) {
+    print("Error: \(error.errorTitle)")
+    print("Description: \(error.errorDescription)")
+}
+
+let error = ErrorType.apiServerError
+presentError(error)
+```
+
+- APIリクエスト処理時に発生の可能性があるエラーを明示し、可読性とコードの保守性の向上を意識しました。
+
+- 各エラータイプに対して明確に定義されたタイトル `errorTitle` と説明 `errorDescription` を提供することで、ユーザにエラーが発生した時の詳細情報を表示することができます。
+
+- エラー発生時の情報を定義することで、ユーザ目線だけでなく開発者も問題を把握しやすくなり、デバッグも容易になります。
 
 &nbsp;
 
@@ -339,7 +429,7 @@ loadingView.isLoading = true
 ```
 - ローディング中であることをユーザに示す`LoadingView`をカスタムコンポーネント化し、コードの再利用性を増やした。同じ機能やUI要素を一つの箇所にカプセル化したため、`ViewController`や`View`などどの場所でもこれらを利用することができます。
 
-- UIやロジックを修正する際、当該コンポーネントだけ修正すればいいので、コードの保守がしやすくなります。例えば、`UIActivityIndicatorView`の色や表示するテキストを変えたいときは、`LoadingView`クラスを修正すればいいので、関心事の分離ができ、テストもしやすくなります。
+- UIやロジックを修正する際、当該コンポーネントだけ修正すればいいので、コードの保守がしやすくなります。例えば、`UIActivityIndicatorView`の色や表示するテキストを変えたいときは、`LoadingView`クラスを修正すればいいので、関心事の分離ができ、テストも容易にします。
 
 
 &nbsp;
