@@ -476,6 +476,13 @@ loadingView.isLoading = true
 ## 🧐 工夫点
 
 ### Personal Access Token の管理方法
+星付け・解除の機能を使うにあたって、自分自身のGitHubアカウントの認証が必要だったため、アクセストークンをどのように使うかを悩みました。<br>
+調べたところ、下記のように３つの方法がありました。
+- `gitignore`を用いる方法
+
+- `Keychain`を用いる方法
+
+- `UserDefaults`を用いる方法
 
 ### UI/UX 設計
 
