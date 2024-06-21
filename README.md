@@ -50,7 +50,6 @@ https://github.com/KyusokLee/CodeAssignment_MVVM_Combine/assets/89962765/e9845d6
     * [DRY原則](#DRY原則)
 * [工夫点](#-工夫点)
     * [Personal Access Token の管理方法](#Personal-Access-Token-の管理方法)
-    * [エラー処理](#エラー処理)
     * [UI/UX 設計](#UI/UX-設計)
 * [学び](#-学び)
     * [画面表示用のレスポンスの結合モデルの作成](#画面表示用のレスポンスの結合モデルの作成)
@@ -199,11 +198,8 @@ extension HomeViewController: UISearchBarDelegate {
 
 // MARK: - Life Cycle & Variables
 class HomeViewController: UIViewController {
-    /// ViewModel
     private let viewModel = HomeViewModel()
-    /// Custom Loading View
     private let loadingView = LoadingView()
-    /// 検索開始前に表示するReadyView
     private let readyView = ReadySearchView()
 
     // 他は省略
@@ -238,6 +234,49 @@ extension HomeViewController {
 &nbsp;
 
 ### AutoLayout
+
+本アプリでは `SnapKit`を用いて AutoLayoutの設定をしました。今回、コードベースで画面のUIを設定するのが技術的な制限として設けられたので、`Storyboard`なしで開発を進めました。
+`SnapKit` を利用した経緯は過去の経験から以下のことを感じたからです。
+  - > "画面の数が多くて複雑になって、Storyboard の数が増えている.. Storybard自体も重くなってファイルを開くたびにXcodeが落ちちゃう..."
+  - > "Storyboardって使わなくていいよね？"
+  - > "Storyboardなしでプロパティの constraint をコードで実装してみよう！"
+  - > "あれ？やってみたら、constraint を追加するコードも長くなちゃったな.."
+  - > "SnapKit 使ってみたら、便利..!"
+
+なぜ、`SnapKit` を使って便利だと思ったかについては以下のコードを参考にしながら、説明します。
+
+```swift
+// SnapKit 未使用
+mainStackView.translatesAutoresizingMaskIntoConstraints = false
+view.addSubview(mainStackView)
+
+NSLayoutConstraint.activate([
+    mainStackView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true,
+    mainStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true,
+    mainStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true,
+    mainStackView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+])
+
+// SnapKit 使用
+mainStackView.snp.makeConstraints { constraint in
+    constraint.edges.equalToSuperview()
+    // 上記と下記のコードは同じ動作をする
+    // constraint.leading.top.trailing.bottom.equalToSuperview()
+}
+
+// または
+mainStackView.snp.makeConstraints {
+    $0.edges.equalToSuperview()
+}
+```
+
+- 上記に示した「SnapKit　使用」のコードを見ると、「未使用の例」より簡潔で直感的になっており、可読性が向上されたと感じます。
+
+- また、`SnapKit`は `constraint.edges.equalToSuperview()` や　`constraint.leading.top.trailing.bottom.equalToSuperview()` のようにメソッドチェーンで複数のプロパティに一度に制約を設定することができ、`NSLayoutConstraints`よりコードの量を減らせることができます。
+
+- これは実装中に気づいたことですが、`SnapKit`は内装コードに `translatesAutoresizingMaskIntoConstraints`を `false`にする設定があるため、別途に同様のコードを記載する必要がないので便利でした。
+
+- 今度は `VFL (Visual Format Language)`を導入して、制約の設定をより視覚的に実装することにチャレンジしようと思っています。
 
 &nbsp;
 
@@ -437,8 +476,6 @@ loadingView.isLoading = true
 ## 🧐 工夫点
 
 ### Personal Access Token の管理方法
-
-### エラー処理
 
 ### UI/UX 設計
 
