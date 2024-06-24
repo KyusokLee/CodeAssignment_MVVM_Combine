@@ -175,9 +175,7 @@ MVVMアーキテクチャの特徴をまとめると、`ViewController`と`View`
 
 &nbsp;
 
-
-
-
+<img width="794" alt="スクリーンショット 2024-06-24 20 18 58" src="https://github.com/KyusokLee/CodeAssignment_MVVM_Combine/assets/89962765/9a1161ba-912a-4790-8d4e-185592b24290">
 
 MVVM は Model-View-ViewModel の略称であり、ソフトウェア開発で使われるアーキテクチャパターンの一つを指します。MVVMはアプリケーションを上記のように３つのコンポーネントに分離して管理し、各コンポーネントが特定の役割を果たします。
 
