@@ -50,7 +50,6 @@ https://github.com/KyusokLee/CodeAssignment_MVVM_Combine/assets/89962765/e9845d6
     * [DRY原則](#DRY原則)
 * [工夫点](#-工夫点)
     * [Personal Access Token の管理方法](#Personal-Access-Token-の管理方法)
-    * [UI/UX 設計](#UI/UX-設計)
 * [学び](#-学び)
     * [画面表示用のレスポンスの結合モデルの作成](#画面表示用のレスポンスの結合モデルの作成)
 * [Trouble Shooting](#trouble-Shooting)
@@ -477,17 +476,72 @@ loadingView.isLoading = true
 
 ### Personal Access Token の管理方法
 星付け・解除の機能を使うにあたって、自分自身のGitHubアカウントの認証が必要だったため、アクセストークンをどのように使うかを悩みました。<br>
-調べたところ、下記のように３つの方法がありました。
-- `gitignore`を用いる方法
+本アプリの認証機能の実装において、下記の4つの方法を工夫しました。
 
-- `Keychain`を用いる方法
+#### UserDefaults
+```swift
+func getAccessToken() -> String? {
+    UserDefaults.standard.string(forKey: "accessToken")
+}
 
-- `UserDefaults`を用いる方法
+func saveAccessToken(_ accessToken: String) {
+    UserDefaults.standard.set(accessToken, forKey: "accessToken")
+}
+```
 
-### UI/UX 設計
+- 既存の個人開発では簡単な環境設定などの管理は`UserDefaults`を用いて実装しました。コードの書き方も上記のようにとても簡単なため、よく使っていました。
 
-> [ホーム画面UIの参考資料URL]() <br>
+- しかし、`UserDefaults`上のデータはproperty list （.plistファイル）に保存されるため、特定のツールなどを使用すると、`UserDefaults` にアクセスできるようになり、データの確認・修正が可能になるという脆弱性があります。そのため、トークンなどの機密情報の保存には適していないらしいです。
 
+- 上記の理由から、`UserDefaults`を用いた方法は採用しませんでした。
+
+#### ProcessInfo を用いる方法
+```swift
+func loadTokenFromProcessInfo() -> String? {
+    return ProcessInfo.processInfo.environment["PERSONAL_ACCESS_TOKEN"]
+}
+
+// 使い方
+if let token = loadTokenFromProcessInfo() {
+    print("Loaded token: \(token)")
+} else {
+    print("Token not found")
+}
+```
+
+- `ProcessInfo`を用いた方法は、Xcodeの Scheme設定の修正を通して実装可能になります。Xcode上の環境変数として保存して使えばいいので、コードの書き方が簡単です。
+
+- しかし、Xcode上でビルドしない限り、設定したトークンが正常に反映されないので、トークンの保存方法としては不適合だと判断しました。そのため、この方法も採用しませんでした。
+
+#### Keychain を用いる方法
+- `Keychain` を使用すると、ユーザのパスワードに限らず、クレジットカード情報、あるいは短いメモなどもユーザが暗号化したいものであれば、`Keychain` データベースに暗号化して保存することができます。
+
+- Appleは `Keychain Services API`を通して、主に以下のことを提供しています。
+  1. 長くて難しいパスワードなどの機密情報を作っても私が代わりに覚えてあげます！
+  2. パスワードの奪取が心配ですか？こっちの方で暗号化して持っているので、心配しないで！
+ 
+- つまり、この `Keychain`の実装方法を用いて、ユーザは簡単で便利にパスワードやトークンなどの機密情報を管理することができます。
+
+- また、追加でAPIで自動的に暗号化が必要なものに対する処理をしてくれるので、開発者も簡単で便利に使用できるというメリットがあります。詳しくは下記に貼った公式文書を参考にしてください。
+
+- しかし、`Keychain`は実装の方法が複雑であり、ある程度理解度が必要であると感じ、今回は採用しないことにしました。
+
+- また、今回の実装はあくまでも自分のアカウントで任意のリポジトリに星付け・解除機能の実現有無だけを確認する目的であるため、採択しないことにしました。
+
+- 今後、Keychainについて勉強したあと、リファクタリングにチャレンジする予定です。
+
+> [公式ドキュメントに行く (Keychainについて) ](https://developer.apple.com/documentation/security/keychain_services)
+
+#### gitignore を用いる方法
+```plaintext
+# gitignore ファイルに無視したいファイルまでのパスを全部記載
+# 以下は例
+CodeAssignment_MVVM_Combine/Sources/Token.swift
+```
+
+- 今回の実装の目的は、自分のアカウントで任意のリポジトリに星付け・解除することができるかを確かめることです。そのため、トークンを記載したファイルを作成し、GitHubで公開する際には gitignore を使用してそのファイルをプロジェクトから除外する方法を採用しました。
+
+- 上記のように、gitignore ファイルにトークンを記載したファイルまでのパスをすべて記録することで対応は完了です。ただし、gitignore ファイルの位置によってパスが異なるため、注意が必要です。
 
 &nbsp;
 
@@ -499,7 +553,7 @@ loadingView.isLoading = true
 - 今回のアプリを実装するまでは、無意識でAPIを叩いて返ってくるレスポンスを`APIClient`で処理してViewControllerで直接渡すようなコードを書いていた。これはレスポンスの形に依存しちゃうのでは？と考えていてこの依存度をどう分離するかを悩んていたものの、依存度を分離せずに普段から慣れていたコードを書いた。すると、レビュアーからまさにここの部分を指摘され、API叩きから得られるレスポンス用のデータモデルと画面に表示する用のデータモデルを分岐することで依存度を減らせることを教わった。
 
 `解決`
-- データモデルをAPIを叩いてから取得するリポジトリのデータを`RepositoriesResponse`に、それらを画面に表示するためのモデルを`Repositories`に分け、Codableを継承するstructの中に不要なCodingKeysロジックを消す。また、テストを容易にするため、ビューとして表示するためのモデルを容易した。
+- データモデルをAPIを叩いてから取得するリポジトリのデータを`RepositoriesResponse`に、それらを画面に表示するためのモデルを`Repositories`に分け、Codableを継承するstructの中に不要なCodingKeysロジックを消す。また、テストを容易にするため、ビューとして表示するためのモデルを容易した。<br>
 
 レスポンスの形に依存しちゃうので、アンチパータンなので、Viewに表示するためのレスポンスの結合モデルを生成して、適用しました
 
