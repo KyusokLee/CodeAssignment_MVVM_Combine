@@ -47,6 +47,8 @@ https://github.com/KyusokLee/CodeAssignment_MVVM_Combine/assets/89962765/e9845d6
 * [技術的チャレンジ](#-技術的チャレンジ)
     * [MVVM](#MVVM)
     * [Combine](#Combine)
+    * [UICollectionViewDiffableDataSource](#UICollectionViewDiffableDataSource)
+    * [UICollectionViewCompositionalLayout](#UICollectionViewCompositionalLayout)
 * [実装時に意識したこと](#-実装時に意識したこと)
     * [Extension活用](#Extension活用) 
     * [AutoLayout](#AutoLayout)
@@ -59,8 +61,6 @@ https://github.com/KyusokLee/CodeAssignment_MVVM_Combine/assets/89962765/e9845d6
 * [学び](#-学び)
     * [画面表示用のレスポンスの結合モデルの作成](#画面表示用のレスポンスの結合モデルの作成)
 * [Trouble Shooting](#trouble-Shooting)
-    * [CompositionalLayout](#CompositionalLayout)
-    * [NSDiffableDatasourceSnapshot](#NSDiffableDatasourceSnapshot)
 
 ## 🗂 ディレクトリ構成
 
@@ -180,6 +180,16 @@ Appleの基本APIである`Combine`を利用してリアクティブプログラ
 
 &nbsp;
 
+### UICollectionViewDiffableDataSource
+
+
+&nbsp;
+
+### UICollectionViewCompositionalLayout
+
+
+&nbsp;
+
 ## 🎯 実装時に意識したこと
 
 ### Extension活用
@@ -242,11 +252,11 @@ extension HomeViewController {
 
 本アプリでは `SnapKit`を用いて AutoLayoutの設定をしました。今回、コードベースで画面のUIを設定するのが技術的な制限として設けられたので、`Storyboard`なしで開発を進めました。
 `SnapKit` を利用した経緯は過去の経験から以下のことを感じたからです。
-  - > "画面の数が多くて複雑になって、Storyboard の数が増えている.. Storybard自体も重くなってファイルを開くたびにXcodeが落ちちゃう..."
-  - > "Storyboardって使わなくていいよね？"
-  - > "Storyboardなしでプロパティの constraint をコードで実装してみよう！"
-  - > "あれ？やってみたら、constraint を追加するコードも長くなちゃったな.."
-  - > "SnapKit 使ってみたら、便利..!"
+  > "画面の数が多くて複雑になって、Storyboard の数が増えている.. Storybard自体も重くなってファイルを開くたびにXcodeが落ちちゃう..."<br>
+  > "Storyboardって使わなくていいよね？"<br>
+  > "Storyboardなしでプロパティの constraint をコードで実装してみよう！"<br>
+  > "あれ？やってみたら、constraint を追加するコードも長くなちゃったな.."<br>
+  > "SnapKit 使ってみたら、便利..!"<br>
 
 なぜ、`SnapKit` を使って便利だと思ったかについては以下のコードを参考にしながら、説明します。
 
@@ -554,23 +564,28 @@ CodeAssignment_MVVM_Combine/Sources/Token.swift
 ## 📚 学び
 
 ### 画面表示用のレスポンスの結合モデルの作成
+```swift
+func loadTokenFromProcessInfo() -> String? {
+    return ProcessInfo.processInfo.environment["PERSONAL_ACCESS_TOKEN"]
+}
 
-`背景`
-- 今回のアプリを実装するまでは、無意識でAPIを叩いて返ってくるレスポンスを`APIClient`で処理してViewControllerで直接渡すようなコードを書いていた。これはレスポンスの形に依存しちゃうのでは？と考えていてこの依存度をどう分離するかを悩んていたものの、依存度を分離せずに普段から慣れていたコードを書いた。すると、レビュアーからまさにここの部分を指摘され、API叩きから得られるレスポンス用のデータモデルと画面に表示する用のデータモデルを分岐することで依存度を減らせることを教わった。
+// 使い方
+if let token = loadTokenFromProcessInfo() {
+    print("Loaded token: \(token)")
+} else {
+    print("Token not found")
+}
+```
 
-`解決`
-- データモデルをAPIを叩いてから取得するリポジトリのデータを`RepositoriesResponse`に、それらを画面に表示するためのモデルを`Repositories`に分け、Codableを継承するstructの中に不要なCodingKeysロジックを消す。また、テストを容易にするため、ビューとして表示するためのモデルを容易した。<br>
+`背景`<br>
+- 今回のアプリを実装するまでは、無意識でAPIを叩いて返ってくるレスポンスを`APIClient`で処理してViewControllerで直接渡すようなコードを書いていた。これはレスポンスの形に依存しちゃうのでは？と考えていてこの依存度をどう分離するかを悩んていたものの、依存度を分離せずに普段から慣れていたコードを書きました。<br>
+- すると、レビュアーの方からまさにここの部分を指摘され、API叩きから得られるレスポンス用のデータモデルと画面に表示する用のデータモデルを分岐することで依存度を減らせることを教わりました。
 
-レスポンスの形に依存しちゃうので、アンチパータンなので、Viewに表示するためのレスポンスの結合モデルを生成して、適用しました
+`解決`<br>
+- レスポンスの形式に依存することはアンチパターンであると考え、ビューに表示するためのモデルを生成して適用しました。<br>
+- データモデルをAPIから取得するリポジトリのデータ用の `RepositoriesResponse` と、それらを画面に表示するための `Repositories` に分けました。これにより、`Codable` を継承する `struct` 内の不要な `CodingKeys` ロジックを排除することができます。<br>
+- また、ビュー表示用のモデルを用意して関心事の分離をすることで、テストも容易になります。例えば、API処理のテストを行うときは `RepositoriesResponse`を、 UIのテストを行うときは `Repositories`のみをテストすればいいので、コード作成の効率性も上がります。
 
 &nbsp;
 
 ## 🔥 Trouble Shooting
-
-### CompositionalLayout
-
-&nbsp;
-
-### NSDiffableDatasourceSnapshot
-
-&nbsp;
