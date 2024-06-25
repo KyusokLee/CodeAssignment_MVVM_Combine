@@ -201,12 +201,6 @@ extension HomeViewController: UISearchBarDelegate {
     /// Return(検索)キーをタップしたときの処理
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let searchWord = searchBar.text else { return }
-        // Loading View表示
-        loadingView.isLoading = true
-        // readyViewのisHidden処理
-        if readyView.isBeforeSearch {
-            readyView.isBeforeSearch = false
-        }
         // Returnキーを押して ViewModelで定義したsearch logicを実行
         viewModel.search(queryString: searchWord)
     }

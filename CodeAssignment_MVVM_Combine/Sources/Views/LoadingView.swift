@@ -18,7 +18,6 @@ final class LoadingView: UIView {
     private lazy var loadingIndicatorView: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(style: .large)
         indicator.color = .systemGray
-        indicator.hidesWhenStopped = true
         return indicator
     }()
     
@@ -33,8 +32,8 @@ final class LoadingView: UIView {
     
     var isLoading = false {
         didSet {
-            self.isHidden = !self.isLoading
-            self.isLoading ? loadingIndicatorView.startAnimating() : loadingIndicatorView.stopAnimating()
+            isHidden = !isLoading
+            isLoading ? loadingIndicatorView.startAnimating() : loadingIndicatorView.stopAnimating()
         }
     }
     
