@@ -170,17 +170,159 @@ CodeAssignment_MVVM_Combine
 ## 💪🏻 技術的チャレンジ
 
 ### MVVM
-これまでの開発はほぼアーキテクチャ未導入かMVPアーキテクチャを用いて開発してましたが、リアクティブプログラミングの理解のための座学ということで、今回の開発でMVVMアーキテクチャを導入することにしました。<br>
+これまでの開発はほぼアーキテクチャ未導入かMVPアーキテクチャを用いて開発してましたが、リアクティブプログラミングの理解のための座学ということで、今回の開発でMVVMアーキテクチャを導入することにしました。これをきっかけにMVVM について取り上げてみたいと思います。理解した内容を以下に記載しました。<br>
+
 MVVMアーキテクチャの特徴をまとめると、`ViewController`と`View`は画面を描く役割だけに集中させ、画面上で必要なデータ管理とロジックは`ViewModel`で進められるようにし、関心事を分離することです。
 
-&nbsp;
-
-<img width="794" alt="スクリーンショット 2024-06-24 20 18 58" src="https://github.com/KyusokLee/CodeAssignment_MVVM_Combine/assets/89962765/9a1161ba-912a-4790-8d4e-185592b24290">
+<p align="center">
+   <img width="840" alt="スクリーンショット 2024-06-24 20 18 58" src="https://github.com/KyusokLee/CodeAssignment_MVVM_Combine/assets/89962765/9a1161ba-912a-4790-8d4e-185592b24290">
+</p>
 
 MVVM は Model-View-ViewModel の略称であり、ソフトウェア開発で使われるアーキテクチャパターンの一つを指します。MVVMはアプリケーションを上記のように３つのコンポーネントに分離して管理し、各コンポーネントが特定の役割を果たします。
 
+&nbsp;
 
+#### `Model`
+- アプリケーションのデータとビジネスロジックを含む
+- データベース、ネットワークリクエスト、ローカルストレージなどと相互作用してデータを取得・更新
+- アプリケーションの状態とデータを表現し、データの変更を検出して通知を行うことが可能
 
+本アプリではAPIリクエストロジックを処理する `APIClient`や そのリクエスト時に得られるリポジトリのデータモデル `RepositoriesResponse` などが当てはまります。以下は `RepositoriesResponse` のコードです。
+
+```swift
+struct RepositoriesResponse: Codable {
+    /// queryに当てはまる結果の数
+    let totalCount: Int
+    /// リポジトリの詳細データが入っている配列形
+    let items: [RepositoryResponse]
+    
+    struct RepositoryResponse: Codable {
+        var owner: RepositoryUserResponse
+        var name: String
+        var description: String?
+        var language: String?
+        var stargazersCount: Int
+        var forksCount: Int
+        var watchersCount: Int
+        var openIssuesCount: Int
+
+        struct RepositoryUserResponse: Codable {
+            var login: String
+            var avatarUrl: String
+        }
+    }
+}
+```
+
+&nbsp;
+
+#### `View`
+- いやゆるUIを指す
+- ユーザがアプリケーションと相互作用できる画面を構成し、ユーザの入力イベントを受け取る
+- ユーザにデータを表示し、ユーザの入力イベントを `ViewModel`に伝達
+- `UIKit`では `UIViewController`も `View` に当てはまる
+
+本アプリではリポジトリを検索してその結果を一覧リストで表示する `HomeViewController` と特定のリポジトリの詳細情報が見れる `DetailViewController`がこれに当てはまります。<br>
+以下は `HomeViewController` のコードであり、`ViewModel` とのリアクティブなデータ相互作用を可能にするため、`bind` メソッドでデータバインディング処理をします。
+
+```swift
+// MARK: - Life Cycle & Variables
+class HomeViewController: UIViewController {
+
+    private let viewModel = HomeViewModel()
+    private var cancellables = Set<AnyCancellable>()
+    private var dataSource: UICollectionViewDiffableDataSource<Section, Repositories.Repository>!
+    private lazy var repositoryCollectionView: UICollectionView = {
+        var config = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
+        let layout = UICollectionViewCompositionalLayout.list(using: config)
+
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.delegate = self
+        collectionView.backgroundColor = .secondarySystemBackground
+        collectionView.contentInsetAdjustmentBehavior = .always
+        return collectionView
+    }()
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        bind()
+    }
+}
+
+// MARK: - Functions & Logics
+extension HomeViewController {
+    
+    /// ViewModel と ViewController の間のデータ相互作用のため、bind処理
+    private func bind() {
+        viewModel.repositoriesSubject
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] repositories in
+                guard let self, let repositories else { return }
+                self.updateSnapshot(repositories: repositories.items)
+            }
+            .store(in: &cancellables)
+        
+    }
+
+    // 他のコードは省略
+}
+
+// MARK: - UISearchBarDelegate
+extension HomeViewController: UISearchBarDelegate {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        guard let searchWord = searchBar.text else { return }
+        // Returnキーを押して ViewModelで定義したsearch logicを実行
+        viewModel.search(queryString: searchWord)
+    }
+}
+
+// 他のコードは省略
+```
+
+&nbsp;
+
+#### `ViewModel`
+- `View` と `Model`の間の中間レイヤーの役割を果たす
+- `Model` からデータを取得して、`View` が使いやすい形に加工・フォーマット
+- UIに関連するロジックを処理し、`View` にデータを提供
+- `View` と完全に分離されており、`View` の `Life Cycle`とは独立して動作
+- 主にユーザの入力を処理し、データを常に監視（Observe）して更新事項を `View` に通知
+
+以下のコードは `HomeViewController` で使用するビューモデル `HomeViewModel` のコードの一部です。<br>
+ここでモデルである `APIClient` のインスタンスを用いて GitHub のリポジトリを検索し、その結果をビューである `HomeViewController`に渡す役割を果たします。<br>
+このビューモデルは、モデル（データ取得と加工）とビュー（データの表示）の間の中間層として機能し、データの取得と加工、ビューへのデータ提供を行います。<br>
+`CurrentValueSubject` や `send`メソッドに関しては後述の `Combine` の箇所で説明します。
+
+```swift
+final class HomeViewModel {
+    private let apiClient = APIClient()
+    var repositoriesSubject = CurrentValueSubject<Repositories?, Never>(nil)
+    var repositoriesPublisher: AnyPublisher<Repositories?, Never> {
+        return repositoriesSubject.eraseToAnyPublisher()
+    }
+    
+    /// GET リクエストを送信し、repositoryを持ってくるメソッド
+    func search(queryString searchWord: String) {
+        let trimmedQuery = searchWord.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedQuery.isEmpty else { return }
+
+        let requestProtocol = GitHubSearchRepositoriesRequest(searchQueryWord: trimmedQuery)
+        apiClient.request(requestProtocol, type: GitHubAPIType.searchRepositories) { result in
+            switch result {
+            case let .success(repositories):
+                // model: API側から持ってくるRepositories
+                guard let repositories else { return }
+                // VCに渡す用のinstance
+                let repositoriesView = Repositories(repositories: repositories)
+                // subjectを通してModelを送る
+                self.repositoriesSubject.send(repositoriesView)
+            case let .failure(error):
+                print(error.localizedDescription)
+            }
+        }
+    }
+}
+```
 
 
 &nbsp;
