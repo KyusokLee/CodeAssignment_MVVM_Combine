@@ -11,13 +11,19 @@
 
 https://github.com/KyusokLee/CodeAssignment_MVVM_Combine/assets/89962765/c45bb097-48d4-4c5b-9c4f-1bcb6915754a
 
+# 
+
 > リポジトリ詳細画面
 
 https://github.com/KyusokLee/CodeAssignment_MVVM_Combine/assets/89962765/0a22c318-116b-48cf-a554-91cd18ca2285
 
+# 
+
 > リポジトリに星付け・解除
 
 https://github.com/KyusokLee/CodeAssignment_MVVM_Combine/assets/89962765/f2886f49-ecfe-4049-b3e4-9968a78318ce
+
+# 
 
 > 入力ワード切り替え
 
@@ -41,6 +47,8 @@ https://github.com/KyusokLee/CodeAssignment_MVVM_Combine/assets/89962765/e9845d6
 * [技術的チャレンジ](#-技術的チャレンジ)
     * [MVVM](#MVVM)
     * [Combine](#Combine)
+    * [UICollectionViewDiffableDataSource](#UICollectionViewDiffableDataSource)
+    * [UICollectionViewCompositionalLayout](#UICollectionViewCompositionalLayout)
 * [実装時に意識したこと](#-実装時に意識したこと)
     * [Extension活用](#Extension活用) 
     * [AutoLayout](#AutoLayout)
@@ -50,12 +58,9 @@ https://github.com/KyusokLee/CodeAssignment_MVVM_Combine/assets/89962765/e9845d6
     * [DRY原則](#DRY原則)
 * [工夫点](#-工夫点)
     * [Personal Access Token の管理方法](#Personal-Access-Token-の管理方法)
-    * [UI/UX 設計](#UI/UX-設計)
 * [学び](#-学び)
     * [画面表示用のレスポンスの結合モデルの作成](#画面表示用のレスポンスの結合モデルの作成)
 * [Trouble Shooting](#trouble-Shooting)
-    * [CompositionalLayout](#CompositionalLayout)
-    * [NSDiffableDatasourceSnapshot](#NSDiffableDatasourceSnapshot)
 
 ## 🗂 ディレクトリ構成
 
@@ -165,13 +170,34 @@ CodeAssignment_MVVM_Combine
 ## 💪🏻 技術的チャレンジ
 
 ### MVVM
-`ViewController`と`View`は画面を描く役割だけに集中させ、データ管理とロジックは`ViewModel`で進められるように構成しました。
+これまでの開発はほぼアーキテクチャ未導入かMVPアーキテクチャを用いて開発してましたが、リアクティブプログラミングの理解のための座学ということで、今回の開発でMVVMアーキテクチャを導入することにしました。<br>
+MVVMアーキテクチャの特徴をまとめると、`ViewController`と`View`は画面を描く役割だけに集中させ、画面上で必要なデータ管理とロジックは`ViewModel`で進められるようにし、関心事を分離することです。
+
+&nbsp;
+
+<img width="794" alt="スクリーンショット 2024-06-24 20 18 58" src="https://github.com/KyusokLee/CodeAssignment_MVVM_Combine/assets/89962765/9a1161ba-912a-4790-8d4e-185592b24290">
+
+MVVM は Model-View-ViewModel の略称であり、ソフトウェア開発で使われるアーキテクチャパターンの一つを指します。MVVMはアプリケーションを上記のように３つのコンポーネントに分離して管理し、各コンポーネントが特定の役割を果たします。
+
+
+
+
 
 &nbsp;
 
 ### Combine
 Appleの基本APIである`Combine`を利用してリアクティブプログラミングの実装にチャレンジしました。<br>
 連続したescaping closureを避け、宣言型プログラミングを通じた高い可読性とオペレーターを通じた効率的な非同期処理のためにCombineを採択しました。
+
+&nbsp;
+
+### UICollectionViewDiffableDataSource
+
+
+&nbsp;
+
+### UICollectionViewCompositionalLayout
+
 
 &nbsp;
 
@@ -237,11 +263,11 @@ extension HomeViewController {
 
 本アプリでは `SnapKit`を用いて AutoLayoutの設定をしました。今回、コードベースで画面のUIを設定するのが技術的な制限として設けられたので、`Storyboard`なしで開発を進めました。
 `SnapKit` を利用した経緯は過去の経験から以下のことを感じたからです。
-  - > "画面の数が多くて複雑になって、Storyboard の数が増えている.. Storybard自体も重くなってファイルを開くたびにXcodeが落ちちゃう..."
-  - > "Storyboardって使わなくていいよね？"
-  - > "Storyboardなしでプロパティの constraint をコードで実装してみよう！"
-  - > "あれ？やってみたら、constraint を追加するコードも長くなちゃったな.."
-  - > "SnapKit 使ってみたら、便利..!"
+  > "画面の数が多くて複雑になって、Storyboard の数が増えている.. Storybard自体も重くなってファイルを開くたびにXcodeが落ちちゃう..."<br>
+  > "Storyboardって使わなくていいよね？"<br>
+  > "Storyboardなしでプロパティの constraint をコードで実装してみよう！"<br>
+  > "あれ？やってみたら、constraint を追加するコードも長くなちゃったな.."<br>
+  > "SnapKit 使ってみたら、便利..!"<br>
 
 なぜ、`SnapKit` を使って便利だと思ったかについては以下のコードを参考にしながら、説明します。
 
@@ -476,34 +502,101 @@ loadingView.isLoading = true
 ## 🧐 工夫点
 
 ### Personal Access Token の管理方法
+星付け・解除の機能を使うにあたって、自分自身のGitHubアカウントの認証が必要だったため、アクセストークンをどのように使うかを悩みました。<br>
+本アプリの認証機能の実装において、下記の4つの方法を工夫しました。
 
-### UI/UX 設計
+#### UserDefaults
+```swift
+func getAccessToken() -> String? {
+    UserDefaults.standard.string(forKey: "accessToken")
+}
 
-> [ホーム画面UIの参考資料URL]() <br>
+func saveAccessToken(_ accessToken: String) {
+    UserDefaults.standard.set(accessToken, forKey: "accessToken")
+}
+```
 
+- 既存の個人開発では簡単な環境設定などの管理は`UserDefaults`を用いて実装しました。コードの書き方も上記のようにとても簡単なため、よく使っていました。
+
+- しかし、`UserDefaults`上のデータはproperty list （.plistファイル）に保存されるため、特定のツールなどを使用すると、`UserDefaults` にアクセスできるようになり、データの確認・修正が可能になるという脆弱性があります。そのため、トークンなどの機密情報の保存には適していないらしいです。
+
+- 上記の理由から、`UserDefaults`を用いた方法は採用しませんでした。
+
+#### ProcessInfo を用いる方法
+```swift
+func loadTokenFromProcessInfo() -> String? {
+    return ProcessInfo.processInfo.environment["PERSONAL_ACCESS_TOKEN"]
+}
+
+// 使い方
+if let token = loadTokenFromProcessInfo() {
+    print("Loaded token: \(token)")
+} else {
+    print("Token not found")
+}
+```
+
+- `ProcessInfo`を用いた方法は、Xcodeの Scheme設定の修正を通して実装可能になります。Xcode上の環境変数として保存して使えばいいので、コードの書き方が簡単です。
+
+- しかし、Xcode上でビルドしない限り、設定したトークンが正常に反映されないので、トークンの保存方法としては不適合だと判断しました。そのため、この方法も採用しませんでした。
+
+#### Keychain を用いる方法
+- `Keychain` を使用すると、ユーザのパスワードに限らず、クレジットカード情報、あるいは短いメモなどもユーザが暗号化したいものであれば、`Keychain` データベースに暗号化して保存することができます。
+
+- Appleは `Keychain Services API`を通して、主に以下のことを提供しています。
+  1. 長くて難しいパスワードなどの機密情報を作っても私が代わりに覚えてあげます！
+  2. パスワードの奪取が心配ですか？こっちの方で暗号化して持っているので、心配しないで！
+ 
+- つまり、この `Keychain`の実装方法を用いて、ユーザは簡単で便利にパスワードやトークンなどの機密情報を管理することができます。
+
+- また、追加でAPIで自動的に暗号化が必要なものに対する処理をしてくれるので、開発者も簡単で便利に使用できるというメリットがあります。詳しくは下記に貼った公式文書を参考にしてください。
+
+- しかし、`Keychain`は実装の方法が複雑であり、ある程度理解度が必要であると感じ、今回は採用しないことにしました。
+
+- また、今回の実装はあくまでも自分のアカウントで任意のリポジトリに星付け・解除機能の実現有無だけを確認する目的であるため、採択しないことにしました。
+
+- 今後、Keychainについて勉強したあと、リファクタリングにチャレンジする予定です。
+
+> [公式ドキュメントに行く (Keychainについて) ](https://developer.apple.com/documentation/security/keychain_services)
+
+#### gitignore を用いる方法
+```plaintext
+# gitignore ファイルに無視したいファイルまでのパスを全部記載
+# 以下は例
+CodeAssignment_MVVM_Combine/Sources/Token.swift
+```
+
+- 今回の実装の目的は、自分のアカウントで任意のリポジトリに星付け・解除することができるかを確かめることです。そのため、トークンを記載したファイルを作成し、GitHubで公開する際には gitignore を使用してそのファイルをプロジェクトから除外する方法を採用しました。
+
+- 上記のように、gitignore ファイルにトークンを記載したファイルまでのパスをすべて記録することで対応は完了です。ただし、gitignore ファイルの位置によってパスが異なるため、注意が必要です。
 
 &nbsp;
 
 ## 📚 学び
 
 ### 画面表示用のレスポンスの結合モデルの作成
+```swift
+func loadTokenFromProcessInfo() -> String? {
+    return ProcessInfo.processInfo.environment["PERSONAL_ACCESS_TOKEN"]
+}
 
-`背景`
-- 今回のアプリを実装するまでは、無意識でAPIを叩いて返ってくるレスポンスを`APIClient`で処理してViewControllerで直接渡すようなコードを書いていた。これはレスポンスの形に依存しちゃうのでは？と考えていてこの依存度をどう分離するかを悩んていたものの、依存度を分離せずに普段から慣れていたコードを書いた。すると、レビュアーからまさにここの部分を指摘され、API叩きから得られるレスポンス用のデータモデルと画面に表示する用のデータモデルを分岐することで依存度を減らせることを教わった。
+// 使い方
+if let token = loadTokenFromProcessInfo() {
+    print("Loaded token: \(token)")
+} else {
+    print("Token not found")
+}
+```
 
-`解決`
-- データモデルをAPIを叩いてから取得するリポジトリのデータを`RepositoriesResponse`に、それらを画面に表示するためのモデルを`Repositories`に分け、Codableを継承するstructの中に不要なCodingKeysロジックを消す。また、テストを容易にするため、ビューとして表示するためのモデルを容易した。
+`背景`<br>
+- 今回のアプリを実装するまでは、無意識でAPIを叩いて返ってくるレスポンスを`APIClient`で処理してViewControllerで直接渡すようなコードを書いていた。これはレスポンスの形に依存しちゃうのでは？と考えていてこの依存度をどう分離するかを悩んていたものの、依存度を分離せずに普段から慣れていたコードを書きました。<br>
+- すると、レビュアーの方からまさにここの部分を指摘され、API叩きから得られるレスポンス用のデータモデルと画面に表示する用のデータモデルを分岐することで依存度を減らせることを教わりました。
 
-レスポンスの形に依存しちゃうので、アンチパータンなので、Viewに表示するためのレスポンスの結合モデルを生成して、適用しました
+`解決`<br>
+- レスポンスの形式に依存することはアンチパターンであると考え、ビューに表示するためのモデルを生成して適用しました。<br>
+- データモデルをAPIから取得するリポジトリのデータ用の `RepositoriesResponse` と、それらを画面に表示するための `Repositories` に分けました。これにより、`Codable` を継承する `struct` 内の不要な `CodingKeys` ロジックを排除することができます。<br>
+- また、ビュー表示用のモデルを用意して関心事の分離をすることで、テストも容易になります。例えば、API処理のテストを行うときは `RepositoriesResponse`を、 UIのテストを行うときは `Repositories`のみをテストすればいいので、コード作成の効率性も上がります。
 
 &nbsp;
 
 ## 🔥 Trouble Shooting
-
-### CompositionalLayout
-
-&nbsp;
-
-### NSDiffableDatasourceSnapshot
-
-&nbsp;
