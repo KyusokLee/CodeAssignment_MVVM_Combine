@@ -37,39 +37,17 @@ class HomeViewController: UIViewController {
     - enumタイプにassociated typeがなければ、自動的にHashableを遵守することになる
     - Hashable プロトコルの採択が必須
      */
-    private var datasource: UICollectionViewDiffableDataSource<Section, Repositories.Repository>!
-    /** DataSourceに表示するSectionとItemの現在のUIの状態
-    - appendSections: snapShotを適用するSectionを追加
-    - apply(_ :animatingDifferences:) : 表示されるデータを完全にリセットするのではなく、incremental updates(増分更新)を実行してDataSourceにSnapshotを適用する
-     */
-    private var snapshot: NSDiffableDataSourceSnapshot<Section, Repositories.Repository>!
-    private let layout: UICollectionViewLayout = {
-        var config = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
-        config.headerMode = .none
-        config.footerMode = .none
-        return UICollectionViewCompositionalLayout.list(using: config)
-    }()
-    
+    private var dataSource: UICollectionViewDiffableDataSource<Section, Repositories.Repository>!
     private lazy var repositoryCollectionView: UICollectionView = {
+        var config = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
+        let layout = UICollectionViewCompositionalLayout.list(using: config)
+
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.delegate = self
         collectionView.backgroundColor = .secondarySystemBackground
         collectionView.contentInsetAdjustmentBehavior = .always
-        
         return collectionView
     }()
-    
-    /** RepositoryCollectionViewCellをCellRegistrationで設定
-    - <CellのType(クラス名とか), Itemで表示するもの>
-     */
-    private let repositoryCell = UICollectionView.CellRegistration<RepositoryCollectionViewCell, Repositories.Repository>() { cell, indexPath, repository in
-        cell.backgroundColor = .white
-        cell.configure(with: repository)
-        // cellにUICellAccessory（accessories）を追加
-        cell.accessories = [
-            .disclosureIndicator()
-        ]
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -98,17 +76,28 @@ extension HomeViewController {
     
     /// CollectionViewのDatasource 設定
     private func setupDataSource() {
-        // DiffableDataSourceの初期化
-        datasource = UICollectionViewDiffableDataSource<Section, Repositories.Repository>(collectionView: repositoryCollectionView) { [weak self] collectionView, indexPath, repository in
-            // weak selfを用いて、メモリリークを防ぐ
-            // Closure内でselfを弱い参照でキャプチャすることで、HomeViewControllerインスタンスが解除されたとき、Closureが自動でnilに設定されるので、メモリの解除ができる
-            guard let self else { return UICollectionViewCell() }
-            return collectionView.dequeueConfiguredReusableCell(using: self.repositoryCell, for: indexPath, item: repository)
+        /// RepositoryCollectionViewCellをCellRegistrationで設定
+        let repositoryCell = UICollectionView.CellRegistration<RepositoryCollectionViewCell, Repositories.Repository>() { cell, indexPath, repository in
+            // <CellのType(クラス名とか), Itemで表示するもの>
+            cell.backgroundColor = .white
+            cell.configure(with: repository)
+            // cellにUICellAccessory（accessories）を追加
+            cell.accessories = [
+                .disclosureIndicator()
+            ]
         }
-        snapshot = NSDiffableDataSourceSnapshot<Section, Repositories.Repository>()
+
+        // DiffableDataSourceの初期化
+        dataSource = UICollectionViewDiffableDataSource<Section, Repositories.Repository>(collectionView: repositoryCollectionView) { collectionView, indexPath, repository in
+            return collectionView.dequeueConfiguredReusableCell(using: repositoryCell, for: indexPath, item: repository)
+        }
+        /// DataSourceに表示するSectionとItemの現在のUIの状態
+        var snapshot = NSDiffableDataSourceSnapshot<Section, Repositories.Repository>()
         // Snapshotの初期化
+        // appendSections: snapShotを適用するSectionを追加
+        // apply(_ :animatingDifferences:) : 表示されるデータを完全にリセットするのではなく、incremental updates(増分更新)を実行してDataSourceにSnapshotを適用する
         snapshot.appendSections([.main])
-        datasource.apply(snapshot, animatingDifferences: true)
+        dataSource.apply(snapshot, animatingDifferences: true)
     }
     
     /// NavigationControllerのセットアップ
@@ -145,10 +134,8 @@ extension HomeViewController {
         viewModel.repositoriesSubject
             .receive(on: DispatchQueue.main)
             .sink { [weak self] repositories in
-                guard let self else { return }
-                guard let repositories else { return }
+                guard let self, let repositories else { return }
                 self.updateSnapshot(repositories: repositories.items)
-                self.loadingView.isLoading = false
             }
             .store(in: &cancellables)
         
@@ -159,23 +146,32 @@ extension HomeViewController {
                 self.loadingView.isLoading = isLoading
             }
             .store(in: &cancellables)
+
+        viewModel.readyViewSubject
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isPresented in
+                guard let self else { return }
+                // readyViewのisHidden処理
+                self.readyView.isHidden = !isPresented
+            }
+            .store(in: &cancellables)
     }
     
     private func updateSnapshot(repositories: [Repositories.Repository]) {
         /// DataSourceに適用した現在のSnapShotを取得
-        var snapshot = datasource.snapshot()
+        var snapshot = dataSource.snapshot()
         // reloadItemsは既存セルの特定のCellだけをReloadするので、deleteしたあとに改めてappendする形でSnapshot適用
         snapshot.deleteAllItems()
         snapshot.appendSections([.main])
         snapshot.appendItems(repositories, toSection: .main)
-        datasource.apply(snapshot, animatingDifferences: true)
+        dataSource.apply(snapshot, animatingDifferences: true)
     }
     
     /// カスタムで作ったViewを全部追加する
     private func setAddSubViews() {
         view.addSubview(repositoryCollectionView)
-        view.addSubview(loadingView)
         view.addSubview(readyView)
+        view.addSubview(loadingView)
     }
     
     /// Layoutの制約を調整する
@@ -183,15 +179,12 @@ extension HomeViewController {
         repositoryCollectionView.snp.makeConstraints { constraint in
             constraint.edges.equalToSuperview()
         }
-            
-        loadingView.snp.makeConstraints { constraint in
-            constraint.top.equalTo(view.safeAreaLayoutGuide)
-            constraint.leading.trailing.bottom.equalToSuperview()
-        }
-        
-        readyView.snp.makeConstraints { constraint in
-            constraint.top.equalTo(view.safeAreaLayoutGuide)
-            constraint.leading.trailing.bottom.equalToSuperview()
+
+        [loadingView, readyView].forEach {
+            $0.snp.makeConstraints { constraint in
+                constraint.top.equalTo(view.safeAreaLayoutGuide)
+                constraint.leading.trailing.bottom.equalToSuperview()
+            }
         }
     }
 }

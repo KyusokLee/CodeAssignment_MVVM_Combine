@@ -25,7 +25,7 @@ final class ReadySearchView: UIView {
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 20, weight: .semibold)
-        label.text = "GitHubのリポジトリが検索できる"
+        label.text = "GitHubのリポジトリが検索できます"
         label.textAlignment = .center
         label.textColor = .black
         return label
@@ -39,13 +39,7 @@ final class ReadySearchView: UIView {
         label.textColor = .systemGray
         return label
     }()
-    
-    var isBeforeSearch = true {
-        didSet {
-            self.isHidden = !self.isBeforeSearch
-        }
-    }
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -78,7 +72,7 @@ extension ReadySearchView {
         imageView.snp.makeConstraints { constraint in
             constraint.height.equalTo(120)
             constraint.width.equalTo(120)
-            constraint.top.equalTo(backgroundView.snp.top).offset(210)
+            constraint.centerY.equalTo(backgroundView.snp.centerY).offset(-100)
             constraint.centerX.equalTo(backgroundView.snp.centerX)
         }
         
