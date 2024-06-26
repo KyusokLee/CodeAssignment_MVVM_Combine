@@ -339,28 +339,108 @@ final class HomeViewModel {
 &nbsp;
 
 #### Publsiher
+　`Publisher` は時間の経過に応じて、値と完了信号を発行する役割を果たします。この完了信号は、正常に値の発行を完了したか、エラーが起きて失敗したかを表す信号です。<br>
 
-`PassthroughSubject`
+```swift
+/// 
+public protocol Publisher<Output, Failure> {
+    associatedtype Output
+    associatedtype Failure : Error
+
+    func receive<S>(subscriber: S) where S : Subscriber, Self.Failure == S.Failure, Self.Output == S.Input
+}
+```
+　 `Publisher` は必ず、２つの `Generic Type` を持つ必要があります。上記のコードでわかるように、`OutPut` と `Failure` のタイプを定義する必要があります。意味は下記のようになります。
+  - `Output` : `Publisher` が放出する値の種類
+  - `Failure` : `Publisher` が放出するかもしれないエラーの種類
+　   - `Never` : Error が発生することがないのを明示するタイプ
+
+　後述しますが、`Publisher` から発行されるデータを受け取る `Subscriber` の `Input` & `Failure` も当然に `Publisher` の `Output` & `Failure` タイプと一致しなければならないです。<br>
+　この `Publisher` は主に以下のような種類があります。
+  - `Just`
+  - 'Future'
+  - `Subject`
+
+本アプリでは `Subject` を用いた開発を進めたため、この文書では `Subject` について説明します。
+
+`Subject`
+　`Subject` は、`Publisher` プロトコルを採択したプロトコルです。つまり、`Publisher` の一種のオブジェクトです。<br>
+  `Publisher` が値を保持する主体だったとすれば、この値に他の値を注入できるのが `Subject` であると理解していただければいいです。<br>
+  `Subject` は以下のように２つのクラスで実現されます。
+  - `CurrentValueSubject`
+  - `PassthroughtSubject`
+
+　後述する `send` メソッドを通して、`Publisher` から発行されたデータを購読者 `Subscriber` に送信することができます。特に、`Subject` クラスのインスタンスで主に使用されます。<br>
+　それでは、それぞれについて見ていきましょう。
 
 `CurrentValueSubject`
+- 常に最新の値を保持し、購読が開始されたときにその値を即座に送信します。
+- 初期値の設定が可能です。
+- 現在の値にアクセスしたり、値を更新することが可能です。
+- 上記の理由より、主に現在の状態を追跡するときに便利です。
 
-`@Published`
+```swift
+import Combine
 
-`eraseToAnyPublisher`
+// 0に初期値を設定
+let currentValueSubject = CurrentValueSubject<Int, Never>(0)
+// 初期値にアクセス可能
+print(currentValueSubject.value) // 0
+
+// sinkメソッドで発行されるデータを受け取る
+let subscription = currentValueSubject.sink { value in
+    print("Received value: \(value)")
+}
+
+currentValueSubject.send(1) // "Received value: 1"
+currentValueSubject.send(2) // "Received value: 2"
+print(currentValueSubject.value) // 2
+```
+
+`PassthroughSubject`
+- 値を保持せず、新しい値が発行されたときのみ`Subscriber` に送信します。
+- 過去の値にアクセスすることが不可能です。
+- 上記の理由より、イベントストリームの送信に適しています。
+
+```swift
+import Combine
+
+// 初期値を設定不可
+let passthroughSubject = PassthroughSubject<String, Never>()
+let subscription = passthroughSubject.sink { value in
+    print("Received value: \(value)")
+}
+
+// 過去の値にアクセス不可
+passthroughSubject.send("Hello") // "Received value: Hello"
+passthroughSubject.send("World") // "Received value: World"
+```
 
 &nbsp;
 
 #### Subscriber
+　値や完了信号を発行する `Publisher` が存在すれば、それらを受信して処理する存在も必然的に必要になりそうですよね。この存在を `Subscriber` といいます。<br>
+　`Subscriber` は `Publisher` を購読することで、が発行するデータ（値、完了信号）を受信し、それらを処理します。<br>
+　この `Subscriber` には主に以下のような種類があります。
+  - `subscribe`
+  - `assign`
+  - `sink`
+  - `receive`
+
+それでは、それぞれについてみていきましょう。
 
 `subscribe`
 
-`sink`
+subscribe()メソッドは明示的に実行する必要はありません。実行タイミングとしては、後ほど紹介するSubscriberのsink()メソッドなどを呼んだときに暗黙的に実行されます。
 
 `assign`
 
+`sink`
+
 `receive`
 
------
+次に `Publisher` と `Subscriber` の間の関係を管理し、非同期処理のキャンセル時に使われる `store` と `AnyCancellable` について紹介します。
+
 
 `store`
 
@@ -376,12 +456,14 @@ final class HomeViewModel {
 &nbsp;
 
 #### Operator
+　`Publisher` が発行する値を変換・操作、またはフィルタリングするメソッドです。さまざまな演算子を使用してデータストリームを処理し、希望する形に変換することができます。
+  `Operator` には `map`, `filter`, `flatMap`などが当てはまりますが、今回新しく学んだ `combineLatest` と `eraseToAnyPublisher` について紹介したいと思います。
 
-&nbsp;
+`combineLatest`
+- s
 
- 
-
-
+`eraseToAnyPublisher`
+- s
 
 &nbsp;
 
