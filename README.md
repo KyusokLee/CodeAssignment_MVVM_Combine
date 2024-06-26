@@ -363,7 +363,7 @@ public protocol Publisher<Output, Failure> {
 
 本アプリでは `Subject` を用いた開発を進めたため、この文書では `Subject` について説明します。
 
-`Subject`
+#### `Subject`
 　`Subject` は、`Publisher` プロトコルを採択したプロトコルです。つまり、`Publisher` の一種のオブジェクトです。<br>
   `Publisher` が値を保持する主体だったとすれば、この値に他の値を注入できるのが `Subject` であると理解していただければいいです。<br>
   `Subject` は以下のように２つのクラスで実現されます。
@@ -373,7 +373,7 @@ public protocol Publisher<Output, Failure> {
 　後述する `send` メソッドを通して、`Publisher` から発行されたデータを購読者 `Subscriber` に送信することができます。特に、`Subject` クラスのインスタンスで主に使用されます。<br>
 　それでは、それぞれについて見ていきましょう。
 
-`CurrentValueSubject`
+#### `CurrentValueSubject`
 - 常に最新の値を保持し、購読が開始されたときにその値を即座に送信します。
 - 初期値の設定が可能です。
 - 現在の値にアクセスしたり、値を更新することが可能です。
@@ -397,7 +397,7 @@ currentValueSubject.send(2) // "Received value: 2"
 print(currentValueSubject.value) // 2
 ```
 
-`PassthroughSubject`
+#### `PassthroughSubject`
 - 値を保持せず、新しい値が発行されたときのみ`Subscriber` に送信します。
 - 過去の値にアクセスすることが不可能です。
 - 上記の理由より、イベントストリームの送信に適しています。
@@ -429,22 +429,24 @@ passthroughSubject.send("World") // "Received value: World"
 
 それでは、それぞれについてみていきましょう。
 
-`subscribe`
+#### `subscribe`
 
 subscribe()メソッドは明示的に実行する必要はありません。実行タイミングとしては、後ほど紹介するSubscriberのsink()メソッドなどを呼んだときに暗黙的に実行されます。
 
-`assign`
+#### `assign`
 
-`sink`
+#### `sink`
 
-`receive`
+#### `receive`
+
+
 
 次に `Publisher` と `Subscriber` の間の関係を管理し、非同期処理のキャンセル時に使われる `store` と `AnyCancellable` について紹介します。
 
 
-`store`
+#### `store`
 
-`AnyCancellable`
+#### `AnyCancellable`
 
 
 ```swift
