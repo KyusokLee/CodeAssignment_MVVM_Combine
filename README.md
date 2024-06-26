@@ -428,6 +428,7 @@ passthroughSubject.send("World") // "Received value: World"
   - `receive`
 
 それでは、それぞれについてみていきましょう。
+// subscribe, sink, assign, receive のコードを書く予定
 
 #### `subscribe`
 
@@ -443,16 +444,32 @@ subscribe()メソッドは明示的に実行する必要はありません。実
 
 次に `Publisher` と `Subscriber` の間の関係を管理し、非同期処理のキャンセル時に使われる `store` と `AnyCancellable` について紹介します。
 
-
 #### `store`
+- `AnyCancellable` オブジェクトをSetに保存し、メモリ管理を支援する役割を担います。
+- `Publisher` が生成する `AnyCancellable` インスタンスをこのSetに保存することで、これらのインスタンスがすべてキャンセルされるまで `Publisher` と `Subscriber` の関係を維持します。
 
 #### `AnyCancellable`
+- `Subscriber` が `Publisher` を購読する際に返される型です。
+- これを使用して `Subscriber` が `Publisher` との購読をキャンセルできます。
 
+まとめると、`store` で `AnyCancellable` を保持しておいて、当該の変数が `deinit` されるとき、購読をキャンセルする方法になります。<br>
+`Set` で複数のSubscription（購読）を１つにまとめることができ、`Subscription` の値を保持します。
 
 ```swift
-// subscribe, sink, assign, receive のコードを書く予定
+/// ViewModel
+private let viewModel = HomeViewModel()
+private var cancellables = Set<AnyCancellable>()
 
+// repositoriesSubjectは viewModel側で定義した CurrentValueSubjectのインスタンス
+viewModel.repositoriesSubject
+   .receive(on: DispatchQueue.main)
+   .sink { [weak self] repositories in
+      guard let self, let repositories else { return }
+      self.updateSnapshot(repositories: repositories.items)
+   }
+   .store(in: &cancellables)
 
+// 他のコード省略
 ```
 
 &nbsp;
