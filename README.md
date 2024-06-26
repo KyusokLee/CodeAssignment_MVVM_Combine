@@ -170,15 +170,15 @@ CodeAssignment_MVVM_Combine
 ## 💪🏻 技術的チャレンジ
 
 ### MVVM
-これまでの開発はほぼアーキテクチャ未導入かMVPアーキテクチャを用いて開発してましたが、リアクティブプログラミングの理解のための座学ということで、今回の開発でMVVMアーキテクチャを導入することにしました。これをきっかけにMVVM について取り上げてみたいと思います。理解した内容を以下に記載しました。<br>
+　これまでの開発はほぼアーキテクチャ未導入かMVPアーキテクチャを用いて開発してましたが、リアクティブプログラミングの理解のための座学ということで、今回の開発でMVVMアーキテクチャを導入することにしました。これをきっかけにMVVM について取り上げてみたいと思います。理解した内容を以下に記載しました。<br>
 
-MVVMアーキテクチャの特徴をまとめると、`ViewController`と`View`は画面を描く役割だけに集中させ、画面上で必要なデータ管理とロジックは`ViewModel`で進められるようにし、関心事を分離することです。
+　MVVMアーキテクチャの特徴をまとめると、`ViewController`と`View`は画面を描く役割だけに集中させ、画面上で必要なデータ管理とロジックは`ViewModel`で進められるようにし、関心事を分離することです。
 
 <p align="center">
    <img width="840" alt="スクリーンショット 2024-06-24 20 18 58" src="https://github.com/KyusokLee/CodeAssignment_MVVM_Combine/assets/89962765/9a1161ba-912a-4790-8d4e-185592b24290">
 </p>
 
-MVVM は Model-View-ViewModel の略称であり、ソフトウェア開発で使われるアーキテクチャパターンの一つを指します。MVVMはアプリケーションを上記のように３つのコンポーネントに分離して管理し、各コンポーネントが特定の役割を果たします。
+　MVVM は Model-View-ViewModel の略称であり、ソフトウェア開発で使われるアーキテクチャパターンの一つを指します。MVVMはアプリケーションを上記のように３つのコンポーネントに分離して管理し、各コンポーネントが特定の役割を果たします。
 
 &nbsp;
 
@@ -187,7 +187,7 @@ MVVM は Model-View-ViewModel の略称であり、ソフトウェア開発で�
 - データベース、ネットワークリクエスト、ローカルストレージなどと相互作用してデータを取得・更新
 - アプリケーションの状態とデータを表現し、データの変更を検出して通知を行うことが可能
 
-本アプリではAPIリクエストロジックを処理する `APIClient`や そのリクエスト時に得られるリポジトリのデータモデル `RepositoriesResponse` などが当てはまります。以下は `RepositoriesResponse` のコードです。
+　本アプリではAPIリクエストロジックを処理する `APIClient`や そのリクエスト時に得られるリポジトリのデータモデル `RepositoriesResponse` などが当てはまります。以下は `RepositoriesResponse` のコードです。
 
 ```swift
 struct RepositoriesResponse: Codable {
@@ -222,8 +222,8 @@ struct RepositoriesResponse: Codable {
 - ユーザにデータを表示し、ユーザの入力イベントを `ViewModel`に伝達
 - `UIKit`では `UIViewController`も `View` に当てはまる
 
-本アプリではリポジトリを検索してその結果を一覧リストで表示する `HomeViewController` と特定のリポジトリの詳細情報が見れる `DetailViewController`がこれに当てはまります。<br>
-以下は `HomeViewController` のコードであり、`ViewModel` とのリアクティブなデータ相互作用を可能にするため、`bind` メソッドでデータバインディング処理をします。
+　本アプリではリポジトリを検索してその結果を一覧リストで表示する `HomeViewController` と特定のリポジトリの詳細情報が見れる `DetailViewController`がこれに当てはまります。<br>
+　以下は `HomeViewController` のコードであり、`ViewModel` とのリアクティブなデータ相互作用を可能にするため、`bind` メソッドでデータバインディング処理をします。
 
 ```swift
 // MARK: - Life Cycle & Variables
@@ -288,10 +288,10 @@ extension HomeViewController: UISearchBarDelegate {
 - `View` と完全に分離されており、`View` の `Life Cycle`とは独立して動作
 - 主にユーザの入力を処理し、データを常に監視（Observe）して更新事項を `View` に通知
 
-以下のコードは `HomeViewController` で使用するビューモデル `HomeViewModel` のコードの一部です。<br>
-ここでモデルである `APIClient` のインスタンスを用いて GitHub のリポジトリを検索し、その結果をビューである `HomeViewController`に渡す役割を果たします。<br>
-このビューモデルは、モデル（データ取得と加工）とビュー（データの表示）の間の中間層として機能し、データの取得と加工、ビューへのデータ提供を行います。<br>
-`CurrentValueSubject` や `send`メソッドに関しては後述の `Combine` の箇所で説明します。
+　以下のコードは `HomeViewController` で使用するビューモデル `HomeViewModel` のコードの一部です。<br>
+　ここでモデルである `APIClient` のインスタンスを用いて GitHub のリポジトリを検索し、その結果をビューである `HomeViewController`に渡す役割を果たします。<br>
+　このビューモデルは、モデル（データ取得と加工）とビュー（データの表示）の間の中間層として機能し、データの取得と加工、ビューへのデータ提供を行います。<br>
+　`CurrentValueSubject` や `send`メソッドに関しては後述の `Combine` の箇所で説明します。
 
 ```swift
 final class HomeViewModel {
@@ -328,8 +328,60 @@ final class HomeViewModel {
 &nbsp;
 
 ### Combine
-Appleの基本APIである`Combine`を利用してリアクティブプログラミングの実装にチャレンジしました。<br>
-連続したescaping closureを避け、宣言型プログラミングを通じた高い可読性とオペレーターを通じた効率的な非同期処理のためにCombineを採択しました。
+　2019年 Apple が公表した非同期フレームワーク `Combine` を利用してリアクティブプログラミングの実装にチャレンジしました。<br>
+　[Combineの公式ドキュメント](https://developer.apple.com/documentation/combine) によると、`Combine` を下記のようにまとめられます。<br>
+
+ > 時間の経過に応じて変更する値をエクスポートする `Publisher` と、それを受信する `Subscriber` を利用して時間の経過に応じた値を処理する `Swift` API
+
+　つまり、`Publisher` と `Subscriber` を利用して効率的に非同期プログラミングを処理するために登場したとと思います。`Combine` の登場前はこの非同期プログラミングの処理に `RxSwift` を使っていました。<br>
+　それでは、`Combine` の主要概念である `Publisher` と `Subscriber`、`Operator` についてみていきましょう。
+
+&nbsp;
+
+#### Publsiher
+
+`PassthroughSubject`
+
+`CurrentValueSubject`
+
+`@Published`
+
+`eraseToAnyPublisher`
+
+&nbsp;
+
+#### Subscriber
+
+`subscribe`
+
+`sink`
+
+`assign`
+
+`receive`
+
+-----
+
+`store`
+
+`AnyCancellable`
+
+
+```swift
+// subscribe, sink, assign, receive のコードを書く予定
+
+
+```
+
+&nbsp;
+
+#### Operator
+
+&nbsp;
+
+ 
+
+
 
 &nbsp;
 
