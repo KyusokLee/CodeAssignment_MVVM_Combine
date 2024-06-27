@@ -819,7 +819,13 @@ mainStackView.snp.makeConstraints {
  今回の開発において、closure 内の循環参照を防ぐことに意識し、 `weak self` を使うことにしました。
 
  ```swift
-
+viewModel.repositoriesSubject
+   .receive(on: DispatchQueue.main)
+   .sink { [weak self] repositories in
+      guard let self, let repositories else { return }
+      self.updateSnapshot(repositories: repositories.items)
+   }
+   .store(in: &cancellables)
 ```
 
 &nbsp;
