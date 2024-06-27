@@ -336,7 +336,10 @@ final class HomeViewModel {
 
 &nbsp;
 
+----------
+
 ### Combine
+
 　2019年 Apple が公表した非同期フレームワーク `Combine` を利用してリアクティブプログラミングの実装にチャレンジしました。<br>
 　[Combineの公式ドキュメント](https://developer.apple.com/documentation/combine) によると、`Combine` を下記のようにまとめられます。<br>
 
@@ -347,7 +350,7 @@ final class HomeViewModel {
 
 &nbsp;
 
-#### Publsiher
+#### 📍 `Publsiher`
 　`Publisher` は時間の経過に応じて、値と完了信号を発行する役割を果たします。この完了信号は、正常に値の発行を完了したか、エラーが起きて失敗したかを表す信号です。<br>
 
 ```swift
@@ -372,7 +375,7 @@ public protocol Publisher<Output, Failure> {
 
 本アプリでは `Subject` を用いた開発を進めたため、この文書では `Subject` について説明します。
 
-#### `Subject`
+##### `Subject`
 　`Subject` は、`Publisher` プロトコルを採択したプロトコルです。つまり、`Publisher` の一種のオブジェクトです。<br>
   `Publisher` が値を保持する主体だったとすれば、この値に他の値を注入できるのが `Subject` であると理解していただければいいです。<br>
   `Subject` は以下のように２つのクラスで実現されます。
@@ -382,7 +385,7 @@ public protocol Publisher<Output, Failure> {
 　後述する `send` メソッドを通して、`Publisher` から発行されたデータを購読者 `Subscriber` に送信することができます。特に、`Subject` クラスのインスタンスで主に使用されます。<br>
 　それでは、それぞれについて見ていきましょう。
 
-#### `CurrentValueSubject`
+##### `CurrentValueSubject`
 - 常に最新の値を保持し、購読が開始されたときにその値を即座に送信します。
 - 初期値の設定が可能です。
 - 現在の値にアクセスしたり、値を更新することが可能です。
@@ -406,7 +409,7 @@ currentValueSubject.send(2) // "Received value: 2"
 print(currentValueSubject.value) // 2
 ```
 
-#### `PassthroughSubject`
+##### `PassthroughSubject`
 - 値を保持せず、新しい値が発行されたときのみ`Subscriber` に送信します。
 - 過去の値にアクセスすることが不可能です。
 - 上記の理由より、イベントストリームの送信に適しています。
@@ -427,7 +430,11 @@ passthroughSubject.send("World") // "Received value: World"
 
 &nbsp;
 
-#### Subscriber
+-------------
+
+
+#### 📍 `Subscriber`
+
 　値や完了信号を発行する `Publisher` が存在すれば、それらを受信して処理する存在も必然的に必要になりそうですよね。この存在を `Subscriber` といいます。<br>
 　`Subscriber` は `Publisher` を購読することで、が発行するデータ（値、完了信号）を受信し、それらを処理します。<br>
 　この `Subscriber` には主に以下のような種類があります。下記のメソッドで `Publisher` と `Subscriber` をバインディング（連結）できます。
@@ -439,25 +446,25 @@ passthroughSubject.send("World") // "Received value: World"
 それでは、それぞれについてみていきましょう。
 // subscribe, sink, assign, receive のコードを書く予定
 
-#### `subscribe`
+##### `subscribe`
 
 subscribe()メソッドは明示的に実行する必要はありません。実行タイミングとしては、後ほど紹介するSubscriberのsink()メソッドなどを呼んだときに暗黙的に実行されます。
 
-#### `assign`
+##### `assign`
 
-#### `sink`
+##### `sink`
 
-#### `receive`
+##### `receive`
 
 
 
 次に `Publisher` と `Subscriber` の間の関係を管理し、非同期処理のキャンセル時に使われる `store` と `AnyCancellable` について紹介します。
 
-#### `store`
+##### `store`
 - `AnyCancellable` オブジェクトをSetに保存し、メモリ管理を支援する役割を担います。
 - `Publisher` が生成する `AnyCancellable` インスタンスをこのSetに保存することで、これらのインスタンスがすべてキャンセルされるまで `Publisher` と `Subscriber` の関係を維持します。
 
-#### `AnyCancellable`
+##### `AnyCancellable`
 - `Subscriber` が `Publisher` を購読する際に返される型です。
 - これを使用して `Subscriber` が `Publisher` との購読をキャンセルできます。
 
@@ -484,11 +491,13 @@ viewModel.repositoriesSubject
 
 &nbsp;
 
-#### Operator
+-------------
+
+#### 📍 `Operator`
 　`Publisher` が発行する値を変換・操作、またはフィルタリングするメソッドです。さまざまな演算子を使用してデータストリームを処理し、希望する形に変換することができます。
   `Operator` には `map`, `filter`, `flatMap`などが当てはまりますが、今回新しく学んだ `CombineLatest` と `eraseToAnyPublisher` について紹介したいと思います。
 
-`CombineLatest`
+##### `CombineLatest`
 - 複数の `Publisher` からの最新の値を組み合わせて新しい値を生成します。
 - 各 `Publisher` が新しい値を出すたびに、それらを組み合わせて新しい出力を生成します。
 
@@ -517,7 +526,7 @@ Combined value: 2 A
 Combined value: 2 B
 ```
 
-`eraseToAnyPublisher`
+##### `eraseToAnyPublisher`
 - 型消去を行い、具体的な `Publisher` の型を非公開の `AnyPublisher` 型に変換します。
 - `Publisher` の型の詳細を隠蔽できるため、外部に露出せず Type Safety を保ちながらもコードを簡潔に保つことができます。
 - API 設計を単純化し、使う側は `Publisher` のタイプに対する知識がなくても、使用しやすくなります。
@@ -563,15 +572,21 @@ final class APIClient {
 
 &nbsp;
 
+-------------
+
 ### UICollectionViewDiffableDataSource
 
 
 &nbsp;
 
+-------------
+
 ### UICollectionViewCompositionalLayout
 
 
 &nbsp;
+
+-------------
 
 ## 🎯 実装時に意識したこと
 
