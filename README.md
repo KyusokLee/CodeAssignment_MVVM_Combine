@@ -53,7 +53,7 @@ https://github.com/KyusokLee/CodeAssignment_MVVM_Combine/assets/89962765/e9845d6
     * [Extension活用](#Extension活用) 
     * [AutoLayout](#AutoLayout)
     * [Life Cycle](#Life-Cycle)
-    * [参照・ARC関連](#参照・ARC関連)
+    * [参照及びARC関連](#参照及びARC関連)
     * [エラーの分岐](#エラーの分岐)
     * [DRY原則](#DRY原則)
 * [工夫点](#-工夫点)
@@ -808,7 +808,19 @@ mainStackView.snp.makeConstraints {
 
 &nbsp;
 
-### 参照・ARC関連
+### 参照及びARC関連
+　iOS開発では、メモリ管理を自動的に処理する ARC(Automatic Reference Counting) を使用します。<br>
+　ARC は、オブジェクトのライフサイクルを管理してメモリ漏れを防止し、オブジェクトがもはや必要ないときにメモリを解除します。
+　この ARC において重要な概念は、以下のようになります。
+  - 強い参照（strong reference）
+  - 弱い参照（weak reference）
+  - 循環参照（retain cycle）
+
+ 今回の開発において、closure 内の循環参照を防ぐことに意識し、 `weak self` を使うことにしました。
+
+ ```swift
+
+```
 
 &nbsp;
 
