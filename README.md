@@ -444,19 +444,129 @@ passthroughSubject.send("World") // "Received value: World"
   - `receive`
 
 それでは、それぞれについてみていきましょう。
-// subscribe, sink, assign, receive のコードを書く予定
 
 ##### `subscribe`
+- `Subscriber` プロトコルを継承した購読者クラスを直接定義し、生成したクラスを使用して購読します。
 
-subscribe()メソッドは明示的に実行する必要はありません。実行タイミングとしては、後ほど紹介するSubscriberのsink()メソッドなどを呼んだときに暗黙的に実行されます。
+　しかし、Apple は、直接実装して購読を実現することをお勧めしないらしいです。<br>
+　また、後述する `sink` などのメソッドでは明示的に `subscribe` を実装しなくても暗黙的に処理してくれるので、実務では `sink` や `assign` を使うケースが大多数のようです。<br>
+  下記に書いたコード例を見ればわかると思いますが、開発のときに毎度 `Publisher` ごとに `Subscriber` クラスを定義・生成して一つ一つ実現する方法は非効率なので、、
+
+```swift
+/// 1 ~ 7を放出する Publisherを生成
+let publisher = (1...7).publisher
+  
+// Subscriber を継承する Custom Subscriberを生成
+class IntSubscriber: Subscriber {
+  
+  // type alias を用いて 生成した publisherの OutputとFailure タイプと一致する Input と Failure　タイプを定義
+  typealias Input = Int
+  typealias Failure = Never
+  
+  // publisherから生成された subscriptionを受け取る際に呼び出されれるメソッド
+  func receive(subscription: Subscription) {
+    // subscription の .request(_:) を呼び出しを通して受信する値の数に制限がないことを知らせる (制限したい場合は .max(数) を使う)
+    subscription.request(.unlimited)
+  }
+
+// 各値を受信する際に呼び出されるメソッド
+  func receive(_ input: Int) -> Subscribers.Demand {
+    // 受信した値を print
+    print("Received value", input)
+    // .none を返して、subscriberの需要に関して調整が不要であることを知らせる (=.max(0))
+    return .none
+  }
+
+  // 完了イベントを受信される際に呼び出されるメソッド
+  func receive(completion: Subscribers.Completion<Never>) {
+    // 受信処理を完了したことを print
+    print("Received completion", completion)
+  }
+}
+  
+// 上記で作成したクラスのインスタンスを生成
+let subscriber = IntSubscriber()
+// publisherにsubscribeメソッドをつけて使用
+publisher.subscribe(subscriber)
+
+// 出力結果
+Received value 1
+Received value 2
+Received value 3
+Received value 4
+Received value 5
+Received value 6
+Received value 7
+Received completion finished
+```
 
 ##### `assign`
+- オブジェクトのプロパティに直接値を割り当てるときに使用します。
+- 完了シグナルやエラーイベントは処理しません。
+
+```swift
+class CustomClass {
+    var receivedInt: Int = 0 {
+        didSet {
+            print("Received Int : \(receivedInt)", terminator: "\n")
+        }
+    }
+}
+
+var customObject = CustomClass()
+let customRange = (0...3)
+cancellable = customRange.publisher
+    .assign(to: \.receivedInt, on: customObject)
+
+// 出力結果 (完了信号は出力されない)
+Received Int : 0
+Received Int : 1
+Received Int : 2
+Received Int : 3
+
+```
 
 ##### `sink`
+- 値と完了及びエラーイベントの両方を処理できます。
+- 値を処理する際に使われる最も一般的な方法です。
+
+```swift
+let customRange = (0...3)
+cancellable = customRange.publisher
+    .sink(receiveCompletion: { print ("completion: \($0)") },
+          receiveValue: { print ("Received Value: \($0)") })
+
+// 出力結果
+//  Received Value: 0
+//  Received Value: 1
+//  Received Value: 2
+//  Received Value: 3
+//  completion: finished
+```
+
+　`sink` メソッドを通して、値が発行された時に呼び出される `receiveValue` と `Publihser` が正常に終了したり、`Error` が起きて終了した時に呼び出される `receiveCompletion` クローザーを用いて、値やイベントを処理することができます。
 
 ##### `receive`
+- `Publisher` の値を特定のスレッドで受信したり、後述する `Operator` のチェーン内で値を渡すときに使用します。
+  - ここで、「チェーン内」といのは、複数の `Operator` を順番に組み合わせて使用することを指します。
+- 完了およびエラーイベントは処理しません。
 
+`receive`は `Publisher` と `Subscriber` をバインディングするという認識よりかは、スレッドの指定のときによく使われるので、ここに記載するか迷ったんですが、一応 `受信する`という観点から入れておきました。
 
+```swift
+let subject = PassthroughSubject<String, Never>()
+
+let subscription = subject
+    .receive(on: DispatchQueue.main) // メインスレッドで受信 (参考：UIの Drawingはメインスレッドで処理する必要がある)
+    .sink { value in
+        print("Received Value: \(value)")
+    }
+
+subject.send("Hello, Combine!")
+
+// 出力結果
+//  Received Value: Hello, Combine!
+```
 
 次に `Publisher` と `Subscriber` の間の関係を管理し、非同期処理のキャンセル時に使われる `store` と `AnyCancellable` について紹介します。
 
@@ -495,6 +605,7 @@ viewModel.repositoriesSubject
 
 #### 📍 `Operator`
 　`Publisher` が発行する値を変換・操作、またはフィルタリングするメソッドです。さまざまな演算子を使用してデータストリームを処理し、希望する形に変換することができます。
+　`Operator` を効率的に使うことで、データの処理パイプラインを構築することができます。
   `Operator` には `map`, `filter`, `flatMap`などが当てはまりますが、今回新しく学んだ `CombineLatest` と `eraseToAnyPublisher` について紹介したいと思います。
 
 ##### `CombineLatest`
