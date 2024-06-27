@@ -430,7 +430,7 @@ passthroughSubject.send("World") // "Received value: World"
 #### Subscriber
 　値や完了信号を発行する `Publisher` が存在すれば、それらを受信して処理する存在も必然的に必要になりそうですよね。この存在を `Subscriber` といいます。<br>
 　`Subscriber` は `Publisher` を購読することで、が発行するデータ（値、完了信号）を受信し、それらを処理します。<br>
-　この `Subscriber` には主に以下のような種類があります。
+　この `Subscriber` には主に以下のような種類があります。下記のメソッドで `Publisher` と `Subscriber` をバインディング（連結）できます。
   - `subscribe`
   - `assign`
   - `sink`
@@ -461,8 +461,9 @@ subscribe()メソッドは明示的に実行する必要はありません。実
 - `Subscriber` が `Publisher` を購読する際に返される型です。
 - これを使用して `Subscriber` が `Publisher` との購読をキャンセルできます。
 
-まとめると、`store` で `AnyCancellable` を保持しておいて、当該の変数が `deinit` されるとき、購読をキャンセルする方法になります。<br>
-`Set` で複数のSubscription（購読）を１つにまとめることができ、`Subscription` の値を保持します。
+　まとめると、`store` で `AnyCancellable` を保持しておいて、当該の変数が `deinit` されるとき、購読をキャンセルする方法になります。<br>
+　`Set` で複数のSubscription（購読）を１つにまとめることができ、`Subscription` の値を保持します。<br>
+　実際のコード例を下記に示します。
 
 ```swift
 /// ViewModel
@@ -485,13 +486,80 @@ viewModel.repositoriesSubject
 
 #### Operator
 　`Publisher` が発行する値を変換・操作、またはフィルタリングするメソッドです。さまざまな演算子を使用してデータストリームを処理し、希望する形に変換することができます。
-  `Operator` には `map`, `filter`, `flatMap`などが当てはまりますが、今回新しく学んだ `combineLatest` と `eraseToAnyPublisher` について紹介したいと思います。
+  `Operator` には `map`, `filter`, `flatMap`などが当てはまりますが、今回新しく学んだ `CombineLatest` と `eraseToAnyPublisher` について紹介したいと思います。
 
-`combineLatest`
-- s
+`CombineLatest`
+- 複数の `Publisher` からの最新の値を組み合わせて新しい値を生成します。
+- 各 `Publisher` が新しい値を出すたびに、それらを組み合わせて新しい出力を生成します。
+
+　実際のコード例を下記に示します。
+
+```swift
+import Combine
+
+// Publisher 側の役割として、PassthroughSubject を用意
+let publisher1 = PassthroughSubject<Int, Never>()
+let publisher2 = PassthroughSubject<String, Never>()
+
+// CombineLatest で組み合わせた Publisher を定義し、出力をコンソールに print する sink を設定する
+let combined = Publishers.CombineLatest(publisher1, publisher2)
+    .map { "\($0) \($1)" } // 組み合わせた各値を一つの文字列にマップ（タイプの変換）
+    .sink { print("Combined value: \($0)") }
+
+publisher1.send(1)
+publisher2.send("A")
+publisher1.send(2)
+publisher2.send("B")
+
+// 出力結果はsendの順（最新の値）
+Combined value: 1 A
+Combined value: 2 A
+Combined value: 2 B
+```
 
 `eraseToAnyPublisher`
-- s
+- 型消去を行い、具体的な `Publisher` の型を非公開の `AnyPublisher` 型に変換します。
+- `Publisher` の型の詳細を隠蔽できるため、外部に露出せず Type Safety を保ちながらもコードを簡潔に保つことができます。
+- API 設計を単純化し、使う側は `Publisher` のタイプに対する知識がなくても、使用しやすくなります。
+
+　[eraseToAnyPublisherの役割・使用利点 (韓国サイト)](https://0urtrees.tistory.com/366) を参考にした実際のコード例を下記に示します。
+
+```swift
+// eraseToAnyPublisher 未使用
+final class APIClient {
+　　// return の方で一番下に書いたメソッド（receive(on: _)）を先に記述する（Publishers.ReceiveOn<>）
+   // Operator を多く使用した場合、複雑なタイプを変換することになる
+   // 必要に応じてメソッドの中間演算過程が変更されたら、このメソッドを使う全ての既存のコードに影響を与える
+   func fetchWeather1(
+      city: String
+   ) -> Publishers.ReceiveOn<Publishers.Catch<Publishers.Map<Publishers.Decode<Publishers.MapKeyPath<URLSession.DataTaskPublisher, Data>, WeatherResponse, JSONDecoder>, Weather>, Empty<Weather, Error>>, RunLoop> {
+      guard let url = URL(string: Constants.weather(city: city)) else { fatalError("Invalid URL!") }
+      return URLSession.shared.dataTaskPublisher(for: url)
+         .map(\.data) // KeyPathを用いて data, responeの中、dataのみを抽出してdownstreamに移動させる
+         .decode(type: WeatherResponse.self, decoder: JSONDecoder()) // デコーディング
+         .map { $0.main } // デコードしたWeatherResponseのmain（ Weather フィルド ）のみをdownstreamに移動させる
+         .catch { _ in Empty<Weather, Error>() } // エラー発生時に、Empty Typeに返す
+         .receive(on: RunLoop.main) // main threadで受け取って動作するようにする
+   }
+}
+
+// eraseToAnyPublisher 使用
+final class APIClient {
+   // 中間の演算過程が露出されず、OutPutと Error タイプだけ確認できるようになる
+   // 外部からは抽象化された AnyPublisher　タイプを使うので、コードの可読性も向上される
+   // つまり、外部のコードに影響与えない
+   func fetchWeather2(city: String) -> AnyPublisher<Weather, Error> {
+      guard let url = URL(string: Constants.weather(city: city)) else { fatalError("Invalid URL !") }
+      return URLSession.shared.dataTaskPublisher(for: url)
+         .map(\.data)
+         .decode(type: WeatherResponse.self, decoder: JSONDecoder())
+         .map { $0.main }
+         .catch { _ in Empty<Weather, Error>() }
+         .receive(on: RunLoop.main)
+         .eraseToAnyPublisher()
+   }
+}
+```
 
 &nbsp;
 
