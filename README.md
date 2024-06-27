@@ -53,7 +53,7 @@ https://github.com/KyusokLee/CodeAssignment_MVVM_Combine/assets/89962765/e9845d6
     * [Extension活用](#Extension活用) 
     * [AutoLayout](#AutoLayout)
     * [Life Cycle](#Life-Cycle)
-    * [参照 (ARC関連)](#参照-(ARC関連))
+    * [参照・ARC関連](#参照・ARC関連)
     * [エラーの分岐](#エラーの分岐)
     * [DRY原則](#DRY原則)
 * [工夫点](#-工夫点)
@@ -808,7 +808,7 @@ mainStackView.snp.makeConstraints {
 
 &nbsp;
 
-### 参照（ARC関連）
+### 参照・ARC関連
 
 &nbsp;
 
