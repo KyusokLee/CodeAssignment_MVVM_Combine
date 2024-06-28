@@ -809,12 +809,12 @@ mainStackView.snp.makeConstraints {
 &nbsp;
 
 ### 参照及びARC関連
-　Swiftでは、メモリ使用を追跡して管理するために、それらを自動的に処理する ARC(Automatic Reference Counting) を使用します。<br>
+Swiftでは、メモリ使用を追跡して管理するために、それらを自動的に処理する ARC(Automatic Reference Counting) を使用します。<br>
 　
-　ARC は、オブジェクトのライフサイクルを管理してメモリ漏れを防止し、オブジェクトがもはや必要ないときにメモリを解除します。<br>
-　つまり、メモリの参照回数を計算して、参照回数が 0 になれば、これ以上使わないメモリだと思って解除してくれるという仕組みになっています。<br>
-　ここで、RC とは、あるインスタンスを現在誰が指しているかどうかを数字で表したものです。
-　この ARC において重要な概念は、以下のようになります。
+ARC は、オブジェクトのライフサイクルを管理してメモリ漏れを防止し、オブジェクトがもはや必要ないときにメモリを解除します。<br>
+つまり、メモリの参照回数を計算して、参照回数が 0 になれば、これ以上使わないメモリだと思って解除してくれるという仕組みになっています。<br>
+ここで、RC とは、あるインスタンスを現在誰が指しているかどうかを数字で表したものです。
+この ARC において重要な概念は、以下のようになります。
   - 強参照（strong reference）
   - 弱参照（weak reference）
   - 循環参照（retain cycle）
@@ -903,7 +903,7 @@ class CreditCard {
     }
     
     deinit {
-        print("Card #\(number) is being deinitialized")
+        print("Card \(number) is being deinitialized")
     }
 }
 
@@ -917,14 +917,19 @@ customer = nil
  今回の開発において、closure 内の循環参照を防ぐことに意識し、`weak self` を使うことにしました。
 
  ```swift
-viewModel.repositoriesSubject
-   .receive(on: DispatchQueue.main)
-   .sink { [weak self] repositories in
-      guard let self, let repositories else { return }
-      self.updateSnapshot(repositories: repositories.items)
-   }
-   .store(in: &cancellables)
+let button = UIButton(configuration: config)
+button.addAction(.init { [weak self] _ in
+   guard let self else { return }
+   self.didTapStarButton()
+}, for: .touchUpInside)
 ```
+
+上記のコードの closure 内で `weak self` を使う理由はメモリリークの発生可能性のある強い循環参照を避けるためです。<br>
+`UIButton` の `addAction` メソッドに closure を渡すとき、clousure は `self` をキャプチャーして参照することになります。<br>
+もし、`closure` が `self` を強く参照すると、`UIButton` が `self` を強く参照し、`self` は `closure` を強く参照する循環参照が発生します。<br>
+これにより、両方のオブジェクトがメモリから解放されないという問題が生じます。<br>
+これを防止するために、`closure` は `self` を弱参照（weak reference）します。
+
 
 &nbsp;
 
