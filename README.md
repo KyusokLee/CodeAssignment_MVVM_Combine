@@ -809,14 +809,112 @@ mainStackView.snp.makeConstraints {
 &nbsp;
 
 ### 参照及びARC関連
-　iOS開発では、メモリ管理を自動的に処理する ARC(Automatic Reference Counting) を使用します。<br>
-　ARC は、オブジェクトのライフサイクルを管理してメモリ漏れを防止し、オブジェクトがもはや必要ないときにメモリを解除します。
+　Swiftでは、メモリ使用を追跡して管理するために、それらを自動的に処理する ARC(Automatic Reference Counting) を使用します。<br>
+　
+　ARC は、オブジェクトのライフサイクルを管理してメモリ漏れを防止し、オブジェクトがもはや必要ないときにメモリを解除します。<br>
+　つまり、メモリの参照回数を計算して、参照回数が 0 になれば、これ以上使わないメモリだと思って解除してくれるという仕組みになっています。<br>
+　ここで、RC とは、あるインスタンスを現在誰が指しているかどうかを数字で表したものです。
 　この ARC において重要な概念は、以下のようになります。
-  - 強い参照（strong reference）
-  - 弱い参照（weak reference）
+  - 強参照（strong reference）
+  - 弱参照（weak reference）
   - 循環参照（retain cycle）
 
- 今回の開発において、closure 内の循環参照を防ぐことに意識し、 `weak self` を使うことにしました。
+#### 強参照
+- デフォルトの参照タイプで、オブジェクトのライフサイクルを維持します。
+- オブジェクトが強参照で接続されていると、参照カウントが増加し、このカウントが 0 になるまで、オブジェクトはメモリから解放されません。
+
+```swift
+class Person {
+    var name: String
+    
+    init(name: String) {
+        self.name = name
+    }
+}
+
+var person1: Person? = Person(name: "Alice")
+var person2: Person? = person1
+
+person1 = nil
+// person2はまだ、強参照を持っているため、メモリ解除されない
+```
+
+#### 弱参照
+- 弱参照は参照カウントを増加させることはなく、参照対象オブジェクトが解除されると自動的に `nil` に設定されます。
+- 弱参照は常に `Optional` タイプである必要があります。理由としては、オブジェクトが解除されたときに `nil` が割り当てられる可能性があるからです。
+- 弱参照は、参照対象オブジェクトが解放された後も安全にアクセスできます。
+- 主に強い参照循環を避けるために使用されます。
+- `weak` キーワードを使って、参照カウントの増加を防げます。 
+
+```swift
+class Person {
+    var name: String
+    // 弱参照
+    weak var friend: Person?
+    
+    init(name: String) {
+        self.name = name
+    }
+}
+
+var person1: Person? = Person(name: "Kyu")
+var person2: Person? = Person(name: "Lee")
+
+person1?.friend = person2
+person2?.friend = person1
+
+person1 = nil
+// person2はまだ存在するが、person1に対する弱参照がnilになる
+```
+
+#### 循環参照
+- 2つのオブジェクトが互いを強く参照し、互いの参照カウントを減少させることができない状況を指します。これにより、メモリのリークが発生します。
+- 循環参照によるメモリリークを回避するために、弱参照（`weak`）、または無所有参照（`unowned`）を使用します。
+
+無所有参照について以下でまとめます。
+
+##### `unowned` 無所有参照
+- 参照するオブジェクトがメモリから解放されても、無所有参照は自動で `nil` に割り当てされません。
+- 無所有参照は `Optional` タイプでなくてもよいです。これは、オブジェクトが常に有効であると仮定するときに使用されます。
+- 参照対象オブジェクトが解除された後、無所有参照にアクセスすると、ランタイムエラーが発生する可能性があります。
+- 上記の理由から、無所有参照は、オブジェクトが同じライフサイクルを共有するか、オブジェクトが解除されないと確信している場合にのみ使用する必要があります。
+
+```swift
+class Customer {
+    var name: String
+    var card: CreditCard?
+    
+    init(name: String) {
+        self.name = name
+    }
+    
+    deinit {
+        print("\(name) is being deinitialized")
+    }
+}
+
+class CreditCard {
+    var number: UInt64
+    unowned var customer: Customer  // 無所有参照
+    
+    init(number: UInt64, customer: Customer) {
+        self.number = number
+        self.customer = customer
+    }
+    
+    deinit {
+        print("Card #\(number) is being deinitialized")
+    }
+}
+
+var customer: Customer? = Customer(name: "Kyu Lee")
+customer?.card = CreditCard(number: 1234_5678_9012_3456, customer: customer!)
+
+customer = nil
+// customerが解除されcardも解除される
+```
+
+ 今回の開発において、closure 内の循環参照を防ぐことに意識し、`weak self` を使うことにしました。
 
  ```swift
 viewModel.repositoriesSubject
