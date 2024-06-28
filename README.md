@@ -686,14 +686,136 @@ final class APIClient {
 -------------
 
 ### UICollectionViewDiffableDataSource
+`UICollectionViewDiffableDataSource` は、`UICollectionView` のデータソースをより簡単かつ安全に管理できるクラスです。<br>
+既存に使っていた `UICollectionViewDataSource` との相違点としては、スナップショット(`Snapshot`) を使用して変更事項をアニメーションと共に安全に適用することができることです。
 
+```swift
+private enum Section: CaseIterable {
+    // 今回はsection１つしか使わないので、mainだけ定義
+    case main
+}
 
+// MARK: - Life Cycle & Variables
+class HomeViewController: UIViewController {
+
+    // 他のコード省略
+
+    private var dataSource: UICollectionViewDiffableDataSource<Section, Repositories.Repository>!
+    private lazy var repositoryCollectionView: UICollectionView = {
+        var config = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
+        let layout = UICollectionViewCompositionalLayout.list(using: config)
+
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.delegate = self
+        collectionView.backgroundColor = .secondarySystemBackground
+        collectionView.contentInsetAdjustmentBehavior = .always
+        return collectionView
+    }()
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        setupUI()
+        bind()
+    }
+}
+
+// MARK: - Functions & Logics
+extension HomeViewController {
+    /// ViewControllerのUIをセットアップする
+    private func setupUI() {
+        view.backgroundColor = .secondarySystemBackground
+        
+        setupNavigationController()
+        setupDataSource()
+        setAddSubViews()
+        setupConstraints()
+    }
+    
+    /// CollectionViewのDatasource 設定
+    private func setupDataSource() {
+        /// RepositoryCollectionViewCellをCellRegistrationで設定
+        let repositoryCell = UICollectionView.CellRegistration<RepositoryCollectionViewCell, Repositories.Repository>() { cell, indexPath, repository in
+            // <CellのType(クラス名とか), Itemで表示するもの>
+            cell.backgroundColor = .white
+            cell.configure(with: repository)
+            // cellにUICellAccessory（accessories）を追加
+            cell.accessories = [
+                .disclosureIndicator()
+            ]
+        }
+
+        // DiffableDataSourceの初期化
+        dataSource = UICollectionViewDiffableDataSource<Section, Repositories.Repository>(collectionView: repositoryCollectionView) { collectionView, indexPath, repository in
+            return collectionView.dequeueConfiguredReusableCell(using: repositoryCell, for: indexPath, item: repository)
+        }
+        /// DataSourceに表示するSectionとItemの現在のUIの状態
+        var snapshot = NSDiffableDataSourceSnapshot<Section, Repositories.Repository>()
+        // Snapshotの初期化
+        // appendSections: snapShotを適用するSectionを追加
+        // apply(_ :animatingDifferences:) : 表示されるデータを完全にリセットするのではなく、incremental updates(増分更新)を実行してDataSourceにSnapshotを適用する
+        snapshot.appendSections([.main])
+        dataSource.apply(snapshot, animatingDifferences: true)
+    }
+    
+    /** ViewModelなどViewController側で常に監視しておくべき対象を、セットアップ
+     イベント発生時に正常にデータバインドをするために、Observerを設定する感じ
+     
+    - Combineで流れたきたデータのアウトプットsinkする
+    - sink : Publisherからのイベントを購読する.  つまり、イベントを受信したときの処理を指定できる。
+    - receive(on:)：イベントを受け取るスレッドを指定する
+    - store: cancellabeなどを保
+     */
+    private func bind() {
+        viewModel.repositoriesSubject
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] repositories in
+                guard let self, let repositories else { return }
+                self.updateSnapshot(repositories: repositories.items)
+            }
+            .store(in: &cancellables)
+    }
+
+    // viewModelから受け取った値をsnapShotの更新を通して、画面に反映させる
+    private func updateSnapshot(repositories: [Repositories.Repository]) {
+        /// DataSourceに適用した現在のSnapShotを取得
+        var snapshot = dataSource.snapshot()
+        // reloadItemsは既存セルの特定のCellだけをReloadするので、deleteしたあとに改めてappendする形でSnapshot適用
+        snapshot.deleteAllItems()
+        snapshot.appendSections([.main])
+        snapshot.appendItems(repositories, toSection: .main)
+        dataSource.apply(snapshot, animatingDifferences: true)
+    }
+}
+
+// MARK: - UICollectionViewDelegate
+extension HomeViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let repository = viewModel.repositoriesSubject.value?.items[indexPath.row] else { return }
+        let detailViewController = DetailViewController(repository: repository)
+        navigationController?.pushViewController(detailViewController, animated: true)
+        collectionView.deselectItem(at: indexPath, animated: true)
+    }
+}
+```
 &nbsp;
 
 -------------
 
 ### UICollectionViewCompositionalLayout
+`UICollectionViewCompositionalLayout` は、複雑で多様なレイアウトを簡単に構成できるようにするレイアウトクラスです。<br>
+さまざまなアイテムとグループを組み合わせて、柔軟なレイアウトを作成できます。<br>
+また、`UICollectionViewCell` のサイズを動的に計算してくれるので、既存の `Cell` の `height` や `width` のようなサイズを動的に計算するために使用した `UICollectionViewDelegateFlowLayout` プロトコルの `sizeForItemAt` メソッドを使う必要がなくなります。<br>
 
+```swift
+var config = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
+let layout = UICollectionViewCompositionalLayout.list(using: config)
+```
+`UICollectionLayoutListConfiguration` は、リストスタイルの CollectionView のレイアウトを設定するために使用しました。<br>
+`appearance` はリストの外観を設定しており、ここで `insetGrouped` はグループ化されたスタイルを指します。<br>
+`UICollectionViewCompositionalLayout.list(using:)` は、リストスタイルのレイアウトを作成します。<br>
+上記のコードを使うことで、リストスタイルの `UICollectionView` を簡単に設定できるようにしてくれます。<br>
+本アプリでは、設定アプリの TableView に似たUIを作成さたかったので、`UICollectionLayoutListConfiguration` を採用しました。
 
 &nbsp;
 
