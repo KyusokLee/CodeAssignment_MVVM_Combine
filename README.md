@@ -825,18 +825,42 @@ ARC は、オブジェクトのライフサイクルを管理してメモリ漏�
 
 ```swift
 class Person {
+    // 強参照
+    var name: String
+    var city: City? // Optionalタイプの有無は 参照の強度とは関係ない
+    
+    init(name: String) {
+        self.name = name
+    }
+    
+    deinit {
+        print("\(name) is being deinitialized")
+    }
+}
+
+class City {
     var name: String
     
     init(name: String) {
         self.name = name
     }
+    
+    deinit {
+        print("\(name) is being deinitialized")
+    }
 }
 
-var person1: Person? = Person(name: "Alice")
-var person2: Person? = person1
+var person: Person? = Person(name: "Kyulee")
+var city: City? = City(name: "Tokyo")
 
-person1 = nil
-// person2はまだ、強参照を持っているため、メモリ解除されない
+person?.city = city  // person が city を強く参照
+city = nil  // city インスタンスは nil であるが、 person が強参照を維持
+person = nil  // ここで、person と pet 、両方とも deinit される
+
+// 出力結果 (上からの順番)
+Kyulee is being deinitialized
+Tokyo is being deinitialized
+
 ```
 
 #### 弱参照
@@ -871,7 +895,7 @@ person1 = nil
 - 2つのオブジェクトが互いを強く参照し、互いの参照カウントを減少させることができない状況を指します。これにより、メモリのリークが発生します。
 - 循環参照によるメモリリークを回避するために、弱参照（`weak`）、または無所有参照（`unowned`）を使用します。
 
-無所有参照について以下でまとめます。
+ここで、無所有参照について軽く見ていきましょう。
 
 ##### `unowned` 無所有参照
 - 参照するオブジェクトがメモリから解放されても、無所有参照は自動で `nil` に割り当てされません。
@@ -914,7 +938,7 @@ customer = nil
 // customerが解除されcardも解除される
 ```
 
- 今回の開発において、closure 内の循環参照を防ぐことに意識し、`weak self` を使うことにしました。
+ 今回の開発において、closure 内の循環参照を避けることを意識し、`weak self` を使うことにしました。
 
  ```swift
 let button = UIButton(configuration: config)
@@ -926,9 +950,9 @@ button.addAction(.init { [weak self] _ in
 
 上記のコードの closure 内で `weak self` を使う理由はメモリリークの発生可能性のある強い循環参照を避けるためです。<br>
 `UIButton` の `addAction` メソッドに closure を渡すとき、clousure は `self` をキャプチャーして参照することになります。<br>
-もし、`closure` が `self` を強く参照すると、`UIButton` が `self` を強く参照し、`self` は `closure` を強く参照する循環参照が発生します。<br>
-これにより、両方のオブジェクトがメモリから解放されないという問題が生じます。<br>
-これを防止するために、`closure` は `self` を弱参照（weak reference）します。
+もし、`closure` が `self` を強く参照すると、`UIButton` が `self` を強く参照し、`self` も `closure` を強く参照する循環参照が発生します。<br>
+この循環参照により、両方のオブジェクトがメモリから正常に解放されないという問題が生じます。<br>
+これを防止するために、`closure` が `self` を弱く参照するように `weak` 弱参照のキーワードを使いました。
 
 
 &nbsp;
