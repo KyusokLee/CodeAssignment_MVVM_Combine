@@ -152,7 +152,9 @@ SDWebImage
 
 ### MVVM
 
-(実際のアプリ画面間の関係をModel/ViewModel/Viewの役割に基づいた画像を作成し、ここに挿入するつもり)
+<p align="center">
+   <img width="840" alt="スクリーンショット 2024-07-01 17 11 34" src="https://github.com/KyusokLee/CodeAssignment_MVVM_Combine/assets/89962765/33eae7ae-9fcd-4ffd-b1ab-ac104c166846">
+</p>
 
 &nbsp;
 
