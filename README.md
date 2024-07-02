@@ -1342,18 +1342,6 @@ CodeAssignment_MVVM_Combine/Sources/Token.swift
 ## 📚 学び
 
 ### 画面表示用のレスポンスの結合モデルの作成
-```swift
-func loadTokenFromProcessInfo() -> String? {
-    return ProcessInfo.processInfo.environment["PERSONAL_ACCESS_TOKEN"]
-}
-
-// 使い方
-if let token = loadTokenFromProcessInfo() {
-    print("Loaded token: \(token)")
-} else {
-    print("Token not found")
-}
-```
 
 `背景`<br>
 - 今回のアプリを実装するまでは、無意識でAPIを叩いて返ってくるレスポンスを`APIClient`で処理してViewControllerで直接渡すようなコードを書いていた。これはレスポンスの形に依存しちゃうのでは？と考えていてこの依存度をどう分離するかを悩んていたものの、依存度を分離せずに普段から慣れていたコードを書きました。<br>
