@@ -1230,7 +1230,7 @@ struct GitHubSearchRepositoriesRequest: GitHubAPIClientProtocol {
 }
 
 ```
-- 本アプリは`GitHub Rest API`の中、検索用のエンドポイントと星付けー・解除用のエンドポイントを使用しています。検索用の`strcut`である`GitHubSearchRepositoriesRequest`と星付けー・解除用である`GitHubStarRepositoriesRequest`はそれぞれ異なるリクエストを処理しているが、ジェネリックとプロトコルを用いることでコードの再利用性を増やすことができます。
+- 本アプリは`GitHub Rest API`の中、検索用のエンドポイントと星付け・解除用のエンドポイントを使用しています。検索用の`struct`である`GitHubSearchRepositoriesRequest`と星付け・解除用である`GitHubStarRepositoriesRequest`はそれぞれ異なるリクエストを処理していますが、ジェネリックとプロトコルを用いることでコードの再利用性を増やすことができます。
 
 - `GitHubSearchRepositoriesRequest`と`GitHubStarRepositoriesRequest`が共通のプロトコル`GitHubAPIClientProtocol`を準拠するように定義し、`APIClient`クラスでジェネリックを使用してリクエストを送信するようにすると、重複したコードの削減と、複数のAPIリクエストに対して同じロジックを使用できるようになります。
 
