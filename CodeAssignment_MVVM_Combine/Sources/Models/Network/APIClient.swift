@@ -50,6 +50,7 @@ struct GitHubStarRepositoryRequest: GitHubAPIClientProtocol {
         return request
     }
 }
+
 /// リポジトリ検索用のリクエスト
 struct GitHubSearchRepositoriesRequest: GitHubAPIClientProtocol {
     let searchQueryWord: String
