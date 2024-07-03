@@ -52,7 +52,6 @@ https://github.com/KyusokLee/CodeAssignment_MVVM_Combine/assets/89962765/e9845d6
 * [実装時に意識したこと](#-実装時に意識したこと)
     * [Extension活用](#Extension活用) 
     * [AutoLayout](#AutoLayout)
-    * [Life Cycle](#Life-Cycle)
     * [参照及びARC関連](#参照及びARC関連)
     * [エラーの分岐](#エラーの分岐)
     * [DRY原則](#DRY原則)
@@ -60,7 +59,6 @@ https://github.com/KyusokLee/CodeAssignment_MVVM_Combine/assets/89962765/e9845d6
     * [Personal Access Token の管理方法](#Personal-Access-Token-の管理方法)
 * [学び](#-学び)
     * [画面表示用のレスポンスの結合モデルの作成](#画面表示用のレスポンスの結合モデルの作成)
-* [Trouble Shooting](#trouble-Shooting)
 
 ## 🗂 ディレクトリ構成
 
@@ -928,10 +926,6 @@ mainStackView.snp.makeConstraints {
 
 &nbsp;
 
-### Life Cycle
-
-&nbsp;
-
 ### 参照及びARC関連
 Swiftでは、メモリ使用を追跡して管理するために、それらを自動的に処理する ARC(Automatic Reference Counting) を使用します。<br>
 　
@@ -1353,5 +1347,3 @@ CodeAssignment_MVVM_Combine/Sources/Token.swift
 - また、ビュー表示用のモデルを用意して関心事の分離をすることで、テストも容易になります。例えば、API処理のテストを行うときは `RepositoriesResponse`を、 UIのテストを行うときは `Repositories`のみをテストすればいいので、コード作成の効率性も上がります。
 
 &nbsp;
-
-## 🔥 Trouble Shooting
