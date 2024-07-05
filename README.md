@@ -370,7 +370,7 @@ public protocol Publisher<Output, Failure> {
 　後述しますが、`Publisher` から発行されるデータを受け取る `Subscriber` の `Input` & `Failure` も当然に `Publisher` の `Output` & `Failure` タイプと一致しなければならないです。<br>
 　この `Publisher` は主に以下のような種類があります。
   - `Just`
-  - 'Future'
+  - `Future`
   - `Subject`
 
 本アプリでは `Subject` を用いた開発を進めたため、この文書では `Subject` について説明します。
