@@ -345,7 +345,7 @@ final class HomeViewModel {
 
  > 時間の経過に応じて変更する値をエクスポートする `Publisher` と、それを受信する `Subscriber` を利用して時間の経過に応じた値を処理する `Swift` API
 
-　つまり、`Publisher` と `Subscriber` を利用して効率的に非同期プログラミングを処理するために登場したとと思います。`Combine` の登場前はこの非同期プログラミングの処理に `RxSwift` を使っていました。<br>
+　つまり、`Publisher` と `Subscriber` を利用して効率的に非同期プログラミングを処理するために登場したと思います。`Combine` の登場前はこの非同期プログラミングの処理に `RxSwift` を使っていました。<br>
 　それでは、`Combine` の主要概念である `Publisher` と `Subscriber`、`Operator` についてみていきましょう。
 
 &nbsp;
