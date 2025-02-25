@@ -10,7 +10,7 @@ import UIKit
 import Combine
 
 final class HomeViewModel {
-    private let apiClient = APIClient()
+    private let apiClient: APIClient
     /** HomeViewController側に渡すSubject（通路ってイメージ）
     - PassThroughSubjectは、値を保持しないので、CurrentValueSubjectを通してVCに値を渡す
     - RepositoriesForViewはただ、HomeViewControllerに渡す用のModelである
@@ -24,7 +24,12 @@ final class HomeViewModel {
     var repositoriesPublisher: AnyPublisher<Repositories?, Never> {
         return repositoriesSubject.eraseToAnyPublisher()
     }
-    
+
+    // 外部からモックを渡せるようにするには、init 追加してDI注入
+    init(apiClient: APIClient) {
+        self.apiClient = apiClient
+    }
+
     /// GET リクエストを送信し、repositoryを持ってくるメソッド
     func search(queryString searchWord: String) {
         // 空文字や空白のみの文字列の検索を防ぐために、トリミングされた検索文字列が空でないことを確認

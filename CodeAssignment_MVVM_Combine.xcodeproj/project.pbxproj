@@ -22,6 +22,7 @@
 		5D0770352BE38D8C007F0724 /* ErrorType+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0770342BE38D8C007F0724 /* ErrorType+Utils.swift */; };
 		5D0770372BE38E20007F0724 /* UIColor+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0770362BE38E20007F0724 /* UIColor+Utils.swift */; };
 		5D2880942BEA02F9005DC50A /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2880932BEA02F9005DC50A /* HomeViewModel.swift */; };
+		5D84D1322D6DD83C00625ECE /* HomeViewModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D84D1312D6DD83800625ECE /* HomeViewModelTest.swift */; };
 		5D89F8952BFDB91F00CE7C30 /* DetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D89F8942BFDB91F00CE7C30 /* DetailViewModel.swift */; };
 		5DB771652BF1B951001570ED /* Repositories.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB771642BF1B951001570ED /* Repositories.swift */; };
 		5DB771692BF1F682001570ED /* RepositoryCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB771682BF1F682001570ED /* RepositoryCollectionViewCell.swift */; };
@@ -71,6 +72,7 @@
 		5D0770342BE38D8C007F0724 /* ErrorType+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ErrorType+Utils.swift"; sourceTree = "<group>"; };
 		5D0770362BE38E20007F0724 /* UIColor+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Utils.swift"; sourceTree = "<group>"; };
 		5D2880932BEA02F9005DC50A /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		5D84D1312D6DD83800625ECE /* HomeViewModelTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModelTest.swift; sourceTree = "<group>"; };
 		5D89F8942BFDB91F00CE7C30 /* DetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewModel.swift; sourceTree = "<group>"; };
 		5DB771642BF1B951001570ED /* Repositories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Repositories.swift; sourceTree = "<group>"; };
 		5DB771682BF1F682001570ED /* RepositoryCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -144,6 +146,7 @@
 		5D0770022BE32B9E007F0724 /* CodeAssignment_MVVM_CombineTests */ = {
 			isa = PBXGroup;
 			children = (
+				5D84D1312D6DD83800625ECE /* HomeViewModelTest.swift */,
 				5D0770032BE32B9E007F0724 /* CodeAssignment_MVVM_CombineTests.swift */,
 			);
 			path = CodeAssignment_MVVM_CombineTests;
@@ -503,6 +506,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5D84D1322D6DD83C00625ECE /* HomeViewModelTest.swift in Sources */,
 				5D0770042BE32B9E007F0724 /* CodeAssignment_MVVM_CombineTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
