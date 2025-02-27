@@ -48,10 +48,17 @@ final class HomeViewModelTests: XCTestCase {
         mockAPIClient.result = .success(mockRepositories)
 
         viewModel.repositoriesPublisher
+            // CurrentValueSubject や @Published は、subscribe（購読）した瞬間に現在の値を流す 仕様になっている
+            // 購読した瞬間に現在の値（デフォルト値）を流す
+            // search を呼ぶ前のデフォルト値 を最初に受け取る
+            // デフォルト値をスキップして、本当に API のレスポンスが反映された値だけをチェック
+            // dropFirstを使って、意図しない初期値が sink に流れてくることを防ぐ
             .dropFirst()
             .sink(receiveValue: { repositories in
                 XCTAssertNotNil(repositories)
+                // (実際の値、期待値) 2つの値が等しいことを確認するために使う
                 XCTAssertEqual(repositories?.totalCount, 1)
+                // 非同期処理が完了したことを XCTest に伝える
                 expectation.fulfill()
             })
             .store(in: &cancellables)
@@ -66,9 +73,10 @@ final class HomeViewModelTests: XCTestCase {
         mockAPIClient.result = .failure(.apiServerError)
 
         viewModel.repositoriesPublisher
-            .dropFirst()
             .sink { repositories in
+                // repositories が nil であることを確認する
                 XCTAssertNil(repositories)
+                // 非同期処理が完了したことを XCTest に伝える
                 expectation.fulfill()
             }
             .store(in: &cancellables)
