@@ -12,7 +12,7 @@ import Combine
 final class HomeViewModelTests: XCTestCase {
     private var viewModel: HomeViewModel!
     private var mockAPIClient: MockAPIClient!
-    private var cancellables: Set<AnyCancellable> = []
+    private var cancellables = Set<AnyCancellable>()
 
     override func setUp() {
         super.setUp()
@@ -49,11 +49,11 @@ final class HomeViewModelTests: XCTestCase {
 
         viewModel.repositoriesPublisher
             .dropFirst()
-            .sink { repositories in
+            .sink(receiveValue: { repositories in
                 XCTAssertNotNil(repositories)
-                XCTAssertEqual(repositories?.repositories.totalCount, 1)
+                XCTAssertEqual(repositories?.totalCount, 1)
                 expectation.fulfill()
-            }
+            })
             .store(in: &cancellables)
 
         viewModel.search(queryString: "Swift")
@@ -74,19 +74,33 @@ final class HomeViewModelTests: XCTestCase {
             .store(in: &cancellables)
 
         viewModel.search(queryString: "Swift")
-
         wait(for: [expectation], timeout: 2.0)
     }
 }
 
 // モックAPIクライアントの作成
 final class MockAPIClient: APIClient {
-    // 型を固定せず汎用的に保持
-    var result: Any?
+    var result: Result<Any?, ErrorType>?
 
-    override func request<T: GitHubAPIClientProtocol>(_ requestProtocol: T, type: GitHubAPIType, completion: @escaping (Result<T.Model?, ErrorType>) -> Void) {
-        if let result = result as? Result<T.Model?, ErrorType> {
-            completion(result)
+    override func request<T: GitHubAPIClientProtocol>(
+        _ requestProtocol: T,
+        type: GitHubAPIType,
+        completion: @escaping (Result<T.Model?, ErrorType>) -> Void
+    ) {
+        guard let result = result else {
+            completion(.failure(.unknownError))
+            return
+        }
+
+        switch result {
+        case .success(let data):
+            if let model = data as? T.Model {
+                completion(.success(model))
+            } else {
+                completion(.failure(.decodeError))
+            }
+        case .failure(let error):
+            completion(.failure(error))
         }
     }
 }
