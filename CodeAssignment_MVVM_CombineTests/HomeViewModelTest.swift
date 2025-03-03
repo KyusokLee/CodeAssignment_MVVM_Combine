@@ -29,21 +29,7 @@ final class HomeViewModelTests: XCTestCase {
 
     func testSearchSuccess() {
         let expectation = XCTestExpectation(description: "Search success")
-        let mockRepositories = RepositoriesResponse(
-            totalCount: 1,
-            items: [
-                RepositoriesResponse.RepositoryResponse(
-                    owner: .init(login: "testUser", avatarUrl: "https://example.com/avatar.png"),
-                    name: "TestRepo",
-                    description: "Test description",
-                    language: "Swift",
-                    stargazersCount: 10,
-                    forksCount: 5,
-                    watchersCount: 3,
-                    openIssuesCount: 1
-                )
-            ]
-        )
+        let mockRepositories = RepositoriesResponse()
 
         mockAPIClient.result = .success(mockRepositories)
 
@@ -113,3 +99,28 @@ final class MockAPIClient: APIClient {
     }
 }
 
+extension RepositoriesResponse {
+    init() {
+        // MEMO: self.init(...)を使う理由
+        // let プロパティは、struct の初期化時に一度だけ設定可能であり、その後に値を変更できない.
+        // そのため、拡張 (extension) 内の init() では self.init(...) を使って、structのメンバーワイズイニシャライザを呼び出す必要
+        // メンバーワイズイニシャライザ: 呼び出し時にすべてのプロパティに値を設定できる
+        // 型指定のみのデータしか入っていない場合に使われる。(totalCount: Int と　items: [RepositoryResponse]がその例)
+        // 通常はinit()で初期化処理をしなくてはならないが、この場合は書かなくてもインスタンス化できてしまう
+        self.init(
+            totalCount: 1,
+            items: [
+                .init(
+                    owner: .init(login: "TestUser", avatarUrl: "https://example.com/avatar.png"),
+                    name: "TestRepo",
+                    description: "Test description",
+                    language: "Swift",
+                    stargazersCount: 10,
+                    forksCount: 5,
+                    watchersCount: 3,
+                    openIssuesCount: 1
+                )
+            ]
+        )
+    }
+}
