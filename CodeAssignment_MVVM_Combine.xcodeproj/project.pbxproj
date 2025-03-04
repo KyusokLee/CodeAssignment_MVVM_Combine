@@ -15,13 +15,13 @@
 		5D0770042BE32B9E007F0724 /* CodeAssignment_MVVM_CombineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0770032BE32B9E007F0724 /* CodeAssignment_MVVM_CombineTests.swift */; };
 		5D07700E2BE32B9E007F0724 /* CodeAssignment_MVVM_CombineUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D07700D2BE32B9E007F0724 /* CodeAssignment_MVVM_CombineUITests.swift */; };
 		5D0770102BE32B9E007F0724 /* CodeAssignment_MVVM_CombineUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D07700F2BE32B9E007F0724 /* CodeAssignment_MVVM_CombineUITestsLaunchTests.swift */; };
-		5D0770272BE33EFD007F0724 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 5D0770262BE33EFD007F0724 /* SnapKit */; };
-		5D0770292BE33EFD007F0724 /* SnapKit-Dynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 5D0770282BE33EFD007F0724 /* SnapKit-Dynamic */; };
 		5D07702D2BE38CA1007F0724 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D07702C2BE38CA1007F0724 /* APIClient.swift */; };
 		5D0770302BE38D38007F0724 /* ErrorType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D07702F2BE38D38007F0724 /* ErrorType.swift */; };
 		5D0770352BE38D8C007F0724 /* ErrorType+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0770342BE38D8C007F0724 /* ErrorType+Utils.swift */; };
 		5D0770372BE38E20007F0724 /* UIColor+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0770362BE38E20007F0724 /* UIColor+Utils.swift */; };
 		5D2880942BEA02F9005DC50A /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2880932BEA02F9005DC50A /* HomeViewModel.swift */; };
+		5D7023D92D70177B009F022A /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 5D7023D82D70177B009F022A /* SnapKit */; };
+		5D84D1322D6DD83C00625ECE /* HomeViewModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D84D1312D6DD83800625ECE /* HomeViewModelTest.swift */; };
 		5D89F8952BFDB91F00CE7C30 /* DetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D89F8942BFDB91F00CE7C30 /* DetailViewModel.swift */; };
 		5DB771652BF1B951001570ED /* Repositories.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB771642BF1B951001570ED /* Repositories.swift */; };
 		5DB771692BF1F682001570ED /* RepositoryCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB771682BF1F682001570ED /* RepositoryCollectionViewCell.swift */; };
@@ -71,6 +71,7 @@
 		5D0770342BE38D8C007F0724 /* ErrorType+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ErrorType+Utils.swift"; sourceTree = "<group>"; };
 		5D0770362BE38E20007F0724 /* UIColor+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Utils.swift"; sourceTree = "<group>"; };
 		5D2880932BEA02F9005DC50A /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		5D84D1312D6DD83800625ECE /* HomeViewModelTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModelTest.swift; sourceTree = "<group>"; };
 		5D89F8942BFDB91F00CE7C30 /* DetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewModel.swift; sourceTree = "<group>"; };
 		5DB771642BF1B951001570ED /* Repositories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Repositories.swift; sourceTree = "<group>"; };
 		5DB771682BF1F682001570ED /* RepositoryCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -90,8 +91,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5DB7C31E2BF4D75B0074AFC1 /* SDWebImage in Frameworks */,
-				5D0770272BE33EFD007F0724 /* SnapKit in Frameworks */,
-				5D0770292BE33EFD007F0724 /* SnapKit-Dynamic in Frameworks */,
+				5D7023D92D70177B009F022A /* SnapKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -144,6 +144,7 @@
 		5D0770022BE32B9E007F0724 /* CodeAssignment_MVVM_CombineTests */ = {
 			isa = PBXGroup;
 			children = (
+				5D84D1312D6DD83800625ECE /* HomeViewModelTest.swift */,
 				5D0770032BE32B9E007F0724 /* CodeAssignment_MVVM_CombineTests.swift */,
 			);
 			path = CodeAssignment_MVVM_CombineTests;
@@ -355,9 +356,8 @@
 			);
 			name = CodeAssignment_MVVM_Combine;
 			packageProductDependencies = (
-				5D0770262BE33EFD007F0724 /* SnapKit */,
-				5D0770282BE33EFD007F0724 /* SnapKit-Dynamic */,
 				5DB7C31D2BF4D75B0074AFC1 /* SDWebImage */,
+				5D7023D82D70177B009F022A /* SnapKit */,
 			);
 			productName = CodeAssignment_MVVM_Combine;
 			productReference = 5D076FE92BE32B9C007F0724 /* CodeAssignment_MVVM_Combine.app */;
@@ -407,7 +407,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1520;
-				LastUpgradeCheck = 1520;
+				LastUpgradeCheck = 1600;
 				TargetAttributes = {
 					5D076FE82BE32B9C007F0724 = {
 						CreatedOnToolsVersion = 15.2;
@@ -432,8 +432,8 @@
 			);
 			mainGroup = 5D076FE02BE32B9C007F0724;
 			packageReferences = (
-				5D0770252BE33D0D007F0724 /* XCRemoteSwiftPackageReference "SnapKit" */,
 				5DB7C31C2BF4D75B0074AFC1 /* XCRemoteSwiftPackageReference "SDWebImage" */,
+				5D7023D72D70177B009F022A /* XCRemoteSwiftPackageReference "SnapKit" */,
 			);
 			productRefGroup = 5D076FEA2BE32B9C007F0724 /* Products */;
 			projectDirPath = "";
@@ -503,6 +503,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5D84D1322D6DD83C00625ECE /* HomeViewModelTest.swift in Sources */,
 				5D0770042BE32B9E007F0724 /* CodeAssignment_MVVM_CombineTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -719,7 +720,6 @@
 		5D0770172BE32B9E007F0724 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -739,7 +739,6 @@
 		5D0770182BE32B9E007F0724 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -759,7 +758,6 @@
 		5D07701A2BE32B9E007F0724 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = UNTPRP3C66;
@@ -777,7 +775,6 @@
 		5D07701B2BE32B9E007F0724 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = UNTPRP3C66;
@@ -834,7 +831,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		5D0770252BE33D0D007F0724 /* XCRemoteSwiftPackageReference "SnapKit" */ = {
+		5D7023D72D70177B009F022A /* XCRemoteSwiftPackageReference "SnapKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SnapKit/SnapKit";
 			requirement = {
@@ -853,15 +850,10 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		5D0770262BE33EFD007F0724 /* SnapKit */ = {
+		5D7023D82D70177B009F022A /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 5D0770252BE33D0D007F0724 /* XCRemoteSwiftPackageReference "SnapKit" */;
+			package = 5D7023D72D70177B009F022A /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
-		};
-		5D0770282BE33EFD007F0724 /* SnapKit-Dynamic */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 5D0770252BE33D0D007F0724 /* XCRemoteSwiftPackageReference "SnapKit" */;
-			productName = "SnapKit-Dynamic";
 		};
 		5DB7C31D2BF4D75B0074AFC1 /* SDWebImage */ = {
 			isa = XCSwiftPackageProductDependency;
